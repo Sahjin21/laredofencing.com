@@ -59,29 +59,29 @@ const description = `Laredo Fence Pros is a referral site operated by Kurtz & Bo
         <p class="eyebrow">Why this site exists</p>
         <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Laredo fence shoppers don't have a great directory.</h2>
       </div>
-      <div class="mt-12 grid gap-10 lg:grid-cols-3">
-        <div>
-          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-            <Icon name="phone" class="h-6 w-6" />
+      <ol class="stand-list mt-12">
+        <li class="stand-item">
+          <span class="stand-num">01</span>
+          <div>
+            <h3 class="stand-title">Phone trees</h3>
+            <p class="stand-body">Most Laredo fence operators front-load a phone tree. Calling four of them to get four written quotes costs an hour you're already spending on quote-shopping.</p>
           </div>
-          <p class="mt-4 text-lg font-black">Phone trees</p>
-          <p class="mt-3 leading-7 text-slate-600">Most Laredo fence operators front-load a phone tree. Calling four of them to get four written quotes costs an hour you're already spending on quote-shopping.</p>
-        </div>
-        <div>
-          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-            <Icon name="users" class="h-6 w-6" />
+        </li>
+        <li class="stand-item">
+          <span class="stand-num">02</span>
+          <div>
+            <h3 class="stand-title">Aggregator noise</h3>
+            <p class="stand-body">National "find-a-pro" sites bundle Laredo fence contractors with HVAC, plumbing, and roofing leads — and the lead-fee math means they push corporate chains over local operators.</p>
           </div>
-          <p class="mt-4 text-lg font-black">Aggregator noise</p>
-          <p class="mt-3 leading-7 text-slate-600">National "find-a-pro" sites bundle Laredo fence contractors with HVAC, plumbing, and roofing leads — and the lead-fee math means they push corporate chains over local operators.</p>
-        </div>
-        <div>
-          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-            <Icon name="shield" class="h-6 w-6" />
+        </li>
+        <li class="stand-item">
+          <span class="stand-num">03</span>
+          <div>
+            <h3 class="stand-title">No quality signal</h3>
+            <p class="stand-body">Ranking-by-review looks helpful until the Laredo contractor with the most reviews is actually a national reseller subcontracting to whoever's available.</p>
           </div>
-          <p class="mt-4 text-lg font-black">No quality signal</p>
-          <p class="mt-3 leading-7 text-slate-600">Ranking-by-review looks helpful until the Laredo contractor with the most reviews is actually a national reseller subcontracting to whoever's available.</p>
-        </div>
-      </div>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -131,3 +131,48 @@ const description = `Laredo Fence Pros is a referral site operated by Kurtz & Bo
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* The "stand on" / "Why this site exists" list — clean numbered list,
+     no rounded bordered containers. */
+  .stand-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0;
+  }
+  .stand-item {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 22px;
+    padding: 22px 0;
+    border-top: 1px solid #e2e8f0;
+  }
+  .stand-item:first-child { border-top: none; padding-top: 0; }
+  .stand-num {
+    font-family: ui-serif, Georgia, serif;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 900;
+    color: #0f766e;
+    letter-spacing: -0.02em;
+  }
+  .stand-title {
+    margin: 2px 0 6px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.005em;
+  }
+  .stand-body {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #475569;
+  }
+  @media (max-width: 640px) {
+    .stand-item { grid-template-columns: 48px 1fr; gap: 16px; padding: 18px 0; }
+    .stand-num { font-size: 24px; }
+  }
+</style>

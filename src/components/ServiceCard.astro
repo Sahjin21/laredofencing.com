@@ -77,13 +77,24 @@ const isFirst = index === 0;
   .slide-panel {
     position: sticky;
     top: 0;
-    min-height: 100vh;
-    /* Fallback if browser does not support 100svh: 100vh */
-    min-height: 100svh;
+    /* Bumped from 100svh to 130svh: scroll resistance so the next panel
+       doesn't snap up immediately as the user scrolls. ~30% extra dwell
+       per panel before the next pin takes over. */
+    min-height: 130vh;
+    min-height: 130svh;
     width: 100%;
     overflow: hidden;
     isolation: isolate;
     box-shadow: 0 -24px 50px rgba(15, 23, 42, 0.5);
+  }
+  .slide-spacer {
+    /* Empty gap between panels: invisible spacers that add ~25svh of
+       scroll-through before the next panel pins. The previous panel
+       stays sticky during this spacer, then unsticks and the next one
+       catches up. */
+    height: 22vh;
+    height: 22svh;
+    width: 100%;
   }
   .slide-photo {
     position: absolute;
@@ -113,7 +124,7 @@ const isFirst = index === 0;
     z-index: 2;
     display: flex;
     align-items: flex-end;
-    min-height: 100svh;
+    min-height: 130svh;
     padding: 10vh max(2rem, calc((100vw - 1280px) / 2));
     padding-bottom: 18vh;
   }

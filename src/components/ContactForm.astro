@@ -55,11 +55,6 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
         ? <>By submitting, you ask {siteConfig.legalBusinessName} to share this request with all listed providers ({providerNames}), who may respond by phone or email about this request. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
         : <>This form is not ready to accept requests because no verified provider is configured.</>}
   </p>
-  {isConfigured(siteConfig.phone) && isConfigured(siteConfig.phoneHref) && (
-    <p class="mt-3 text-center text-sm text-slate-600">
-      Prefer to call? <a class="font-bold text-teal-700" href={siteConfig.phoneHref} data-lead-call>{siteConfig.phone}</a>
-    </p>
-  )}
 </form>
 
 <script is:inline define:vars={{ formEndpoint: endpointConfigured ? siteConfig.formEndpoint : null, responseTime }}>

@@ -1,29 +1,14 @@
 ---
 import { siteConfig } from "../lib/config";
+
+// Header — single row. Logo left, nav center, phone as a quiet inline
+// link on the right. The mobile sticky bar takes over after scroll.
 ---
 
-<header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur">
-  <div class="border-b border-slate-100 bg-slate-50">
-    <div class="container-shell flex min-h-9 flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-slate-600">
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="inline-flex items-center gap-1.5 font-bold">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-          Serving Laredo, TX · Webb County · Rio Grande Valley
-        </span>
-        <span class="hidden text-slate-400 md:inline">|</span>
-        <span class="hidden md:inline">Texas-licensed · Insured · Free written quotes</span>
-      </div>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <a class="font-bold text-slate-700 no-underline hover:text-teal-700" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Call our office</span>
-          <span class="ml-2 tabular-nums">{siteConfig.phone}</span>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="container-shell flex min-h-20 items-center justify-between gap-4 md:gap-6">
+<header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/95 backdrop-blur">
+  <div class="container-shell flex h-16 items-center justify-between gap-4 md:h-20 md:gap-6">
     <a href="/" class="flex items-center gap-3 font-display text-lg font-black leading-tight text-slate-950 no-underline" aria-label={`${siteConfig.businessName} — home`}>
-      <span class="grid h-11 w-11 place-items-center rounded-md bg-teal-700 text-white">
+      <span class="grid h-10 w-10 place-items-center rounded-md bg-teal-700 text-white md:h-11 md:w-11">
         <span class="font-mono text-base font-black tracking-tighter" aria-hidden="true">LF</span>
       </span>
       <span class="hidden flex-col leading-tight sm:flex">
@@ -32,16 +17,22 @@ import { siteConfig } from "../lib/config";
       </span>
       <span class="font-black sm:hidden">{siteConfig.businessName}</span>
     </a>
-    <nav aria-label="Primary navigation" class="hidden items-center gap-6 md:flex">
-      <a href="/#services" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">Services</a>
-      <a href="/areas/" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">Service Areas</a>
-      <a href="/pricing/" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">Pricing</a>
-      <a href="/about/" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">About</a>
-      <a href="/#faq" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">FAQ</a>
+    <nav aria-label="Primary navigation" class="hidden items-center gap-1 md:flex">
+      <a href="/#services" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Services</a>
+      <a href="/areas/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Service Areas</a>
+      <a href="/pricing/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Pricing</a>
+      <a href="/about/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">About</a>
+      <a href="/#faq" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">FAQ</a>
     </nav>
-    <div class="flex items-center gap-2">
-      <a class="button-primary whitespace-nowrap" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>Call us</a>
-    </div>
+    <a
+      href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`}
+      class="hidden items-center gap-2 text-sm font-bold text-slate-700 no-underline hover:text-teal-700 md:flex"
+      data-lead-call
+      aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}
+    >
+      <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Call</span>
+      <span class="tabular-nums">{siteConfig.phone}</span>
+    </a>
   </div>
 </header>
 
