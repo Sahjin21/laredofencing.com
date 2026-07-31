@@ -64,7 +64,7 @@ export const siteConfig = {
   email: "contact@laredofencing.com",
   address: "Laredo, TX 78040",
   serviceArea: ["Laredo, TX", "Webb County", "Rio Grande Valley", "Zapata County"],
-  primaryKeyword: "fencing contractor Laredo, Texas",
+  primaryKeyword: "Fencing Contractor Laredo, Texas",
   formEndpoint: "https://sahjin.dev/api/v1/leads/events",
   // The lead-generation platform operator. This is separate from the visible
   // site brand and from every independent provider listed below.
