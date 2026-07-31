@@ -1,149 +1,221 @@
 ---
 import type { Service } from "../lib/config";
+import { siteConfig } from "../lib/config";
 import Icon from "./Icon.astro";
 
 interface Props {
   service: Service;
-  icon?: string;
+  index: number;
+  totalSlides: number;
+  tile: string; // backround-image tile filename (the *-hero.webp, full size)
 }
 
-const { service, icon = "fence" } = Astro.props;
+// ServiceCard now renders one FULL-VIEWPORT panel of a scrollytelling
+// service stack. Multiple panels with `position: sticky; top: 0` stack
+// visually — each one with its own full-bleed photo background. As the
+// user scrolls, the next panel rises over the previous.
+//
+// Pattern reference:
+//   lightweavershealing.com/.section (.transition-section: height: 100vh,
+//                                          background-attachment: fixed,
+//                                          background-size: cover,
+//                                          text overlay top: 40%)
+//   willyoubeattending.com/.parallax-panel (position: sticky; top: 0;
+//                                          min-height: calc(100svh - 0);
+//                                          z-index driven stacking)
+
+const { service, index, totalSlides, tile } = Astro.props;
+// Tile paths: pass any absolute URL like `/images/laredo-X-hero.webp`.
+// Stacking: each panel needs a higher z-index than the previous so when
+// it pins over it visually obscures the one before.
+const zIndex = index + 1;
+const isFirst = index === 0;
 ---
 
-<article class="service-slide group">
-  <a href={`/services/${service.slug}/`} class="service-slide-link" data-lead-call data-business={service.name} aria-label={`${service.name} — Laredo Fence Pros`}>
-    <div class="service-slide-photo">
-      <img
-        src={service.image}
-        alt={`${service.name} in Laredo, Texas`}
-        loading="lazy"
-        decoding="async"
-        class="service-slide-img"
-      />
-      <div class="service-slide-vignette" aria-hidden="true"></div>
-      <div class="service-slide-icon" aria-hidden="true">
-        <Icon name={icon} class="h-6 w-6" />
+<section
+  class="slide-panel"
+  data-slide-index={index}
+  aria-labelledby={`slide-${service.slug}-title`}
+>
+  <div class="slide-photo" aria-hidden="true">
+    <img
+      src={tile}
+      alt=""
+      width="1600"
+      height="900"
+      loading={isFirst ? "eager" : "lazy"}
+      fetchpriority={isFirst ? "high" : "auto"}
+      class="slide-img"
+    />
+    <div class="slide-vignette" style="background: linear-gradient(180deg, rgba(4,23,29,0.55) 0%, rgba(4,23,29,0.4) 50%, rgba(4,23,29,0.95) 100%);"></div>
+  </div>
+
+  <div class="slide-overlay">
+    <div class="slide-inner">
+      <div class="slide-icon" aria-hidden="true">
+        <Icon name="sparkles" class="h-7 w-7 text-amber-300" />
       </div>
-      <div class="service-slide-titleplate">
-        <h3 class="service-slide-title">{service.name}</h3>
-        <p class="service-slide-blurb">{service.shortDescription}</p>
-        <span class="service-slide-cta" aria-hidden="true">
-          See the work <span class="ml-1">→</span>
-        </span>
-      </div>
+      <p class="slide-counter">{String(index + 1).padStart(2, '0')} · {String(totalSlides).padStart(2, '0')}</p>
+      <p class="slide-eyebrow">{siteConfig.geo} FENCE INSTALLATION</p>
+      <h2 id={`slide-${service.slug}-title`} class="slide-title">{service.name}</h2>
+      <p class="slide-blurb">{service.shortDescription}</p>
+      <a
+        href={`/services/${service.slug}/`}
+        class="slide-cta group inline-flex items-center gap-2"
+        data-lead-call
+        data-business={service.name}
+        aria-label={`${service.name} service details`}
+      >
+        <span>See the work</span>
+        <span class="slide-cta-arrow" aria-hidden="true">→</span>
+      </a>
     </div>
-  </a>
-</article>
+  </div>
+</section>
 
 <style>
-  .service-slide {
-    position: relative;
-    width: 320px;
-    height: 460px;
-    border-radius: 18px;
-    overflow: hidden;
-    background: #0f172a;
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
-      0 24px 50px -28px rgba(15, 23, 42, 0.55);
-    transition: transform 350ms cubic-bezier(.2,.7,.3,1), box-shadow 350ms cubic-bezier(.2,.7,.3,1);
-    flex-shrink: 0;
-  }
-  .service-slide:hover {
-    transform: translateY(-6px);
-    box-shadow:
-      0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
-      0 36px 70px -28px rgba(15, 23, 42, 0.65);
-  }
-  .service-slide-link {
-    display: block;
-    position: relative;
+  .slide-panel {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    /* Fallback if browser does not support 100svh: 100vh */
+    min-height: 100svh;
     width: 100%;
-    height: 100%;
-    color: inherit;
-    text-decoration: none;
-  }
-  .service-slide-link:focus-visible {
-    outline: 3px solid #fbbf24;
-    outline-offset: 4px;
-    border-radius: 18px;
-  }
-  .service-slide-photo {
-    position: relative;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
+    isolation: isolate;
+    box-shadow: 0 -24px 50px rgba(15, 23, 42, 0.5);
   }
-  .service-slide-img {
+  .slide-photo {
     position: absolute;
     inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .slide-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 700ms cubic-bezier(.2,.7,.3,1);
+    transform: scale(1.08);
+    transition: transform 8s linear;
+    animation: slide-kenburns 22s ease-out forwards;
   }
-  .service-slide:hover .service-slide-img {
-    transform: scale(1.06);
+  @keyframes slide-kenburns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.12); }
   }
-  .service-slide-vignette {
+  .slide-vignette {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(4,23,29,0.55) 65%, rgba(4,23,29,0.92) 100%),
-      linear-gradient(0deg, rgba(4,23,29,0) 0%, rgba(4,23,29,0.18) 100%);
-    pointer-events: none;
+    z-index: 1;
   }
-  .service-slide-icon {
-    position: absolute;
-    top: 16px;
-    left: 16px;
+  .slide-overlay {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    padding: 10vh max(2rem, calc((100vw - 1280px) / 2));
+    padding-bottom: 18vh;
+  }
+  .slide-inner {
+    max-width: 720px;
+    color: #fef3c7;
+    display: grid;
+    gap: 14px;
+  }
+  .slide-icon {
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.94);
-    color: #0f766e;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    margin-bottom: 6px;
+    backdrop-filter: blur(8px);
     box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
   }
-  .service-slide-titleplate {
-    position: absolute;
-    inset: auto 0 0 0;
-    padding: 22px 22px 22px;
-    color: #fef3c7;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
-  }
-  .service-slide-title {
-    font-family: var(--font-display, ui-serif, Georgia, serif);
+  .slide-counter {
     margin: 0;
-    color: #ffffff;
-    font-size: 22px;
-    line-height: 1.15;
-    font-weight: 900;
-    letter-spacing: -0.01em;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    color: rgba(254, 243, 199, 0.7);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.18em;
   }
-  .service-slide-blurb {
+  .slide-eyebrow {
     margin: 0;
-    font-size: 13.5px;
-    line-height: 1.5;
-    color: rgba(254, 243, 199, 0.86);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .service-slide-cta {
-    margin-top: 4px;
-    color: #fbbf24;
+    color: #fde68a;
     font-weight: 800;
     font-size: 13.5px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
+  }
+  .slide-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.02;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.55);
+  }
+  .slide-blurb {
+    margin: 6px 0 0;
+    color: rgba(254, 243, 199, 0.92);
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    line-height: 1.55;
+    max-width: 580px;
+  }
+  .slide-cta {
+    margin-top: 18px;
+    padding: 14px 26px;
+    background: #fbbf24;
+    color: #0c1c1f;
+    border-radius: 14px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 13.5px;
+    text-decoration: none;
     align-self: flex-start;
+    transition: transform 250ms cubic-bezier(.2,.7,.3,1), background 200ms;
+  }
+  .slide-cta:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+  }
+  .slide-cta-arrow {
+    display: inline-block;
+    transition: transform 250ms cubic-bezier(.2,.7,.3,1);
+  }
+  .slide-cta:hover .slide-cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Right-rail layout: text on the right for narrative panels. */
+  .slide-panel:nth-child(even) .slide-overlay {
+    justify-content: flex-end;
+  }
+  .slide-panel:nth-child(even) .slide-inner {
+    text-align: right;
+    justify-items: end;
+  }
+  .slide-panel:nth-child(even) .slide-cta {
+    align-self: flex-end;
+  }
+
+  /* Reduce motion: skip ken-burns, keep static. */
+  @media (prefers-reduced-motion: reduce) {
+    .slide-img { animation: none; }
+  }
+
+  /* Mobile: tighten padding, smaller title. */
+  @media (max-width: 768px) {
+    .slide-overlay {
+      padding: 8vh 1.25rem 12vh;
+      align-items: flex-end;
+    }
+    .slide-title { font-size: clamp(2rem, 9vw, 3rem); }
+    .slide-cta { padding: 12px 18px; font-size: 12.5px; }
   }
 </style>
