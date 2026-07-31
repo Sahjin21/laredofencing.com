@@ -152,7 +152,7 @@ export const siteConfig = {
     {
       slug: "wood-privacy-fence",
       name: "Wood Privacy Fence",
-      image: "/images/wood-privacy-hero.svg",
+      image: "/images/laredo-wood-privacy-hero-card.webp",
       shortDescription: "Cedar and pine privacy fencing for backyards, side yards, and pool enclosures — built for Laredo soil and South Texas heat.",
       introduction: "A wood privacy fence is the most common residential fence in Laredo. Standard heights are 6 and 8 feet; common styles include board-on-board, side-by-side, and horizontal slat. In Laredo's alkaline clay and 100+ degree summer heat, cedar and pressure-treated pine both perform well, but the post-set matters more than the wood species — set in concrete below the active root zone and the fence will stand through decades of brush-country storms. We walk the property, mark the fence line, check for buried utilities, and confirm the side that faces out before any post hole is dug.",
       benefits: [
@@ -170,7 +170,7 @@ export const siteConfig = {
     {
       slug: "chain-link-fence",
       name: "Chain-Link Fence",
-      image: "/images/chain-link-hero.svg",
+      image: "/images/laredo-chain-link-hero-card.webp",
       shortDescription: "Galvanized and vinyl-coated chain-link fencing for yards, dog runs, commercial lots, and construction sites.",
       introduction: "Chain-link is the workhorse fence: inexpensive, fast to install, and the right answer for many Laredo properties that need a contained boundary without blocking views or airflow. Galvanized chain-link is standard; vinyl-coated (typically black or green) is the upgrade choice when appearance matters — most residential installs in established neighborhoods have moved to vinyl-coated over the last ten years. We install residential, commercial-gauge, and heavy-spec chain-link; for dog kennels and runs, we set the bottom rail 1 to 2 inches above grade and use a tighter mesh at the base to keep small dogs in and snakes out.",
       benefits: [
@@ -188,7 +188,7 @@ export const siteConfig = {
     {
       slug: "wrought-iron-fence",
       name: "Wrought Iron & Ornamental Fence",
-      image: "/images/ornamental-iron-hero.svg",
+      image: "/images/laredo-ornamental-iron-hero-card.webp",
       shortDescription: "Ornamental iron fencing for front yards, pool enclosures, and view-keepers that want a decorative boundary.",
       introduction: "Wrought iron — really mild steel these days, almost universally — is the right answer when you want a fence that's seen rather than hidden. It's common in established Laredo neighborhoods for front yard enclosures, pool code compliance, and around homes where a wood or chain-link fence would block the view of landscaping or a courtyard. Powder-coated finishes have largely replaced older wet-paint systems and last 10+ years in South Texas sun before needing a refresh. We build custom layouts or work from one of three patterns (classic spear-top, double-rail flat-top, and estate spear-top) depending on the look you want.",
       benefits: [
@@ -206,7 +206,7 @@ export const siteConfig = {
     {
       slug: "ranch-fence",
       name: "Ranch, Livestock & Property Fencing",
-      image: "/images/ranch-hero.svg",
+      image: "/images/laredo-ranch-hero-card.webp",
       shortDescription: "Barbed wire, field fence, pipe, and game fencing for ranches, acreage, and rural properties in and around Laredo.",
       introduction: "Beyond the city limits, ranch fencing is its own world: barbed wire, smooth wire, field fence (woven wire with graduated openings), and pipe-and-cable systems for larger property lines. Laredo sits in Webb County and brush country, where most ranch work is keeping livestock in, predators out, and brush from creeping into improved pasture. We install standard 4-strand barbed wire, 5-strand barbed wire, field fence (most commonly 4x4 woven wire for sheep and goats; 39-inch or 47-inch for cattle), pipe corrals, and game fence (8-foot or taller, predator-grade). T-posts, wood posts, and pipe posts are all options depending on your soil and your budget.",
       benefits: [
