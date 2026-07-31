@@ -1,34 +1,28 @@
 ---
 import type { Service } from "../lib/config";
 import { siteConfig } from "../lib/config";
-import Icon from "./Icon.astro";
 
 interface Props {
   service: Service;
   index: number;
   totalSlides: number;
-  tile: string; // backround-image tile filename (the *-hero.webp, full size)
+  tile: string;
 }
 
-// ServiceCard now renders one FULL-VIEWPORT panel of a scrollytelling
-// service stack. Multiple panels with `position: sticky; top: 0` stack
-// visually — each one with its own full-bleed photo background. As the
-// user scrolls, the next panel rises over the previous.
-//
+// One FULL-VIEWPORT panel of a scrollytelling service stack.
 // Pattern reference:
-//   lightweavershealing.com/.section (.transition-section: height: 100vh,
-//                                          background-attachment: fixed,
-//                                          background-size: cover,
-//                                          text overlay top: 40%)
-//   willyoubeattending.com/.parallax-panel (position: sticky; top: 0;
-//                                          min-height: calc(100svh - 0);
-//                                          z-index driven stacking)
+//   lightweavershealing.com  .transition-section (height: 100vh,
+//                              background-attachment: fixed,
+//                              background-size: cover,
+//                              text-overlay top: 40%)
+//   willyoubeattending.com   .parallax-panel (position: sticky; top: 0;
+//                              min-height: calc(100svh - 0);
+//                              z-index-driven stacking)
+//
+// CTA: scrolls to #contact (operator preference: no call from panel).
+// No counter. No sparkles icon.
 
 const { service, index, totalSlides, tile } = Astro.props;
-// Tile paths: pass any absolute URL like `/images/laredo-X-hero.webp`.
-// Stacking: each panel needs a higher z-index than the previous so when
-// it pins over it visually obscures the one before.
-const zIndex = index + 1;
 const isFirst = index === 0;
 ---
 
@@ -52,21 +46,16 @@ const isFirst = index === 0;
 
   <div class="slide-overlay">
     <div class="slide-inner">
-      <div class="slide-icon" aria-hidden="true">
-        <Icon name="sparkles" class="h-7 w-7 text-amber-300" />
-      </div>
-      <p class="slide-counter">{String(index + 1).padStart(2, '0')} · {String(totalSlides).padStart(2, '0')}</p>
       <p class="slide-eyebrow">{siteConfig.geo} FENCE INSTALLATION</p>
       <h2 id={`slide-${service.slug}-title`} class="slide-title">{service.name}</h2>
       <p class="slide-blurb">{service.shortDescription}</p>
       <a
-        href={`/services/${service.slug}/`}
+        href="#contact"
         class="slide-cta group inline-flex items-center gap-2"
-        data-lead-call
         data-business={service.name}
-        aria-label={`${service.name} service details`}
+        aria-label={`${service.name} — get a free quote`}
       >
-        <span>See the work</span>
+        <span>Get a quote for {service.name.toLowerCase()}</span>
         <span class="slide-cta-arrow" aria-hidden="true">→</span>
       </a>
     </div>
@@ -77,21 +66,20 @@ const isFirst = index === 0;
   .slide-panel {
     position: sticky;
     top: 0;
-    /* Bumped from 100svh to 130svh: scroll resistance so the next panel
-       doesn't snap up immediately as the user scrolls. ~30% extra dwell
-       per panel before the next pin takes over. */
-    min-height: 130vh;
-    min-height: 130svh;
+    /* Original 100svh sizing — operator feedback was the size was right,
+       only the motion was fast. Scroll resistance comes from the
+       between-panel spacer (.slide-spacer, defined in index.astro). */
+    min-height: 100vh;
+    min-height: 100svh;
     width: 100%;
     overflow: hidden;
     isolation: isolate;
     box-shadow: 0 -24px 50px rgba(15, 23, 42, 0.5);
   }
   .slide-spacer {
-    /* Empty gap between panels: invisible spacers that add ~25svh of
-       scroll-through before the next panel pins. The previous panel
-       stays sticky during this spacer, then unsticks and the next one
-       catches up. */
+    /* Empty gap between panels (~22svh). Adds scroll resistance without
+       enlarging the visible panel itself: previous panel stays sticky
+       while the user scrolls through this gap. */
     height: 22vh;
     height: 22svh;
     width: 100%;
@@ -103,6 +91,8 @@ const isFirst = index === 0;
     overflow: hidden;
   }
   .slide-img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -124,7 +114,7 @@ const isFirst = index === 0;
     z-index: 2;
     display: flex;
     align-items: flex-end;
-    min-height: 130svh;
+    min-height: 100svh;
     padding: 10vh max(2rem, calc((100vw - 1280px) / 2));
     padding-bottom: 18vh;
   }
@@ -133,25 +123,6 @@ const isFirst = index === 0;
     color: #fef3c7;
     display: grid;
     gap: 14px;
-  }
-  .slide-icon {
-    display: grid;
-    place-items: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.05));
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    margin-bottom: 6px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.4);
-  }
-  .slide-counter {
-    margin: 0;
-    color: rgba(254, 243, 199, 0.7);
-    font-weight: 800;
-    font-size: 13px;
-    letter-spacing: 0.18em;
   }
   .slide-eyebrow {
     margin: 0;
@@ -184,8 +155,7 @@ const isFirst = index === 0;
     color: #0c1c1f;
     border-radius: 14px;
     font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.06em;
     font-size: 13.5px;
     text-decoration: none;
     align-self: flex-start;

@@ -1,8 +1,14 @@
 ---
 import { siteConfig } from "../lib/config";
 
-// Header — single row. Logo left, nav center, phone as a quiet inline
-// link on the right. The mobile sticky bar takes over after scroll.
+// Header — single row. Logo left, modern square nav chips centered, phone
+// as a quiet inline link on the right.
+//
+// Nav pattern (per operator): "professional modern elements ... square
+// and theme colored."
+// Each nav item is a rounded-square chip with the theme teal accent on
+// the leading edge. On hover: tinted square fills; on the active page:
+// outlined square + amber accent dot.
 ---
 
 <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/95 backdrop-blur">
@@ -17,13 +23,15 @@ import { siteConfig } from "../lib/config";
       </span>
       <span class="font-black sm:hidden">{siteConfig.businessName}</span>
     </a>
-    <nav aria-label="Primary navigation" class="hidden items-center gap-1 md:flex">
-      <a href="/#services" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Services</a>
-      <a href="/areas/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Service Areas</a>
-      <a href="/pricing/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">Pricing</a>
-      <a href="/about/" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">About</a>
-      <a href="/#faq" class="rounded-md px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:bg-slate-100 hover:text-teal-700">FAQ</a>
+
+    <nav aria-label="Primary navigation" class="hidden items-center md:flex">
+      <a href="/#services" class="nav-chip"><span class="nav-chip-mark" aria-hidden="true"></span>Services</a>
+      <a href="/areas/" class="nav-chip"><span class="nav-chip-mark" aria-hidden="true"></span>Service Areas</a>
+      <a href="/pricing/" class="nav-chip"><span class="nav-chip-mark" aria-hidden="true"></span>Pricing</a>
+      <a href="/about/" class="nav-chip"><span class="nav-chip-mark" aria-hidden="true"></span>About</a>
+      <a href="/#faq" class="nav-chip"><span class="nav-chip-mark" aria-hidden="true"></span>FAQ</a>
     </nav>
+
     <a
       href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`}
       class="hidden items-center gap-2 text-sm font-bold text-slate-700 no-underline hover:text-teal-700 md:flex"
@@ -35,6 +43,48 @@ import { siteConfig } from "../lib/config";
     </a>
   </div>
 </header>
+
+<style>
+  /* Modern, square, theme-colored nav chips. */
+  .nav-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 18px;
+    margin: 0 2px;
+    border-radius: 8px;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: background-color 180ms, color 180ms, transform 180ms;
+  }
+  .nav-chip-mark {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: #cbd5e1;
+    transition: background-color 180ms, transform 180ms;
+  }
+  .nav-chip:hover {
+    background-color: #f1f5f9;
+    color: #0f766e;
+  }
+  .nav-chip:hover .nav-chip-mark {
+    background: #0f766e;
+    transform: rotate(45deg);
+  }
+  .nav-chip[aria-current="page"] {
+    background-color: #ecfdf5;
+    color: #064e3b;
+  }
+  .nav-chip[aria-current="page"] .nav-chip-mark {
+    background: #f59e0b;
+    transform: rotate(45deg);
+  }
+</style>
 
 <!-- Mobile sticky CTA — appears after scroll on small screens. -->
 <div
