@@ -1,0 +1,133 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FullBleedBand from "../components/FullBleedBand.astro";
+import Icon from "../components/Icon.astro";
+import { contactProviders, siteConfig } from "../lib/config";
+
+const description = `Laredo Fence Pros is a referral site operated by Kurtz & Boon LLC. We list ${contactProviders.length} verified local Laredo fence contractors so you can compare them and pick the one that fits your project.`;
+---
+
+<BaseLayout title={`About | ${siteConfig.businessName}`} description={description}>
+  <section class="border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+      <div>
+        <p class="text-sm font-black tracking-[0.14em] text-amber-300 uppercase">About this site</p>
+        <h1 class="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">A referral site, not a fence installer.</h1>
+        <p class="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+          {siteConfig.businessName} is operated by {siteConfig.legalBusinessName}, a Texas-registered LLC.
+          We list local Laredo fence contractors — their real names, real phones, and the cities they
+          actually serve — and route your request to every one of them so they can compete on
+          your quote.
+        </p>
+        <p class="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+          We don't perform the work and we don't recommend one contractor over another. If a known
+          Laredo fence installer isn't on this page, it's because we couldn't independently verify
+          their public listing — and we won't list a business based on third-party directory claims
+          alone.
+        </p>
+      </div>
+      <aside class="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-sm text-slate-300 backdrop-blur">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Operator</p>
+          <p class="mt-1 text-xl font-black text-white">{siteConfig.legalBusinessName}</p>
+          <p class="mt-1 text-slate-400">Texas-registered LLC</p>
+        </div>
+        <hr class="border-white/10"/>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Privacy contact</p>
+          <p class="mt-1 text-white">{siteConfig.operatorPrivacyEmail}</p>
+        </div>
+        <hr class="border-white/10"/>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Listed providers</p>
+          <p class="mt-1 text-2xl font-black text-white">{contactProviders.length} contractors</p>
+          <p class="mt-1 text-slate-400">All verified through public listing evidence.</p>
+        </div>
+        <hr class="border-white/10"/>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Lead retention</p>
+          <p class="mt-1 text-white">{siteConfig.leadRetentionPeriod}</p>
+          <p class="mt-1 text-slate-400">See <a class="font-bold text-amber-300" href="/privacy/">privacy policy</a> for details.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <div class="max-w-3xl">
+        <p class="eyebrow">Why this site exists</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Laredo fence shoppers don't have a great directory.</h2>
+      </div>
+      <div class="mt-12 grid gap-10 lg:grid-cols-3">
+        <div>
+          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+            <Icon name="phone" class="h-6 w-6" />
+          </div>
+          <p class="mt-4 text-lg font-black">Phone trees</p>
+          <p class="mt-3 leading-7 text-slate-600">Most Laredo fence operators front-load a phone tree. Calling four of them to get four written quotes costs an hour you're already spending on quote-shopping.</p>
+        </div>
+        <div>
+          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+            <Icon name="users" class="h-6 w-6" />
+          </div>
+          <p class="mt-4 text-lg font-black">Aggregator noise</p>
+          <p class="mt-3 leading-7 text-slate-600">National "find-a-pro" sites bundle Laredo fence contractors with HVAC, plumbing, and roofing leads — and the lead-fee math means they push corporate chains over local operators.</p>
+        </div>
+        <div>
+          <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+            <Icon name="shield" class="h-6 w-6" />
+          </div>
+          <p class="mt-4 text-lg font-black">No quality signal</p>
+          <p class="mt-3 leading-7 text-slate-600">Ranking-by-review looks helpful until the Laredo contractor with the most reviews is actually a national reseller subcontracting to whoever's available.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FullBleedBand tone="tint">
+    <div class="mx-auto max-w-3xl">
+      <p class="eyebrow">How this site stays honest</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Three rules we don't break</h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-base font-black">1. Public-record only</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Every listing here is something we could verify through Google Maps, the business's own website, or a public business registry. If we can't verify, we don't list it.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-base font-black">2. No "best of" claims</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">We don't rate, rank, or recommend. We list who is publicly verifiable as a working Laredo fence contractor and let you decide.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-base font-black">3. Listings can be corrected</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Owner or authorized representatives can <a class="font-bold text-teal-700" href="/provider-corrections/">request a correction, removal, or routing change</a>. We never remove on an unauthenticated submission.</p>
+        </div>
+      </div>
+    </div>
+  </FullBleedBand>
+
+  <section class="bg-white py-20 sm:py-28">
+    <div class="container-shell grid gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow">Source of truth</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Read the operational docs yourself</h2>
+        <p class="mt-6 leading-7 text-slate-600">
+          We don't expose the internal verification cadence or evidence records on the public site
+          (it would be a compliance filing, not useful information). What we do expose:
+        </p>
+        <ul class="mt-6 space-y-4 text-base">
+          <li class="flex gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /> <a class="font-bold text-slate-950" href="/PROVIDERS.md">PROVIDERS.md</a> — every listed provider's evidence record.</li>
+          <li class="flex gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /> <a class="font-bold text-slate-950" href="/DATA_HANDLING.md">DATA_HANDLING.md</a> — what we collect, how long we keep it, who receives it.</li>
+          <li class="flex gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /> <a class="font-bold text-slate-950" href="/COMPETITOR_RESEARCH.md">COMPETITOR_RESEARCH.md</a> — the research that drove the page-count and service decisions.</li>
+          <li class="flex gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /> <a class="font-bold text-slate-950" href="/IMAGE_PROMPTS.md">IMAGE_PROMPTS.md</a> — every image placeholder's full generation prompt.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">Want a quoted job from one of these pros?</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Send one request — get multiple written quotes.</h2>
+        <p class="mt-6 leading-7 text-slate-600">Fill out one short form on the <a class="font-bold text-teal-700" href="/#contact">home page</a>. Every listed Laredo fence contractor on this site will see your request and respond directly. You pick who you want.</p>
+        <a class="button-primary mt-8" href="/#providers">See the {contactProviders.length} listed providers</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

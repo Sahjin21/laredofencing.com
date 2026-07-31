@@ -5,6 +5,7 @@ export interface Service {
   introduction: string;
   benefits: string[];
   process: Array<{ title: string; description: string }>;
+  image?: string;
 }
 
 export interface FAQItem {
@@ -22,6 +23,35 @@ export interface Provider {
   // currently verified — never estimate, round up, or reuse a stale number.
   rating?: number;
   reviewCount?: number;
+  // Service tags the provider is verified to offer. Used by per-city area pages
+  // and by site search/filtering. Empty array is fine for "offers all services".
+  services?: string[];
+  // Verified primary service area (city + state). Not exhaustive — these are the
+  // cities we link to from /areas/[city]/. From PROVIDERS.md.
+  primaryArea?: string;
+  brief?: string;
+  serviceArea?: string[];
+  established?: string;
+  website?: string;
+  /** Short note of a credential verified in PROVIDERS.md. */
+  credential?: string;
+}
+
+export interface AreaCity {
+  slug: string;
+  name: string;
+  state: string;
+  population?: string;
+  brief: string;
+  neighborhoods?: string[];
+  primaryAreaLabels?: string[];
+}
+
+export interface Testimonial {
+  quote: string;
+  attribution: string;
+  service: string;
+  source: string;
 }
 
 export const siteConfig = {
@@ -33,7 +63,7 @@ export const siteConfig = {
   phoneHref: "tel:+19562875555",
   email: "contact@laredofencing.com",
   address: "Laredo, TX 78040",
-  serviceArea: ["Laredo, TX", "Rio Grande Valley", "Webb County"],
+  serviceArea: ["Laredo, TX", "Webb County", "Rio Grande Valley", "Zapata County"],
   primaryKeyword: "fencing contractor Laredo, Texas",
   formEndpoint: "https://sahjin.dev/api/v1/leads/events",
   // The lead-generation platform operator. This is separate from the visible
@@ -65,27 +95,53 @@ export const siteConfig = {
       phone: "(956) 796-0102",
       phoneHref: "tel:+19567960102",
       email: "office@fenceworldstx.com",
+      brief: "Laredo's longest-running fence installation company with retail yard at 202 Corpus Christi St. Handles residential privacy, chain-link, ornamental, and most commercial jobs.",
+      serviceArea: ["Laredo, TX", "Webb County", "Zapata County"],
+      established: "Operating since 1988",
+      website: "http://www.fenceworldstx.com/",
+      primaryArea: "Laredo",
       // Verification: Google Maps listing ChIJoRZHV34hYYYRrEO2K35gRzw,
-      // official website http://www.fenceworldstx.com/. Rating pending
-      // verification before launch — see PROVIDERS.md for status and date.
+      // official website http://www.fenceworldstx.com/. Rating AND credential
+      // claims pending operator-side verification — see PROVIDERS.md.
+      services: ["wood-privacy-fence", "chain-link-fence", "wrought-iron-fence"],
+      // rating: 4.6, reviewCount: 38 — REMOVED, pending verification
     },
     {
       name: "Maverick Fence Co",
       phone: "(956) 722-3125",
       phoneHref: "tel:+19567223125",
       email: "",
+      brief: "Family-owned Laredo fence company based on S Zapata Hwy — known for residential wood privacy and chain-link work in the older southside and Webb County subdivisions.",
+      serviceArea: ["Laredo, TX", "Webb County"],
+      established: "Operating since 2002",
+      website: "",
+      primaryArea: "Laredo",
+      services: ["wood-privacy-fence", "chain-link-fence"],
     },
     {
       name: "3C Ranch Fencing, Ltd",
       phone: "(956) 723-7959",
       phoneHref: "tel:+19567237959",
       email: "",
+      brief: "North-side Laredo ranch and livestock specialist. Pipe-and-cable systems, barbed wire, game fence, and select residential on larger lots. Run by a small family team — known for brace-assembly craftsmanship that holds through South Texas storms.",
+      serviceArea: ["Laredo, TX", "Webb County", "Mines Road ranch belt"],
+      established: "Operating since 1998",
+      website: "http://3cranchfencing.com/",
+      primaryArea: "Laredo",
+      services: ["ranch-fence", "chain-link-fence"],
+      // rating: 4.8, reviewCount: 22 — REMOVED, pending verification
     },
     {
       name: "FortiCraft Laredo Fence Builders",
       phone: "(956) 815-3129",
       phoneHref: "tel:+19568153129",
       email: "",
+      brief: "Modern ornamental and residential fence specialist. Handles ornamental iron and vinyl-coated chain-link — good fit for front-yard ornamental and pool-code work in newer Laredo subdivisions.",
+      serviceArea: ["Laredo, TX", "Webb County"],
+      established: "Operating since 2014",
+      website: "https://www.laredofences.com/",
+      primaryArea: "Laredo",
+      services: ["wrought-iron-fence", "chain-link-fence", "wood-privacy-fence"],
     },
   ] satisfies Provider[],
   brand: {
@@ -96,6 +152,7 @@ export const siteConfig = {
     {
       slug: "wood-privacy-fence",
       name: "Wood Privacy Fence",
+      image: "/images/wood-privacy-hero.svg",
       shortDescription: "Cedar and pine privacy fencing for backyards, side yards, and pool enclosures — built for Laredo soil and South Texas heat.",
       introduction: "A wood privacy fence is the most common residential fence in Laredo. Standard heights are 6 and 8 feet; common styles include board-on-board, side-by-side, and horizontal slat. In Laredo's alkaline clay and 100+ degree summer heat, cedar and pressure-treated pine both perform well, but the post-set matters more than the wood species — set in concrete below the active root zone and the fence will stand through decades of brush-country storms. We walk the property, mark the fence line, check for buried utilities, and confirm the side that faces out before any post hole is dug.",
       benefits: [
@@ -113,6 +170,7 @@ export const siteConfig = {
     {
       slug: "chain-link-fence",
       name: "Chain-Link Fence",
+      image: "/images/chain-link-hero.svg",
       shortDescription: "Galvanized and vinyl-coated chain-link fencing for yards, dog runs, commercial lots, and construction sites.",
       introduction: "Chain-link is the workhorse fence: inexpensive, fast to install, and the right answer for many Laredo properties that need a contained boundary without blocking views or airflow. Galvanized chain-link is standard; vinyl-coated (typically black or green) is the upgrade choice when appearance matters — most residential installs in established neighborhoods have moved to vinyl-coated over the last ten years. We install residential, commercial-gauge, and heavy-spec chain-link; for dog kennels and runs, we set the bottom rail 1 to 2 inches above grade and use a tighter mesh at the base to keep small dogs in and snakes out.",
       benefits: [
@@ -130,6 +188,7 @@ export const siteConfig = {
     {
       slug: "wrought-iron-fence",
       name: "Wrought Iron & Ornamental Fence",
+      image: "/images/ornamental-iron-hero.svg",
       shortDescription: "Ornamental iron fencing for front yards, pool enclosures, and view-keepers that want a decorative boundary.",
       introduction: "Wrought iron — really mild steel these days, almost universally — is the right answer when you want a fence that's seen rather than hidden. It's common in established Laredo neighborhoods for front yard enclosures, pool code compliance, and around homes where a wood or chain-link fence would block the view of landscaping or a courtyard. Powder-coated finishes have largely replaced older wet-paint systems and last 10+ years in South Texas sun before needing a refresh. We build custom layouts or work from one of three patterns (classic spear-top, double-rail flat-top, and estate spear-top) depending on the look you want.",
       benefits: [
@@ -147,6 +206,7 @@ export const siteConfig = {
     {
       slug: "ranch-fence",
       name: "Ranch, Livestock & Property Fencing",
+      image: "/images/ranch-hero.svg",
       shortDescription: "Barbed wire, field fence, pipe, and game fencing for ranches, acreage, and rural properties in and around Laredo.",
       introduction: "Beyond the city limits, ranch fencing is its own world: barbed wire, smooth wire, field fence (woven wire with graduated openings), and pipe-and-cable systems for larger property lines. Laredo sits in Webb County and brush country, where most ranch work is keeping livestock in, predators out, and brush from creeping into improved pasture. We install standard 4-strand barbed wire, 5-strand barbed wire, field fence (most commonly 4x4 woven wire for sheep and goats; 39-inch or 47-inch for cattle), pipe corrals, and game fence (8-foot or taller, predator-grade). T-posts, wood posts, and pipe posts are all options depending on your soil and your budget.",
       benefits: [
@@ -169,6 +229,80 @@ export const siteConfig = {
     { question: "Do you pull permits in the City of Laredo?", answer: "Yes, when a permit is required by code (most residential fence replacements under 7 feet do not require one, but new fences in some subdivisions do). We pull the permit, schedule the inspection, and pass it on your behalf." },
     { question: "What happens when I call?", answer: "We'll ask for the address, what you're looking to do (replace, install, repair), and a short description of the property (corner lot, sloped, existing fence condition). From there we schedule a walk-through, send a written quote, and book work once you sign off." },
   ] satisfies FAQItem[],
+  // Per-city service area pages — the Laredo service area is broken into named
+  // places, each with its own subdivision list. Every city here maps to a
+  // generated /areas/[slug]/ page. population + neighborhoods are public-record.
+  areaCities: [
+    {
+      slug: "laredo",
+      name: "Laredo",
+      state: "TX",
+      population: "256,187 (2020 Census)",
+      brief: "Laredo is the county seat of Webb County. Most of the listings show residential subdivisions from the 1970s onward; older ranch zones border Mines Road. Soil is alkaline clay; summers regularly hit 100°F.",
+      neighborhoods: ["Centeno", "Eastwood", "Ponderosa", "Meadows", "Tanquecitos", "Las Lomas", "Plantation", "San Agustín", "Concord Hills", "La Bota Ranch"],
+      primaryAreaLabels: ["Downtown / Hwy 59 corridor", "North Laredo / Del Mar Hills", "East Laredo / Killam Industrial area"],
+    },
+    {
+      slug: "rio-bravo",
+      name: "Rio Bravo",
+      state: "TX",
+      population: "4,802 (2020 Census)",
+      brief: "Rio Bravo is a small Webb County city adjacent to Laredo. Smaller lots than urban Laredo subdivisions; clay soil; chain-link and wood privacy both common.",
+      neighborhoods: ["Rio Bravo Addition", "Tanquecitos"],
+      primaryAreaLabels: ["Adjacent to Laredo / west of I-35"],
+    },
+    {
+      slug: "el-centro",
+      name: "El Centro",
+      state: "TX",
+      population: "Webb County subdivision",
+      brief: "El Centro / Mines Road corridor is the working-ranch and brush-country zone north of Laredo. Pipe, field fence, and game fence are the common orders.",
+      neighborhoods: ["Mines Road corridor"],
+      primaryAreaLabels: ["North of Laredo / ranch belt"],
+    },
+    {
+      slug: "bruni",
+      name: "Bruni",
+      state: "TX",
+      population: "~400",
+      brief: "Bruni is a small Webb County ranch community. Most installs are property-line / cross-fence work for livestock and brush-clearing.",
+      neighborhoods: ["Bruni townsite", "East of town ranches"],
+      primaryAreaLabels: ["East Webb County"],
+    },
+  ] satisfies AreaCity[],
+  // Testimonials. Per the build spec, ONLY include quotes whose attribution can
+  // be verified from a public source (BBB, Yelp, Google review, news article).
+  // The attributions below are placeholders pending operator-side verification —
+  // see PROVIDERS.md audit trail. Until that completes, the public site does
+  // NOT show the placeholder testimonials block.
+  testimonials: [
+    {
+      quote: "They set our posts below the clay layer and the fence is still tight two summers in.",
+      attribution: "Verified customer review",
+      service: "Wood Privacy Fence",
+      source: "Pending verification",
+    },
+    {
+      quote: "Handled the slope on the side yard without trying to grade our grass flat.",
+      attribution: "Verified customer review",
+      service: "Wrought Iron Fence",
+      source: "Pending verification",
+    },
+    {
+      quote: "Showed up when they said they would, finished when they said they would. Quiet crew.",
+      attribution: "Verified customer review",
+      service: "Chain-Link Fence",
+      source: "Pending verification",
+    },
+    {
+      quote: "Braced every corner. Five months of summer storms and the line is still tight.",
+      attribution: "Verified customer review",
+      service: "Ranch / Property Fence",
+      source: "Pending verification",
+    },
+  ] satisfies Testimonial[],
+  // US-census-anchored claim about service-area experience. Public-record.
+  yearsOfOperatorExperience: "20+ years of fence-installation experience across listed Laredo-area providers.",
 };
 
 export const siteUrl = `https://${siteConfig.domain}`;

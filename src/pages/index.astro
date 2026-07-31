@@ -4,23 +4,12 @@ import ContactForm from "../components/ContactForm.astro";
 import FAQ from "../components/FAQ.astro";
 import FullBleedBand from "../components/FullBleedBand.astro";
 import Icon from "../components/Icon.astro";
-import RatingBadge from "../components/RatingBadge.astro";
 import ServiceCard from "../components/ServiceCard.astro";
-import SplitSection from "../components/SplitSection.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { contactProviders, pageTitle, primaryProvider, siteConfig } from "../lib/config";
+import { contactProviders, pageTitle, siteConfig } from "../lib/config";
 
-const heroPhone = primaryProvider ?? {
-  name: siteConfig.businessName,
-  phone: siteConfig.phone,
-  phoneHref: siteConfig.phoneHref,
-};
-
-// Service count varies by niche (see the build spec's "Site structure" guidance) — pick
-// a desktop column count that lays out cleanly instead of assuming exactly four.
 const servicesGridClass = siteConfig.services.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
-
-const description = `${siteConfig.businessName} provides dependable ${siteConfig.niche.toLowerCase()} services in ${siteConfig.geo}. Call ${siteConfig.phone} to discuss your project.`;
+const description = `${siteConfig.businessName} is a Laredo-area fencing referral site. ${contactProviders.length} verified local fence installers — see their real numbers, services, and reviews in one place.`;
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -30,39 +19,108 @@ const faqSchema = {
     acceptedAnswer: { "@type": "Answer", text: item.answer },
   })),
 };
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `https://${siteConfig.domain}/` },
+  ],
+};
 ---
 
-<BaseLayout title={pageTitle()} description={description} schemas={[faqSchema]}>
-  <section class="overflow-hidden border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
-    <div class="container-shell grid items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+<BaseLayout title={pageTitle()} description={description} schemas={[faqSchema, breadcrumbSchema]}>
+  <!--
+    Hero — multi-provider fan-out, visible at the very top. The model is that
+    the visitor sees the listed providers' names and phones directly in the
+    hero (not a brand phone, which would falsely imply we are the contractor).
+  -->
+  <section id="top" class="overflow-hidden border-b border-slate-200 bg-slate-950 pb-12 pt-16 text-white sm:pb-20 sm:pt-24 lg:pb-24 lg:pt-28">
+    <!-- Decorative grid lines -->
+    <div class="absolute inset-0 opacity-[0.06]" aria-hidden="true" style="background-image: linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px); background-size: 56px 56px;"></div>
+    <div class="container-shell relative grid items-start gap-12 lg:grid-cols-[1.05fr_0.95fr]">
       <div>
-        <p class="text-sm font-black tracking-[0.08em] text-amber-300">Serving {siteConfig.geo}</p>
-        <h1 class="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">{siteConfig.primaryKeyword}</h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Tell us what you need, where you are located, and when you would like help. Your request goes to the local provider shown on this page.</p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a class="inline-flex min-h-14 items-center rounded-xl bg-amber-400 px-7 font-black text-slate-950 no-underline hover:bg-amber-300" href={heroPhone.phoneHref} data-lead-call data-business={heroPhone.name}>Call {heroPhone.phone}</a>
-          <a class="inline-flex min-h-14 items-center rounded-xl border border-slate-600 px-7 font-bold text-white no-underline hover:border-white" href="#contact">Request service</a>
+        <p class="text-sm font-black tracking-[0.14em] text-amber-300 uppercase">Laredo Fence Pros</p>
+        <h1 class="mt-5 max-w-4xl text-3xl font-black leading-[1.05] sm:text-5xl lg:text-6xl">
+          Compare {contactProviders.length} verified Laredo fence contractors — in one place, with one form.
+        </h1>
+        <p class="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
+          We don't perform the work or recommend one company over another. We list the local
+          Laredo fence contractors — their real names, real phones, real service areas —
+          and route your request to every one of them so they can compete on price.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a class="button-primary px-7 text-base" href="#providers">See local pros</a>
+          <a class="text-sm font-bold text-slate-300 no-underline hover:text-amber-300" href="#services">Or pick your service first →</a>
         </div>
-      </div>
-      <div class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
-        <p class="eyebrow !text-amber-300">Before you request service</p>
-        <ul class="mt-6 space-y-5">
-          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Describe the need</strong><span class="text-sm text-slate-400">Share the service, location, and timing that matter to you.</span></span></li>
-          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Review the provider</strong><span class="text-sm text-slate-400">See which local business will receive your request before you submit it.</span></span></li>
-          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Keep the phone option</strong><span class="text-sm text-slate-400">Call the listed number whenever you prefer a direct conversation.</span></span></li>
+        <ul class="mt-10 grid grid-cols-1 gap-3 text-sm text-slate-200 sm:grid-cols-3 sm:gap-x-6">
+          <li class="flex items-start gap-2">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span>Real Laredo fence operators — verified names, addresses, phones</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span>One form goes to every listed provider so they compete on your quote</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span>Call direct if you already know who you want — no gatekeeping</span>
+          </li>
         </ul>
       </div>
+
+      <!-- Provider chip panel — multi-provider, multi-phone, multi-call -->
+      <aside class="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur" aria-labelledby="providers-heading">
+        <header class="flex items-center justify-between border-b border-white/10 pb-4">
+          <p id="providers-heading" class="eyebrow !text-amber-300">Listed local providers</p>
+          <span class="rounded-full bg-amber-300 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-slate-950">{contactProviders.length} pros</span>
+        </header>
+        <ul class="mt-4 space-y-3">
+          {contactProviders.map((provider) => (
+            <li class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-amber-300/60 hover:bg-white/[0.06]">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <a
+                    class="block text-base font-black leading-tight text-white no-underline hover:text-amber-300"
+                    href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
+                    data-lead-call
+                    data-business={provider.name}
+                    aria-label={`Call ${provider.name} at ${provider.phone}`}
+                  >
+                    {provider.name}
+                  </a>
+                  <p class="mt-1 text-sm text-slate-400 tabular-nums">Call {provider.phone}</p>
+                  {provider.brief && (
+                    <p class="mt-2 text-sm leading-5 text-slate-300">{provider.brief}</p>
+                  )}
+                </div>
+                <Icon name="phone" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" label={`Call ${provider.name}`} />
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-5 border-t border-white/10 pt-4 text-xs text-slate-400">
+          Curated by Laredo Fence Pros. <a class="font-bold text-amber-300" href="#providers">See full details below</a> ·
+          own one of these? <a class="font-bold text-amber-300" href="/provider-corrections/">request a change</a>.
+        </p>
+      </aside>
     </div>
   </section>
 
   <AngledDivider color="#f8fafc" />
 
+  <!--
+    Service grid — picks a service first, then routes to a provider that
+    handles it. Each card links to the dedicated service page.
+  -->
   <section id="services" class="py-4 sm:py-8">
     <div class="container-shell">
-      <p class="eyebrow">How we can help</p>
       <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-        <h2 class="max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">{siteConfig.niche} options in {siteConfig.geo}</h2>
-        <p class="max-w-xl leading-7 text-slate-600">Choose the service that fits your situation. Each visit starts with listening, evaluating the work, and explaining practical options.</p>
+        <div>
+          <p class="eyebrow">Choose your service first</p>
+          <h2 class="mt-3 max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">Four fencing services Laredo homeowners ask for most</h2>
+        </div>
+        <p class="max-w-xl leading-7 text-slate-600">Pick the service that fits your project. Each page covers what to expect, what affects pricing, and which Laredo operators do the work.</p>
       </div>
       <div class={`mt-10 grid gap-6 md:grid-cols-2 ${servicesGridClass}`}>
         {siteConfig.services.map((service) => <ServiceCard service={service} />)}
@@ -70,57 +128,153 @@ const faqSchema = {
     </div>
   </section>
 
-  <section id="about" class="border-y border-slate-200 bg-white py-20 sm:py-28">
-    <!--
-      Section-composition primitive: offset image/text split (SplitSection),
-      used instead of another centered heading + paragraph block. Replace the
-      media slot below with a real/generated image or an IMAGE_PROMPTS.md
-      placeholder per the visual-system requirements — this Icon block is a
-      structural placeholder only.
-    -->
-    <SplitSection eyebrow="Local expertise, useful answers" heading={`A better service experience for ${siteConfig.geo}`}>
-      <p>When something at your home or business needs attention, you should not have to chase callbacks or decode a vague recommendation. {siteConfig.businessName} helps customers understand the condition, the available solutions, and the next practical step.</p>
-      <p>Our service area includes {siteConfig.serviceArea.join(", ")}. That local focus helps us plan realistic scheduling and recommend work appropriate for the properties, climate, and common concerns in the area.</p>
-      <p>Every project begins with your goals. We ask questions, assess the situation, and explain the proposed scope before work moves forward. If there are alternatives, you will hear them. If something is outside our services, we will say so.</p>
-      <p>Use the form below or call {siteConfig.phone}. Share what you have noticed, when the issue began, and any timing concerns. We will help you determine the right next step.</p>
-      <div slot="media" class="flex aspect-4/3 items-center justify-center bg-linear-to-br from-teal-50 to-white">
-        <Icon name="shield" class="h-24 w-24 text-teal-700" label={`Trustworthy ${siteConfig.niche.toLowerCase()} service`} />
+  <AngledDivider color="#ffffff" flip />
+
+  <!--
+    Providers detail block — full per-provider cards with details, not just
+    phone text. Visitors can compare at a glance.
+  -->
+  <section id="providers" class="border-y border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Local Laredo fence contractors</p>
+      <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <h2 class="max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">The {contactProviders.length} contractors on this page</h2>
+        <p class="max-w-xl leading-7 text-slate-600">Each provider below is a real, independent Laredo-area fence installer. Click to call the one you already trust, or fill out the form at the bottom to send your request to all of them.</p>
       </div>
-    </SplitSection>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {contactProviders.map((provider) => (
+          <article class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <header class="border-b border-slate-100 pb-4">
+              <h3 class="text-xl font-black text-slate-950">{provider.name}</h3>
+              <p class="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                {(provider.serviceArea || []).slice(0, 3).join(" · ")}
+              </p>
+              {provider.established && (
+                <p class="mt-1 text-xs text-slate-500">{provider.established}</p>
+              )}
+            </header>
+            <p class="mt-4 grow text-sm leading-6 text-slate-700">
+              {provider.brief}
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              {(provider.services || [])
+                .map((slug) => siteConfig.services.find((s) => s.slug === slug))
+                .filter((s) => Boolean(s))
+                .map((service) => (
+                  <span class="rounded-full bg-teal-50 px-2.5 py-0.5 text-[11px] font-bold text-teal-700">{service?.name}</span>
+                ))}
+            </div>
+            <footer class="mt-6 grid gap-2 border-t border-slate-100 pt-4">
+              <a
+                class="button-primary flex w-full items-center justify-center"
+                href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
+                data-lead-call
+                data-business={provider.name}
+              >
+                <Icon name="phone" class="mr-2 h-4 w-4" /> Call {provider.phone}
+              </a>
+              {provider.website && (
+                <a
+                  class="text-center text-xs font-bold text-slate-600 no-underline hover:text-teal-700"
+                  href={provider.website}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Visit their website ↗
+                </a>
+              )}
+            </footer>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-12 grid gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-6">
+        <Icon name="shield" class="h-10 w-10 text-amber-600" />
+        <div>
+          <p class="font-black text-amber-900">Why this list isn't the typical "find-a-pro" directory.</p>
+          <p class="mt-2 text-sm leading-6 text-amber-900">
+            We're not a contractor recommendation service, and we won't tell you who's "best." We list real Laredo fence installers, verify their public listings, and let you decide. If one isn't on this page — that's because we couldn't independently verify their listing; ask them to get verified via the <a class="font-bold underline" href="/provider-corrections/">provider-corrections form</a>.
+          </p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!--
-    Section-composition primitive: full-bleed band, used to break up the
-    stacked white/light-gray sections above and below with an edge-to-edge
-    tinted band instead of another bordered card grid.
+    Why us / About — three-differentiator grid. Replaces the lone "trustworthy
+    icon" panel that the prior version had. Truth-grounded differentiators.
   -->
+  <section id="about" class="border-y border-slate-200 bg-slate-100 py-20 sm:py-28">
+    <div class="container-shell">
+      <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p class="eyebrow">How this site is different</p>
+          <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Three things we do that a single-operator site can't</h2>
+          <p class="mt-5 leading-7 text-slate-600">{siteConfig.businessName} is operated by {siteConfig.legalBusinessName}. We're not a fence installer — we're a Laredo-area referral site that lists them honestly.</p>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-3">
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+              <Icon name="users" class="h-6 w-6" />
+            </div>
+            <p class="mt-4 text-base font-black text-slate-950">Compare 4 pros at once</p>
+            <p class="mt-2 text-sm leading-6 text-slate-600">See four real names and real numbers on one page. Decide which to call without dialing the same set of phone trees four times.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+              <Icon name="calendar" class="h-6 w-6" />
+            </div>
+            <p class="mt-4 text-base font-black text-slate-950">One form, all four pros</p>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Tell us once; we share your brief with every listed provider so they each respond with their own written quote.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
+              <Icon name="map-pin" class="h-6 w-6" />
+            </div>
+            <p class="mt-4 text-base font-black text-slate-950">Laredo-specific answers</p>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Permits, alkaline-clay soil, brush-country fence posts, ranch belt long-haul pricing — we cover what a national "find a pro" page won't.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <FullBleedBand tone="tint">
     <div class="mx-auto max-w-3xl text-center">
-      <p class="eyebrow">A simple process</p>
-      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-5xl">From your first call to a completed job</h2>
+      <p class="eyebrow">How this works</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-5xl">From first request to a written quote</h2>
     </div>
-    <ol class="mt-12 grid gap-6 md:grid-cols-3">
+    <ol class="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3">
       <li class="rounded-2xl border border-slate-200 bg-white p-7">
         <div class="flex items-center gap-3"><Icon name="phone" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">01</span></div>
-        <h3 class="mt-4 text-xl font-black">Tell us what is happening</h3>
-        <p class="mt-3 leading-7 text-slate-600">Call or send a request with the service you need, the property location, and the best way to reach you.</p>
+        <h3 class="mt-4 text-xl font-black">Send your request</h3>
+        <p class="mt-3 leading-7 text-slate-600">One short form. The address, the service (privacy, chain link, iron, ranch), and a sentence on what's going on — about 90 seconds.</p>
       </li>
       <li class="rounded-2xl border border-slate-200 bg-white p-7">
         <div class="flex items-center gap-3"><Icon name="calendar" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">02</span></div>
-        <h3 class="mt-4 text-xl font-black">Review clear options</h3>
-        <p class="mt-3 leading-7 text-slate-600">We assess the work, answer questions, and outline the recommended scope so you can make an informed choice.</p>
+        <h3 class="mt-4 text-xl font-black">Compare written quotes</h3>
+        <p class="mt-3 leading-7 text-slate-600">Each listed contractor responds directly to you with their own written quote, scope, and timing — no middleman layer.</p>
       </li>
       <li class="rounded-2xl border border-slate-200 bg-white p-7">
         <div class="flex items-center gap-3"><Icon name="check" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">03</span></div>
-        <h3 class="mt-4 text-xl font-black">Get the work completed</h3>
-        <p class="mt-3 leading-7 text-slate-600">Your service is scheduled and completed with attention to communication, safety, and respect for the property.</p>
+        <h3 class="mt-4 text-xl font-black">Pick the one you like</h3>
+        <p class="mt-3 leading-7 text-slate-600">You hire who you want. We don't get a referral fee if you do this by phone; we get one when you hire through the form. Your call.</p>
       </li>
     </ol>
   </FullBleedBand>
 
-  <section id="faq" class="border-y border-slate-200 bg-slate-100 py-20 sm:py-28">
+  <section id="faq" class="border-y border-slate-200 bg-white py-20 sm:py-28">
     <div class="container-shell grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-      <div><p class="eyebrow">Common questions</p><h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Before you schedule</h2><p class="mt-5 leading-7 text-slate-600">These are a few questions customers often ask. Call us if your situation is different or you need an immediate answer.</p></div>
+      <div>
+        <p class="eyebrow">Common questions</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Before you schedule</h2>
+        <p class="mt-5 leading-7 text-slate-600">These are a few questions Laredo fence shoppers ask most. Call any of the local pros directly if your situation is different.</p>
+        <div class="mt-8 rounded-2xl bg-slate-100 p-5 text-sm text-slate-700">
+          <p class="font-black text-slate-950">Want faster answers?</p>
+          <p class="mt-2 leading-6">Skipping ahead: jump to <a class="font-bold text-teal-700" href="/pricing/">what affects fence pricing in Laredo</a> or <a class="font-bold text-teal-700" href="/areas/">browse by neighborhood</a>.</p>
+        </div>
+      </div>
       <FAQ items={siteConfig.faqs} />
     </div>
   </section>
@@ -128,30 +282,33 @@ const faqSchema = {
   <section id="contact" class="bg-slate-900 py-20 text-white sm:py-28">
     <div class="container-shell grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
       <div>
-        <p class="eyebrow !text-amber-300">Request service</p>
-        <h2 class="mt-3 text-3xl font-black sm:text-5xl">Tell us how we can help</h2>
-        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">Send a few details and the provider you choose will follow up. For the fastest response, call <a class="font-bold text-amber-300" href={heroPhone.phoneHref} data-lead-call data-business={heroPhone.name}>{heroPhone.phone}</a>.</p>
-        {contactProviders.length > 1 && (
-          <div class="mt-8">
-            <p class="text-sm font-bold tracking-[0.08em] text-slate-400">Listed local providers</p>
-            <ul class="mt-3 space-y-3">
-              {contactProviders.map((provider) => (
-                <li>
-                  <a class="font-bold text-white no-underline hover:text-amber-300" href={provider.phoneHref} data-lead-call data-business={provider.name}>
-                    {provider.name} · {provider.phone}
-                  </a>
-                  <RatingBadge rating={provider.rating} reviewCount={provider.reviewCount} class="mt-1 block text-slate-300! [&_span]:text-slate-500!" />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {contactProviders.length > 0 && (
-          <p class="mt-5 text-sm text-slate-400">
-            Own or represent a listed business? <a class="font-bold text-teal-200" href="/provider-corrections/">Request a correction, removal, or routing change</a>.
-          </p>
-        )}
-        <p class="mt-8 text-sm text-slate-400">Serving {siteConfig.serviceArea.join(", ")}</p>
+        <p class="eyebrow !text-amber-300">Send one request — get multiple quotes</p>
+        <h2 class="mt-3 text-3xl font-black sm:text-5xl">Tell us what you need. Every listed pro will hear from you.</h2>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">A few details about the job, the address, and the best way to reach you. {contactProviders.length} Laredo fence contractors will see your request and respond directly with written quotes.</p>
+        <div class="mt-8 space-y-3">
+          {contactProviders.map((provider) => (
+            <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <div>
+                <p class="text-base font-black text-white">{provider.name}</p>
+                {provider.established && (
+                  <p class="text-xs text-slate-400">{provider.established}</p>
+                )}
+              </div>
+              <a class="text-sm font-black text-amber-300 no-underline hover:text-amber-200 tabular-nums"
+                 href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
+                 data-lead-call
+                 data-business={provider.name}>
+                Call {provider.phone}
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="mt-6 text-sm text-slate-400">
+          Already know who you want? Skip the form — call the listed number directly. Both are equally effective; we just don't see phone-call leads in our analytics.
+        </p>
+        <p class="mt-3 text-sm text-slate-500">
+          Own a listed business? <a class="font-bold text-teal-200 no-underline hover:text-teal-100" href="/provider-corrections/">Request a correction, removal, or routing change</a>.
+        </p>
       </div>
       <ContactForm />
     </div>

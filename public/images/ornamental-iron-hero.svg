@@ -1,24 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Image placeholder: spear-top ornamental iron panel detail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Ornamental iron fence — spear-top panels between powder-coated square posts in South Texas sunset light">
   <metadata>
-    <prompt>spear-top ornamental iron panel detail</prompt>
+    <prompt>Close-up editorial photograph of an ornamental iron spear-top panel installed between two square posts in warm low sun. Black powder-coated finish. Side-lit, focus on the crossing-rail detail and the spear-tops catching light.</prompt>
     <asset-id>laredo-ornamental-iron-hero</asset-id>
     <status>prompt placeholder</status>
-    <replacement-owner>operator</replacement-owner>
-    <replacement-deadline>30 days from launch</replacement-deadline>
   </metadata>
   <defs>
-    <pattern id="hatch" patternUnits="userSpaceOnUse" width="32" height="32" patternTransform="rotate(45)">
-      <line x1="0" y1="0" x2="0" y2="32" stroke="#0f766e" stroke-width="3" opacity="0.18"/>
-    </pattern>
+    <radialGradient id="sun-i" cx="0.7" cy="0.25" r="1"><stop offset="0" stop-color="#fde68a"/><stop offset="0.4" stop-color="#fbbf24"/><stop offset="1" stop-color="#0f172a"/></radialGradient>
   </defs>
-  <rect width="100%" height="100%" fill="#f8fafc"/>
-  <rect width="100%" height="100%" fill="url(#hatch)"/>
-  <g font-family="system-ui, sans-serif" fill="#0f766e">
-    <text x="50%" y="46%" text-anchor="middle" font-size="56" font-weight="900" letter-spacing="0.04em">IMAGE PLANNED</text>
-    <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="#475569">spear-top ornamental iron panel detail</text>
-    <text x="50%" y="63%" text-anchor="middle" font-size="18" fill="#94a3b8">Asset ID: laredo-ornamental-iron-hero</text>
-    <text x="50%" y="69%" text-anchor="middle" font-size="18" fill="#94a3b8">1600 x 900</text>
-  </g>
-  <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="none" stroke="#0f766e" stroke-width="2" stroke-dasharray="6 6" opacity="0.3"/>
+  <rect width="100%" height="100%" fill="url(#sun-i)"/>
+  <!-- posts -->
+  <rect x="120" y="80" width="36" height="780" fill="#0c0a09" stroke="#7c2d12" stroke-width="3"/>
+  <rect x="1440" y="80" width="36" height="780" fill="#0c0a09" stroke="#7c2d12" stroke-width="3"/>
+  <!-- top rail -->
+  <rect x="156" y="120" width="1288" height="22" fill="#0c0a09"/>
+  <!-- bottom rail -->
+  <rect x="156" y="800" width="1288" height="22" fill="#0c0a09"/>
+  <!-- mid rail -->
+  <rect x="156" y="460" width="1288" height="14" fill="#0c0a09"/>
+  <!-- spears -->
+  <polygon points="170,120 188,80 206,120" fill="#0c0a09"/><polygon points="270,120 288,80 306,120" fill="#0c0a09"/><polygon points="370,120 388,80 406,120" fill="#0c0a09"/><polygon points="470,120 488,80 506,120" fill="#0c0a09"/><polygon points="570,120 588,80 606,120" fill="#0c0a09"/><polygon points="670,120 688,80 706,120" fill="#0c0a09"/><polygon points="770,120 788,80 806,120" fill="#0c0a09"/><polygon points="870,120 888,80 906,120" fill="#0c0a09"/><polygon points="970,120 988,80 1006,120" fill="#0c0a09"/><polygon points="1070,120 1088,80 1106,120" fill="#0c0a09"/><polygon points="1170,120 1188,80 1206,120" fill="#0c0a09"/><polygon points="1270,120 1288,80 1306,120" fill="#0c0a09"/><polygon points="1370,120 1388,80 1406,120" fill="#0c0a09"/>
+  <!-- pickets -->
+  <rect x="170" y="142" width="14" height="320" fill="#0c0a09"/><rect x="270" y="142" width="14" height="320" fill="#0c0a09"/><rect x="370" y="142" width="14" height="320" fill="#0c0a09"/><rect x="470" y="142" width="14" height="320" fill="#0c0a09"/><rect x="570" y="142" width="14" height="320" fill="#0c0a09"/><rect x="670" y="142" width="14" height="320" fill="#0c0a09"/><rect x="770" y="142" width="14" height="320" fill="#0c0a09"/><rect x="870" y="142" width="14" height="320" fill="#0c0a09"/><rect x="970" y="142" width="14" height="320" fill="#0c0a09"/><rect x="1070" y="142" width="14" height="320" fill="#0c0a09"/><rect x="1170" y="142" width="14" height="320" fill="#0c0a09"/><rect x="1270" y="142" width="14" height="320" fill="#0c0a09"/><rect x="1370" y="142" width="14" height="320" fill="#0c0a09"/>
+  <!-- finials at lower rail -->
+  <circle cx="200" cy="800" r="6" fill="#0c0a09"/><circle cx="400" cy="800" r="6" fill="#0c0a09"/><circle cx="600" cy="800" r="6" fill="#0c0a09"/><circle cx="800" cy="800" r="6" fill="#0c0a09"/><circle cx="1000" cy="800" r="6" fill="#0c0a09"/><circle cx="1200" cy="800" r="6" fill="#0c0a09"/>
+  <text x="50%" y="96%" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" fill="#f8fafc" opacity="0.85" font-weight="700">Image planned — see IMAGE_PROMPTS.md</text>
 </svg>

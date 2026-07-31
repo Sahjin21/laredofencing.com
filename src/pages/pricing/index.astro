@@ -1,0 +1,135 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
+import { contactProviders, siteConfig } from "../../lib/config";
+
+const description = `What drives fence pricing in Laredo and Webb County. Honest cost factors — material, length, height, post count, slope, gates — without a fake range.`;
+---
+
+<BaseLayout title={`What affects fence pricing in ${siteConfig.geo} | ${siteConfig.businessName}`} description={description}>
+  <section class="border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell">
+      <p class="text-sm font-black tracking-[0.14em] text-amber-300 uppercase">Pricing guide</p>
+      <h1 class="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">What affects fence pricing in Laredo</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
+        We don't publish a single price figure here because no Laredo fence contractor prices by the
+        square foot. Pricing is a conversation — what you're fencing, the ground it's going in, the
+        height and material, the number of gates, the soil. This page names the variables, so when
+        you ask {contactProviders.length} local pros to write you a quote, you're asking apples-to-apples.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Variable 1</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Linear feet and height</h2>
+      <p class="mt-6 max-w-3xl leading-7 text-slate-600">Most Laredo pricing is linear-foot-driven: the longer the fence, the more post holes, concrete, rails, and pickets. Standard residential height is 6-foot; a 6-to-8-foot transition usually doubles material costs because rails go from 2 to 3 or 4 per panel. Pool-code enclosures in many subdivisions are required to be at least 4 feet with a self-closing gate, which is a separate build.</p>
+      <div class="mt-8 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="text-base font-black">Yard under 100 ft</p>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Cheaper per-foot for short runs. Often paired with a single walk gate.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="text-base font-black">Yard 100–250 ft</p>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Standard Laredo residential lot size — typical sweet spot for an economy build.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="text-base font-black">Acreage / perimeter</p>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Bracket the per-foot price; ranch work has different math than residential.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-slate-100 py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Variable 2</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Material</h2>
+      <p class="mt-6 max-w-3xl leading-7 text-slate-600">Each material has a different cost curve. The most common Laredo residential request is cedar or pressure-treated pine privacy. Vinyl-coated chain-link is the budget choice. Wrought iron / ornamental is the upgrade.</p>
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Pressure-treated pine privacy</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">The most affordable privacy option. Holds up well in Laredo alkaline clay when posts are set below the active layer. Most common residential pick.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Cedar privacy</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Better weather-resistance and look; the typical upgrade from pressure-treated. Expect 20–40% material cost uplift over pine for the same height.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Galvanized chain-link</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Lowest per-foot option. Standard residential 4-foot, 6-foot for dog runs or commercial.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Vinyl-coated chain-link</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Black or green. The aesthetic upgrade; typical residential pick in newer Laredo subdivisions.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Wrought iron / ornamental</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Powder-coated panels. Highest visible cost. Pool-code compliant with proper gate hardware.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <p class="text-lg font-black">Ranch: barbed, field fence, pipe</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Different math — priced per linear foot of line, but the driving number is post count, brace assemblies at corners, and the gauge of pipe or woven wire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Variable 3</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Soil — and what happens under the surface</h2>
+      <p class="mt-6 max-w-3xl leading-7 text-slate-600">Laredo sits on alkaline clay with active root zone depth of about 18–24 inches. Posts need to be set below that into stable ground, which means 24-to-30-inch concrete footings standard. Rocky soil, caliche layers, or buried tree roots will move the price by 10–25%. New subdivisions with compacted fill usually have an easier dig.</p>
+
+      <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="px-4 py-3 text-left font-black">Soil</th>
+              <th class="px-4 py-3 text-left font-black">What it means</th>
+              <th class="px-4 py-3 text-left font-black">Cost impact</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <tr><td class="px-4 py-3 font-bold">Compacted fill (new subdivisions)</td><td class="px-4 py-3">Easier dig, posts hold firmly.</td><td class="px-4 py-3">Lower</td></tr>
+            <tr><td class="px-4 py-3 font-bold">Alkaline clay (older in-town)</td><td class="px-4 py-3">Standard Laredo. Posts need full concrete footings.</td><td class="px-4 py-3">Standard</td></tr>
+            <tr><td class="px-4 py-3 font-bold">Caliche layer</td><td class="px-4 py-3">Pneumatic or rock-bar digging; extra half-day per line.</td><td class="px-4 py-3">Higher</td></tr>
+            <tr><td class="px-4 py-3 font-bold">Tree-rooted urban lot</td><td class="px-4 py-3">Manually work around cedar / ash / ash-elms; may shift post line.</td><td class="px-4 py-3">Higher</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-slate-100 py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Variable 4</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Gates, slopes, and "we found this"</h2>
+      <p class="mt-6 max-w-3xl leading-7 text-slate-600">Gates drive the per-job number more than yards do. A single walk gate ($200–$800 installed depending on width and material) often adds 10% to a fence build. Double-drive vehicle gates are two to three times that. Sloped yards add labor because the fence has to step or rack — racking is more expensive and looks better.</p>
+
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+        <li class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-5"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /><span><strong class="block">Walk gate</strong> A standard 3-foot walk gate is usually included in a privacy-fence build; double gates run $400–$1500 each depending on width.</span></li>
+        <li class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-5"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /><span><strong class="block">Vehicle gate</strong> Double-drive gates cost significantly more due to the larger posts and concrete lintel required.</span></li>
+        <li class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-5"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /><span><strong class="block">Slope / step</strong> Stepped fences look sharp but waste material; racked fences follow the slope at higher labor cost.</span></li>
+        <li class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-5"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700" /><span><strong class="block">Demo + haul-off</strong>Removing an existing fence adds a per-foot disposal fee.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-slate-900 py-20 text-white sm:py-28">
+    <div class="container-shell grid items-start gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow !text-amber-300">A pricing question that comes up</p>
+        <h2 class="mt-3 text-3xl font-black sm:text-4xl">"Why won't any fence company give me a price over the phone?"</h2>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">Because the only thing that matters is what they see when they walk the property. A contractor who quotes over the phone without seeing the line either lowballs (and adds surprise fees on arrival) or highballs (to cover the surprise). Reputable Laredo fence operators quote on a walk-through. The walk-through itself is usually free for residential work.</p>
+      </div>
+      <div>
+        <p class="eyebrow !text-amber-300">Want a real number?</p>
+        <h2 class="mt-3 text-3xl font-black sm:text-4xl">Ask all {contactProviders.length} at once.</h2>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">Send the request through {siteConfig.businessName} and each listed Laredo operator will walk the property on their own and send you a written quote. You keep the apples-to-apples comparison.</p>
+        <a class="button-primary mt-8" href="/#contact">Send one request — compare written quotes</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

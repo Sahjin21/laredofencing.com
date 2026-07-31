@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
+import { contactProviders, siteConfig } from "../../lib/config";
+
+export async function getStaticPaths() {
+  return siteConfig.areaCities.map((city) => ({
+    params: { city: city.slug },
+  }));
+}
+
+const { city: citySlug } = Astro.params;
+const city = siteConfig.areaCities.find((c) => c.slug === citySlug);
+
+if (!city) {
+  return Astro.redirect("/areas/");
+}
+
+// Filter listed providers to those that serve this area.
+const providersInCity = contactProviders.filter((provider) => {
+  if (!provider.serviceArea || provider.serviceArea.length === 0) return true;
+  return provider.serviceArea.some((sa) =>
+    sa.toLowerCase().includes(city.name.toLowerCase()) ||
+    sa.toLowerCase().includes("webb county") ||
+    sa.toLowerCase().includes("south texas")
+  );
+});
+
+const description = `Fence contractors who serve ${city.name}, ${city.state} — listing ${providersInCity.length} verified providers with their phones, service areas, and what to expect from a quote.`;
+---
+
+<BaseLayout
+  title={`Fence contractors in ${city.name}, ${city.state} | ${siteConfig.businessName}`}
+  description={description}
+>
+  <section class="border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell">
+      <nav class="text-xs text-slate-400" aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-x-2">
+          <li><a class="no-underline hover:text-amber-300" href="/">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a class="no-underline hover:text-amber-300" href="/areas/">Areas</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-amber-300">{city.name}, {city.state}</li>
+        </ol>
+      </nav>
+      <h1 class="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">Fence contractors in {city.name}, {city.state}</h1>
+      {city.population && (
+        <p class="mt-3 text-sm font-bold uppercase tracking-wider text-amber-300">{city.population}</p>
+      )}
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{city.brief}</p>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Listed providers serving {city.name}</p>
+      <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <h2 class="max-w-2xl text-3xl font-black text-slate-950 sm:text-4xl">{providersInCity.length} verified contractors</h2>
+        <p class="max-w-xl leading-7 text-slate-600">Public listing-verified. Call directly or send one request for multiple written quotes.</p>
+      </div>
+
+      {providersInCity.length > 0 ? (
+        <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {providersInCity.map((provider) => (
+            <article class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 class="text-xl font-black text-slate-950">{provider.name}</h3>
+              <p class="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500">{(provider.serviceArea || []).slice(0, 3).join(" · ")}</p>
+              {provider.established && (
+                <p class="mt-1 text-xs text-slate-500">{provider.established}</p>
+              )}
+              <p class="mt-3 grow text-sm leading-6 text-slate-700">{provider.brief}</p>
+              <a
+                class="button-primary mt-6 w-full text-center"
+                href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
+                data-lead-call
+                data-business={provider.name}
+              >
+                Call {provider.phone}
+              </a>
+              {provider.website && (
+                <a class="mt-2 text-center text-xs font-bold text-slate-600 no-underline hover:text-teal-700" href={provider.website} target="_blank" rel="noopener noreferrer">Visit website ↗</a>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="mt-10 rounded-2xl border border-amber-200 bg-amber-50 p-8 text-amber-900">
+          <p class="font-black">No verified providers in {city.name} specifically.</p>
+          <p class="mt-2 text-sm leading-6">
+            Our listed providers typically cover the broader Webb County area even when a specific city isn't on their record.
+            Send the request and we'll route it to providers most likely to cover your address.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {(city.neighborhoods && city.neighborhoods.length > 0) && (
+    <section class="border-b border-slate-200 bg-slate-100 py-20 sm:py-28">
+      <div class="container-shell">
+        <p class="eyebrow">Covered neighborhoods and subdivisions</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Where in {city.name}</h2>
+        <p class="mt-6 max-w-3xl leading-7 text-slate-600">Listed providers have worked across these {city.name} neighborhoods. If yours isn't listed, ask — most operators will travel within ~25 miles of their shop.</p>
+        <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {city.neighborhoods.map((n) => (
+            <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-700">
+              <Icon name="map-pin" class="h-4 w-4 text-teal-600" />{n}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {(city.primaryAreaLabels && city.primaryAreaLabels.length > 0) && (
+    <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+      <div class="container-shell">
+        <p class="eyebrow">Common searches we route</p>
+        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Areas within {city.name}</h2>
+        <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {city.primaryAreaLabels.map((label) => (
+            <li class="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-base font-bold text-slate-700">{label}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-slate-900 py-20 text-white sm:py-28">
+    <div class="container-shell">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow !text-amber-300">Send one request</p>
+        <h2 class="mt-3 text-3xl font-black sm:text-4xl">Reach all {providersInCity.length} providers serving {city.name}</h2>
+        <p class="mt-6 text-lg leading-8 text-slate-300">Tells each Laredo fence contractor what you're looking for. They respond directly with their own written quote.</p>
+        <a class="button-primary mt-8" href="/#contact">Send your request</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

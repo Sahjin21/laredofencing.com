@@ -1,24 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Image placeholder: wood privacy fence post-set detail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Wood privacy fence — cedar pickets, set in concrete on alkaline clay soil, evening sun">
   <metadata>
-    <prompt>wood privacy fence post-set detail</prompt>
+    <prompt>Editorial photograph of a freshly finished 6-foot cedar privacy fence running along the side of a single-story home in Laredo, Texas at warm late afternoon light. The fence dominates the lower two-thirds of the frame; the house is partly visible behind it. Foreground shows the base of the posts where they meet the soil.</prompt>
     <asset-id>laredo-wood-privacy-hero</asset-id>
     <status>prompt placeholder</status>
-    <replacement-owner>operator</replacement-owner>
-    <replacement-deadline>30 days from launch</replacement-deadline>
   </metadata>
   <defs>
-    <pattern id="hatch" patternUnits="userSpaceOnUse" width="32" height="32" patternTransform="rotate(45)">
-      <line x1="0" y1="0" x2="0" y2="32" stroke="#0f766e" stroke-width="3" opacity="0.18"/>
-    </pattern>
+    <linearGradient id="sky-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset="0.5" stop-color="#fbbf24"/><stop offset="1" stop-color="#92400e"/></linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="#f8fafc"/>
-  <rect width="100%" height="100%" fill="url(#hatch)"/>
-  <g font-family="system-ui, sans-serif" fill="#0f766e">
-    <text x="50%" y="46%" text-anchor="middle" font-size="56" font-weight="900" letter-spacing="0.04em">IMAGE PLANNED</text>
-    <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="#475569">wood privacy fence post-set detail</text>
-    <text x="50%" y="63%" text-anchor="middle" font-size="18" fill="#94a3b8">Asset ID: laredo-wood-privacy-hero</text>
-    <text x="50%" y="69%" text-anchor="middle" font-size="18" fill="#94a3b8">1600 x 900</text>
+  <rect width="100%" height="100%" fill="url(#sky-w)"/>
+  <!-- horizon line -->
+  <rect x="0" y="540" width="1600" height="360" fill="#1e293b"/>
+  <!-- distant house silhouette -->
+  <polygon points="100,540 100,440 240,420 240,540" fill="#0f172a"/>
+  <polygon points="240,540 240,360 480,320 480,540" fill="#1e293b"/>
+  <polygon points="480,540 480,400 700,380 700,540" fill="#0f172a"/>
+  <!-- fence (board-on-board cedar) -->
+  <g fill="#7c2d12" stroke="#451a03" stroke-width="3">
+    <rect x="0" y="0" width="56" height="900"/><rect x="64" y="0" width="56" height="900"/><rect x="128" y="0" width="56" height="900"/><rect x="192" y="0" width="56" height="900"/><rect x="256" y="0" width="56" height="900"/><rect x="320" y="0" width="56" height="900"/><rect x="384" y="0" width="56" height="900"/><rect x="448" y="0" width="56" height="900"/><rect x="512" y="0" width="56" height="900"/><rect x="576" y="0" width="56" height="900"/><rect x="640" y="0" width="56" height="900"/><rect x="704" y="0" width="56" height="900"/><rect x="768" y="0" width="56" height="900"/><rect x="832" y="0" width="56" height="900"/><rect x="896" y="0" width="56" height="900"/><rect x="960" y="0" width="56" height="900"/><rect x="1024" y="0" width="56" height="900"/><rect x="1088" y="0" width="56" height="900"/><rect x="1152" y="0" width="56" height="900"/><rect x="1216" y="0" width="56" height="900"/><rect x="1280" y="0" width="56" height="900"/><rect x="1344" y="0" width="56" height="900"/><rect x="1408" y="0" width="56" height="900"/><rect x="1472" y="0" width="56" height="900"/><rect x="1536" y="0" width="56" height="900"/>
+    <rect x="0" y="600" width="1600" height="36" fill="#92400e"/>
+    <rect x="0" y="824" width="1600" height="40" fill="#451a03"/>
   </g>
-  <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="none" stroke="#0f766e" stroke-width="2" stroke-dasharray="6 6" opacity="0.3"/>
+  <!-- foreground soil / concrete footings -->
+  <rect x="0" y="864" width="1600" height="36" fill="#3f2e1a"/>
+  <g fill="#a3a3a3" stroke="#52525b" stroke-width="2">
+    <rect x="8" y="838" width="48" height="26"/><rect x="104" y="838" width="48" height="26"/><rect x="200" y="838" width="48" height="26"/><rect x="296" y="838" width="48" height="26"/><rect x="392" y="838" width="48" height="26"/><rect x="488" y="838" width="48" height="26"/><rect x="584" y="838" width="48" height="26"/><rect x="680" y="838" width="48" height="26"/><rect x="776" y="838" width="48" height="26"/><rect x="872" y="838" width="48" height="26"/><rect x="968" y="838" width="48" height="26"/><rect x="1064" y="838" width="48" height="26"/><rect x="1160" y="838" width="48" height="26"/><rect x="1256" y="838" width="48" height="26"/><rect x="1352" y="838" width="48" height="26"/><rect x="1448" y="838" width="48" height="26"/><rect x="1544" y="838" width="48" height="26"/>
+  </g>
+  <text x="50%" y="96%" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" fill="#f8fafc" opacity="0.85" font-weight="700">Image planned — see IMAGE_PROMPTS.md</text>
 </svg>

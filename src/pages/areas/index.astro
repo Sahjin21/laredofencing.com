@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
+import { contactProviders, siteConfig } from "../../lib/config";
+
+const description = `Laredo fence service areas — ${siteConfig.areaCities.length} cities and surrounding Webb County. Each city has its own page with named subdivisions, neighborhoods, and which listed providers serve that area.`;
+const cities = siteConfig.areaCities;
+---
+
+<BaseLayout title={`Areas we serve in ${siteConfig.geo} | ${siteConfig.businessName}`} description={description}>
+  <section class="border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell">
+      <p class="text-sm font-black tracking-[0.14em] text-amber-300 uppercase">Areas we serve</p>
+      <h1 class="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">Laredo fence service areas</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
+        We list Laredo fence contractors across {cities.length} named cities and the surrounding Webb
+        County brush belt. Each city has its own page with the local subdivisions they actually serve.
+        Pick yours for the right set of providers and pricing factors.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {cities.map((city) => (
+          <article class="group flex flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg">
+            <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <h2 class="text-2xl font-black text-slate-950">{city.name}, {city.state}</h2>
+              <span class="rounded-full bg-teal-50 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-teal-700">{contactProviders.length} pros</span>
+            </div>
+            {city.population && (
+              <p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500">{city.population}</p>
+            )}
+            <p class="mt-3 grow text-sm leading-6 text-slate-700">{city.brief}</p>
+            <ul class="mt-4 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-600">
+              {(city.neighborhoods || []).slice(0, 6).map((n) => (
+                <li class="flex items-center gap-1"><Icon name="map-pin" class="h-3 w-3 text-teal-600" />{n}</li>
+              ))}
+              {(city.neighborhoods || []).length > 6 && (
+                <li class="col-span-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">+{(city.neighborhoods || []).length - 6} more</li>
+              )}
+            </ul>
+            <a class="mt-6 inline-flex items-center gap-1 font-bold text-teal-700 no-underline group-hover:text-teal-900" href={`/areas/${city.slug}/`}>
+              See local providers and pricing for {city.name}
+              <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-slate-200 bg-slate-100 py-20 sm:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Not on this list?</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Surrounding Webb County and brush belt</h2>
+      <p class="mt-6 max-w-3xl leading-7 text-slate-600">Listed Laredo fence contractors also cover smaller Webb County communities and the ranch belt southwest to Encinal. If you don't see your city or ranch community listed above, send the form anyway — most of these pros will quote a trip depending on scope.</p>
+      <div class="mt-8 grid gap-3 sm:grid-cols-3">
+        {["Mirando City", "Oilton", "Encinal", "Zapata", "San Ygnacio", "Hebbronville", "Bruni", "Aguilares", "Realitos"].map((place) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-700">{place}</div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,24 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Image placeholder: chain-link residential fence, finished line">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Chain-link fence — vinyl-coated black, taut fabric, finished line and walk gate">
   <metadata>
-    <prompt>chain-link residential fence, finished line</prompt>
+    <prompt>Editorial photograph of a finished vinyl-coated black chain-link fence at a residential yard in midday South Texas light. The fabric is taut and the top rail runs straight across. Closed walk gate at one end.</prompt>
     <asset-id>laredo-chain-link-hero</asset-id>
     <status>prompt placeholder</status>
-    <replacement-owner>operator</replacement-owner>
-    <replacement-deadline>30 days from launch</replacement-deadline>
   </metadata>
   <defs>
-    <pattern id="hatch" patternUnits="userSpaceOnUse" width="32" height="32" patternTransform="rotate(45)">
-      <line x1="0" y1="0" x2="0" y2="32" stroke="#0f766e" stroke-width="3" opacity="0.18"/>
-    </pattern>
+    <linearGradient id="ground-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d4d8"/><stop offset="0.3" stop-color="#a1a1aa"/><stop offset="1" stop-color="#52525b"/></linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="#f8fafc"/>
-  <rect width="100%" height="100%" fill="url(#hatch)"/>
-  <g font-family="system-ui, sans-serif" fill="#0f766e">
-    <text x="50%" y="46%" text-anchor="middle" font-size="56" font-weight="900" letter-spacing="0.04em">IMAGE PLANNED</text>
-    <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="#475569">chain-link residential fence, finished line</text>
-    <text x="50%" y="63%" text-anchor="middle" font-size="18" fill="#94a3b8">Asset ID: laredo-chain-link-hero</text>
-    <text x="50%" y="69%" text-anchor="middle" font-size="18" fill="#94a3b8">1600 x 900</text>
+  <rect width="100%" height="100%" fill="url(#ground-c)"/>
+  <!-- posts -->
+  <rect x="180" y="100" width="14" height="740" fill="#27272a"/>
+  <rect x="1380" y="100" width="14" height="740" fill="#27272a"/>
+  <!-- chain-link mesh -->
+  <g stroke="#1f2937" stroke-width="3" fill="none">
+    <line x1="200" y1="110" x2="440" y2="360"/><line x1="440" y1="360" x2="200" y2="610"/><line x1="440" y1="360" x2="680" y2="110"/><line x1="440" y1="360" x2="680" y2="610"/><line x1="440" y1="360" x2="{1380}" y2="110"/><line x1="440" y1="360" x2="{1380}" y2="610"/><line x1="200" y1="110" x2="{1380}" y2="110"/><line x1="200" y1="610" x2="{1380}" y2="610"/><line x1="300" y1="210" x2="580" y2="510"/><line x1="580" y1="210" x2="300" y2="510"/><line x1="400" y1="260" x2="480" y2="460"/><line x1="480" y1="260" x2="400" y2="460"/><line x1="220" y1="260" x2="660" y2="710"/><line x1="660" y1="260" x2="220" y2="710"/><line x1="900" y1="260" x2="{1570}" y2="710"/><line x1="{1570}" y1="260" x2="900" y2="710"/><line x1="1080" y1="260" x2="{1500}" y2="710"/><line x1="{1500}" y1="260" x2="1080" y2="710"/>
   </g>
-  <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="none" stroke="#0f766e" stroke-width="2" stroke-dasharray="6 6" opacity="0.3"/>
+  <!-- top rail -->
+  <rect x="180" y="100" width="1240" height="20" fill="#27272a"/>
+  <!-- walk gate panel -->
+  <rect x="1080" y="120" width="300" height="700" fill="none" stroke="#27272a" stroke-width="6"/>
+  <rect x="1080" y="118" width="300" height="22" fill="#27272a"/>
+  <!-- ground -->
+  <rect x="0" y="840" width="1600" height="60" fill="#365314"/>
+  <text x="50%" y="96%" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" fill="#f8fafc" opacity="0.85" font-weight="700">Image planned — see IMAGE_PROMPTS.md</text>
 </svg>
