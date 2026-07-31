@@ -7,7 +7,6 @@ import ServiceCard from "../components/ServiceCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { pageTitle, siteConfig } from "../lib/config";
 
-const servicesGridClass = siteConfig.services.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
 const description = `${siteConfig.businessName} — Laredo-area fence installation. Wood privacy, chain-link, ornamental iron, and ranch fencing for homes, businesses, and acreage across Webb County.`;
 const faqSchema = {
   "@context": "https://schema.org",
@@ -96,12 +95,56 @@ const faqSchema = {
           From backyard privacy to ranch-line pasture fence. Each section below describes what we build, what affects your price, and what to expect on the install.
         </p>
       </header>
-
-      <div class={`mt-14 grid gap-8 md:grid-cols-2 ${servicesGridClass}`}>
+      <div class="services-rail mt-12" tabindex="0" aria-label="Service cards">
         {siteConfig.services.map((service) => <ServiceCard service={service} />)}
       </div>
+      <ol class="services-dots mt-6 flex items-center justify-center gap-2 sm:hidden" aria-hidden="true">
+        {siteConfig.services.map((_, idx) => (
+          <li class={`services-dot${idx === 0 ? ' services-dot-active' : ''}`}></li>
+        ))}
+      </ol>
+      <p class="mt-6 text-center text-xs font-medium text-slate-400 sm:hidden">Swipe →</p>
     </div>
   </section>
+
+  <style>
+    .services-rail {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 24px;
+      padding: 16px 24px 16px 4px;
+      margin: -16px -24px -16px -4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-color: #cbd5e1 transparent;
+      scrollbar-width: thin;
+    }
+    .services-rail > * {
+      scroll-snap-align: start;
+    }
+    .services-rail::-webkit-scrollbar { height: 8px; }
+    .services-rail::-webkit-scrollbar-track { background: transparent; }
+    .services-rail::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .services-rail:focus-visible {
+      outline: 3px solid #fbbf24;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+    /* Larger cards on wider screens, plus better snapping at boundaries. */
+    @media (min-width: 640px) {
+      .services-rail { gap: 32px; padding: 16px 32px 16px 4px; }
+    }
+    @media (min-width: 1024px) {
+      .services-rail { gap: 36px; }
+    }
+    .services-dots { list-style: none; padding: 0; margin: 0; }
+    .services-dot {
+      width: 8px; height: 8px; border-radius: 999px;
+      background: #cbd5e1;
+    }
+    .services-dot-active { background: #0f766e; width: 18px; }
+  </style>
 
   <!--
     "Why us" — six reasons frame, like Energy Fencing. Three concrete claims,
