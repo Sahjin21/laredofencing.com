@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a3036"/>
+      <stop offset="1" stop-color="#04171d"/>
+    </linearGradient>
+    <radialGradient id="og-light" cx="0.78" cy="0.12" r="0.7">
+      <stop offset="0" stop-color="#f6d8a4" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#04171d" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#og-bg)"/>
+  <rect width="100%" height="100%" fill="url(#og-light)"/>
+
+  <!-- Brand lockup upper-left -->
+  <g transform="translate(72 72)">
+    <g fill="#f59e0b">
+      <rect x="0" y="0" width="76" height="14" rx="3"/>
+      <rect x="0" y="22" width="76" height="14" rx="3"/>
+    </g>
+    <text x="0" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="42" fill="#fef3c7" letter-spacing="-0.02em">LAREDO FENCE PROS</text>
+    <text x="0" y="106" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="16" fill="#fde68a" letter-spacing="0.18em">TEXAS-LICENSED · INSURED · LAREDO, TX</text>
+  </g>
+
+  <!-- Headline block, max-x=720 so picket can sit at x>=820 -->
+  <g transform="translate(72 290)">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="64" fill="#ffffff" letter-spacing="-0.03em">
+      <tspan x="0" dy="0">Fence installation</tspan>
+      <tspan x="0" dy="76">that holds through</tspan>
+      <tspan x="0" dy="76">South Texas weather.</tspan>
+    </text>
+  </g>
+
+  <!-- Domain footer -->
+  <g transform="translate(72 580)">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="20" fill="#fde68a" letter-spacing="0.05em">laredofencing.com</text>
+  </g>
+
+  <!-- Picket visual on the right -->
+  <g transform="translate(880 200)">
+    <rect x="0" y="320" width="220" height="10" rx="2" fill="#f59e0b"/>
+    <rect x="0" y="372" width="220" height="10" rx="2" fill="#f59e0b"/>
+    <g fill="#0f766e" stroke="#0a5651" stroke-width="3">
+      <rect x="-10" y="170" width="46" height="200" rx="6"/>
+      <path d="M 50 154 Q 50 122 78 114 Q 106 122 106 154 L 106 388 Q 106 392 102 392 L 54 392 Q 50 392 50 388 Z"/>
+      <rect x="124" y="170" width="46" height="200" rx="6"/>
+      <path d="M 184 154 Q 184 122 212 114 Q 240 122 240 154 L 240 388 Q 240 392 236 392 L 188 392 Q 184 392 184 388 Z"/>
+    </g>
+  </g>
+</svg>

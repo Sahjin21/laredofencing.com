@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef3c7"/>
+      <stop offset="1" stop-color="#fde68a"/>
+    </linearGradient>
+    <linearGradient id="picket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#0a5651"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" rx="64" fill="url(#bg)"/>
+  <g fill="url(#picket)" stroke="#0a5651" stroke-width="6">
+    <path d="M 124 412 Q 124 392 144 388 L 156 388 Q 176 392 176 412 L 176 484 Q 176 488 172 488 L 128 488 Q 124 488 124 484 Z"/>
+    <path d="M 230 388 Q 230 360 256 354 Q 282 360 282 388 L 282 488 Q 282 492 278 492 L 234 492 Q 230 492 230 488 Z"/>
+    <path d="M 336 412 Q 336 392 356 388 L 368 388 Q 388 392 388 412 L 388 484 Q 388 488 384 488 L 340 488 Q 336 488 336 484 Z"/>
+  </g>
+  <rect x="100" y="200" width="320" height="14" rx="6" fill="#0a5651"/>
+  <rect x="100" y="240" width="320" height="14" rx="6" fill="#0a5651"/>
+  <rect x="180" y="156" width="160" height="22" rx="4" fill="#f59e0b"/>
+</svg>
