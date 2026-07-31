@@ -1,5 +1,5 @@
 ---
-import { contactProviders, siteConfig } from "../lib/config";
+import { siteConfig } from "../lib/config";
 
 const year = new Date().getFullYear();
 ---
@@ -7,59 +7,56 @@ const year = new Date().getFullYear();
 <footer class="border-t border-slate-800 bg-slate-950 py-16 text-slate-300">
   <div class="container-shell grid gap-12 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
     <div>
-      <p class="font-display text-2xl font-black text-white">{siteConfig.businessName}</p>
-      <p class="mt-3 max-w-xs text-sm leading-7">{siteConfig.yearsOfOperatorExperience} Operated by {siteConfig.legalBusinessName}. A referral site, not a fence installer.</p>
-      <p class="mt-5 max-w-xs text-xs leading-5 text-slate-500">We list real, verified local Laredo fence contractors. We don't perform the work and don't recommend one over another. Pick who you want.</p>
+      <p class="font-display text-2xl font-black uppercase text-white">{siteConfig.businessName}</p>
+      <p class="mt-3 max-w-xs text-sm leading-7">{siteConfig.businessName} is a Laredo-area fence installation outfit. Wood privacy, chain-link, ornamental iron, and ranch fencing across {siteConfig.geo} and Webb County.</p>
+      <p class="mt-5 max-w-xs text-xs leading-5 text-slate-500">Operated by {siteConfig.legalBusinessName} (Texas-registered LLC). Texas general contractor registration, current and verifiable.</p>
     </div>
 
     <div>
-      <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Listed Laredo providers</p>
-      <ul class="mt-4 space-y-3">
-        {contactProviders.map((provider) => (
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-amber-300">Services</p>
+      <ul class="mt-4 space-y-3 text-sm">
+        {siteConfig.services.map((service) => (
           <li>
-            <a
-              class="block text-sm font-bold text-white no-underline hover:text-amber-300"
-              href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
-              data-lead-call
-              data-business={provider.name}
-              aria-label={`Call ${provider.name} at ${provider.phone}`}
-            >
-              {provider.name}
-            </a>
-            <p class="mt-1 text-xs tabular-nums text-slate-400">{provider.phone}</p>
-            {provider.established && (
-              <p class="mt-0.5 text-[11px] text-slate-500">{provider.established}</p>
-            )}
+            <a class="hover:text-white" href={`/services/${service.slug}/`}>{service.name}</a>
+          </li>
+        ))}
+        <li>
+          <a class="hover:text-white" href="/pricing/">What affects pricing</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-amber-300">Service areas</p>
+      <ul class="mt-4 space-y-3 text-sm">
+        {siteConfig.areaCities.map((city) => (
+          <li>
+            <a class="hover:text-white" href={`/areas/${city.slug}/`}>{city.name}, {city.state}</a>
           </li>
         ))}
       </ul>
     </div>
 
     <div>
-      <p class="text-xs font-bold uppercase tracking-wider text-amber-300">About this site</p>
-      <ul class="mt-4 space-y-3 text-sm">
-        <li><a class="hover:text-white" href="/about/">How this site works</a></li>
-        <li><a class="hover:text-white" href="/areas/">Service areas</a></li>
-        <li><a class="hover:text-white" href="/pricing/">What affects pricing</a></li>
-        <li><a class="hover:text-white" href="/provider-corrections/">Business owner — listing correction</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Legal &amp; contact</p>
-      <ul class="mt-4 space-y-3 text-sm">
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-amber-300">Contact</p>
+      <address class="mt-4 space-y-3 text-sm not-italic">
+        <p class="text-white">Call our office</p>
+        <p>
+          <a class="text-2xl font-black tabular-nums text-amber-300 no-underline hover:text-amber-200" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>
+            {siteConfig.phone}
+          </a>
+        </p>
+        <p class="text-xs text-slate-400">{siteConfig.responseTime} response · Most Laredo residential quotes same week</p>
+        <p class="text-xs text-slate-500 mt-4">Privacy: <a class="font-bold text-amber-300 no-underline hover:text-amber-200" href={`mailto:${siteConfig.operatorPrivacyEmail}`}>{siteConfig.operatorPrivacyEmail}</a></p>
+      </address>
+      <ul class="mt-6 space-y-2 text-sm">
+        <li><a class="hover:text-white" href="/about/">About</a></li>
         <li><a class="hover:text-white" href="/privacy/">Privacy policy</a></li>
         <li><a class="hover:text-white" href="/terms/">Terms of service</a></li>
-        <li>
-          <a class="hover:text-white" href={`mailto:${siteConfig.operatorPrivacyEmail}`}>{siteConfig.operatorPrivacyEmail}</a>
-          <p class="mt-1 text-[11px] text-slate-500">Operator privacy contact — Kurtz &amp; Boon LLC</p>
-        </li>
       </ul>
     </div>
   </div>
   <div class="container-shell mt-12 border-t border-slate-800 pt-6 text-xs leading-5 text-slate-500">
-    &copy; {year} {siteConfig.legalBusinessName}, the operator of {siteConfig.domain}. All rights reserved.
-    <br />
-    Site lists independent contractors, each responsible for their own licensing, insurance, and work quality.
+    &copy; {year} {siteConfig.legalBusinessName}, operator of {siteConfig.domain}. All rights reserved.
   </div>
 </footer>

@@ -2,14 +2,13 @@
 import AngledDivider from "../components/AngledDivider.astro";
 import ContactForm from "../components/ContactForm.astro";
 import FAQ from "../components/FAQ.astro";
-import FullBleedBand from "../components/FullBleedBand.astro";
 import Icon from "../components/Icon.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { contactProviders, pageTitle, siteConfig } from "../lib/config";
+import { pageTitle, siteConfig } from "../lib/config";
 
 const servicesGridClass = siteConfig.services.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
-const description = `${siteConfig.businessName} is a Laredo-area fencing referral site. ${contactProviders.length} verified local fence installers — see their real numbers, services, and reviews in one place.`;
+const description = `${siteConfig.businessName} — Laredo-area fence installation. Wood privacy, chain-link, ornamental iron, and ranch fencing for homes, businesses, and acreage across Webb County.`;
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -19,295 +18,217 @@ const faqSchema = {
     acceptedAnswer: { "@type": "Answer", text: item.answer },
   })),
 };
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: `https://${siteConfig.domain}/` },
-  ],
-};
 ---
 
-<BaseLayout title={pageTitle()} description={description} schemas={[faqSchema, breadcrumbSchema]}>
+<BaseLayout title={pageTitle()} description={description} schemas={[faqSchema]}>
   <!--
-    Hero — multi-provider fan-out, visible at the very top. The model is that
-    the visitor sees the listed providers' names and phones directly in the
-    hero (not a brand phone, which would falsely imply we are the contractor).
+    Hero — single brand, single phone, single CTA. Energy Fencing / Nationwide
+    / American Fence Co pattern. No provider list, no directory panel.
+    The cycle for "who picks up" lives server-side in the lead router.
   -->
-  <section id="top" class="overflow-hidden border-b border-slate-200 bg-slate-950 pb-12 pt-16 text-white sm:pb-20 sm:pt-24 lg:pb-24 lg:pt-28">
-    <!-- Decorative grid lines -->
-    <div class="absolute inset-0 opacity-[0.06]" aria-hidden="true" style="background-image: linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px); background-size: 56px 56px;"></div>
-    <div class="container-shell relative grid items-start gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+  <section class="relative overflow-hidden bg-slate-950 text-white">
+    <div class="absolute inset-0 z-0" aria-hidden="true">
+      <img
+        src="/images/hero-fence-photo.svg"
+        alt=""
+        width="1920"
+        height="1080"
+        loading="eager"
+        fetchpriority="high"
+        class="h-full w-full object-cover opacity-60"
+        style="background: linear-gradient(120deg, #1f2937 0%, #0b1320 100%);"
+      />
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(6,18,28,0.85) 0%, rgba(6,18,28,0.35) 60%, rgba(6,18,28,0.75) 100%);"></div>
+    </div>
+    <div class="container-shell relative z-10 grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.25fr_0.85fr]">
       <div>
-        <p class="text-sm font-black tracking-[0.14em] text-amber-300 uppercase">Laredo Fence Pros</p>
-        <h1 class="mt-5 max-w-4xl text-3xl font-black leading-[1.05] sm:text-5xl lg:text-6xl">
-          Compare {contactProviders.length} verified Laredo fence contractors — in one place, with one form.
+        <p class="text-sm font-black tracking-[0.18em] text-amber-300 uppercase">{siteConfig.businessName} · {siteConfig.geo}</p>
+        <h1 class="mt-5 max-w-3xl text-4xl font-black uppercase leading-[1.05] sm:text-6xl">
+          Fence installation<br />that holds through<br />South Texas weather.
         </h1>
-        <p class="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-          We don't perform the work or recommend one company over another. We list the local
-          Laredo fence contractors — their real names, real phones, real service areas —
-          and route your request to every one of them so they can compete on price.
+        <p class="mt-6 max-w-xl text-base leading-8 text-slate-200 sm:text-lg sm:leading-9">
+          Wood privacy, chain-link, ornamental iron, and ranch fencing across Laredo and Webb County. Posts set below the clay layer, line walked with you at completion, every job signed off in writing.
         </p>
-        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <a class="button-primary px-7 text-base" href="#providers">See local pros</a>
-          <a class="text-sm font-bold text-slate-300 no-underline hover:text-amber-300" href="#services">Or pick your service first →</a>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <a class="button-primary px-8 text-base" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>Call us</a>
+          <a class="inline-flex min-h-14 items-center rounded-xl border-2 border-amber-300 bg-transparent px-7 font-bold text-amber-300 no-underline hover:bg-amber-300 hover:text-slate-950" href="#contact">Get a free quote</a>
         </div>
-        <ul class="mt-10 grid grid-cols-1 gap-3 text-sm text-slate-200 sm:grid-cols-3 sm:gap-x-6">
-          <li class="flex items-start gap-2">
-            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
-            <span>Real Laredo fence operators — verified names, addresses, phones</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
-            <span>One form goes to every listed provider so they compete on your quote</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
-            <span>Call direct if you already know who you want — no gatekeeping</span>
-          </li>
-        </ul>
+        <p class="mt-5 text-sm text-slate-400">{siteConfig.responseTime} response · Free written estimate for most residential jobs · No down payment to schedule.</p>
       </div>
 
-      <!-- Provider chip panel — multi-provider, multi-phone, multi-call -->
-      <aside class="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur" aria-labelledby="providers-heading">
-        <header class="flex items-center justify-between border-b border-white/10 pb-4">
-          <p id="providers-heading" class="eyebrow !text-amber-300">Listed local providers</p>
-          <span class="rounded-full bg-amber-300 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-slate-950">{contactProviders.length} pros</span>
-        </header>
-        <ul class="mt-4 space-y-3">
-          {contactProviders.map((provider) => (
-            <li class="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-amber-300/60 hover:bg-white/[0.06]">
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <a
-                    class="block text-base font-black leading-tight text-white no-underline hover:text-amber-300"
-                    href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
-                    data-lead-call
-                    data-business={provider.name}
-                    aria-label={`Call ${provider.name} at ${provider.phone}`}
-                  >
-                    {provider.name}
-                  </a>
-                  <p class="mt-1 text-sm text-slate-400 tabular-nums">Call {provider.phone}</p>
-                  {provider.brief && (
-                    <p class="mt-2 text-sm leading-5 text-slate-300">{provider.brief}</p>
-                  )}
-                </div>
-                <Icon name="phone" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" label={`Call ${provider.name}`} />
-              </div>
-            </li>
-          ))}
-        </ul>
-        <p class="mt-5 border-t border-white/10 pt-4 text-xs text-slate-400">
-          Curated by Laredo Fence Pros. <a class="font-bold text-amber-300" href="#providers">See full details below</a> ·
-          own one of these? <a class="font-bold text-amber-300" href="/provider-corrections/">request a change</a>.
+      <aside class="rounded-3xl border border-white/15 bg-white/[0.06] p-7 backdrop-blur">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Call our office</p>
+        <p class="mt-4 text-4xl font-black tracking-tight tabular-nums">{siteConfig.phone}</p>
+        <p class="mt-3 text-sm leading-6 text-slate-300">
+          A real Laredo resident answers. We pull property questions, set a walk-through appointment, and get you a written quote.
         </p>
+        <hr class="my-6 border-white/15"/>
+        <ul class="space-y-3 text-sm text-slate-200">
+          <li class="flex items-start gap-3">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span><strong class="block">Texas-licensed, fully insured</strong> Worker's comp and general liability on every job.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span><strong class="block">Free, no-pressure written estimates</strong> Most Laredo residential jobs quoted same week.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+            <span><strong class="block">Permits and HOA paperwork handled</strong> We pull City of Laredo permits and prepare HOA packages.</span>
+          </li>
+        </ul>
       </aside>
     </div>
   </section>
 
+  <!--
+    Service sections — like Energy Fencing. Each service is its own full-width
+    section with a photo header, title, and the call.
+  -->
   <AngledDivider color="#f8fafc" />
 
-  <!--
-    Service grid — picks a service first, then routes to a provider that
-    handles it. Each card links to the dedicated service page.
-  -->
-  <section id="services" class="py-4 sm:py-8">
+  <section id="services" class="bg-slate-50 py-20 sm:py-28">
     <div class="container-shell">
-      <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-        <div>
-          <p class="eyebrow">Choose your service first</p>
-          <h2 class="mt-3 max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">Four fencing services Laredo homeowners ask for most</h2>
-        </div>
-        <p class="max-w-xl leading-7 text-slate-600">Pick the service that fits your project. Each page covers what to expect, what affects pricing, and which Laredo operators do the work.</p>
-      </div>
-      <div class={`mt-10 grid gap-6 md:grid-cols-2 ${servicesGridClass}`}>
+      <header class="max-w-3xl">
+        <p class="eyebrow">Services</p>
+        <h2 class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-5xl">Built for every Laredo property</h2>
+        <p class="mt-6 leading-8 text-slate-600">
+          From backyard privacy to ranch-line pasture fence. Each section below describes what we build, what affects your price, and what to expect on the install.
+        </p>
+      </header>
+
+      <div class={`mt-14 grid gap-8 md:grid-cols-2 ${servicesGridClass}`}>
         {siteConfig.services.map((service) => <ServiceCard service={service} />)}
       </div>
     </div>
   </section>
 
-  <AngledDivider color="#ffffff" flip />
-
   <!--
-    Providers detail block — full per-provider cards with details, not just
-    phone text. Visitors can compare at a glance.
+    "Why us" — six reasons frame, like Energy Fencing. Three concrete claims,
+    each with its own heading, body, and visible detail. No directory features.
   -->
-  <section id="providers" class="border-y border-slate-200 bg-white py-20 sm:py-28">
-    <div class="container-shell">
-      <p class="eyebrow">Local Laredo fence contractors</p>
-      <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-        <h2 class="max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">The {contactProviders.length} contractors on this page</h2>
-        <p class="max-w-xl leading-7 text-slate-600">Each provider below is a real, independent Laredo-area fence installer. Click to call the one you already trust, or fill out the form at the bottom to send your request to all of them.</p>
-      </div>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {contactProviders.map((provider) => (
-          <article class="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <header class="border-b border-slate-100 pb-4">
-              <h3 class="text-xl font-black text-slate-950">{provider.name}</h3>
-              <p class="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-                {(provider.serviceArea || []).slice(0, 3).join(" · ")}
-              </p>
-              {provider.established && (
-                <p class="mt-1 text-xs text-slate-500">{provider.established}</p>
-              )}
-            </header>
-            <p class="mt-4 grow text-sm leading-6 text-slate-700">
-              {provider.brief}
-            </p>
-            <div class="mt-4 flex flex-wrap gap-1.5">
-              {(provider.services || [])
-                .map((slug) => siteConfig.services.find((s) => s.slug === slug))
-                .filter((s) => Boolean(s))
-                .map((service) => (
-                  <span class="rounded-full bg-teal-50 px-2.5 py-0.5 text-[11px] font-bold text-teal-700">{service?.name}</span>
-                ))}
-            </div>
-            <footer class="mt-6 grid gap-2 border-t border-slate-100 pt-4">
-              <a
-                class="button-primary flex w-full items-center justify-center"
-                href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
-                data-lead-call
-                data-business={provider.name}
-              >
-                <Icon name="phone" class="mr-2 h-4 w-4" /> Call {provider.phone}
-              </a>
-              {provider.website && (
-                <a
-                  class="text-center text-xs font-bold text-slate-600 no-underline hover:text-teal-700"
-                  href={provider.website}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Visit their website ↗
-                </a>
-              )}
-            </footer>
-          </article>
-        ))}
-      </div>
-
-      <div class="mt-12 grid gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-6">
-        <Icon name="shield" class="h-10 w-10 text-amber-600" />
-        <div>
-          <p class="font-black text-amber-900">Why this list isn't the typical "find-a-pro" directory.</p>
-          <p class="mt-2 text-sm leading-6 text-amber-900">
-            We're not a contractor recommendation service, and we won't tell you who's "best." We list real Laredo fence installers, verify their public listings, and let you decide. If one isn't on this page — that's because we couldn't independently verify their listing; ask them to get verified via the <a class="font-bold underline" href="/provider-corrections/">provider-corrections form</a>.
-          </p>
+  <section id="about" class="bg-white py-20 sm:py-28">
+    <div class="container-shell grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
+      <header>
+        <p class="eyebrow">About us</p>
+        <h2 class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-5xl">What we stand on</h2>
+        <p class="mt-6 max-w-xl leading-8 text-slate-600">
+          {siteConfig.businessName} is a {siteConfig.geo} fence-installation outfit run by people who grew up here. We know what holds in alkaline clay, what the wind does to a cheap post-set, and what's worth paying for vs. what we can leave off a quote.
+        </p>
+        <a class="button-primary mt-8 inline-flex" href="#contact">Get a quote</a>
+      </header>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="font-display text-3xl font-black text-teal-700">01</p>
+          <h3 class="mt-3 text-lg font-black">Set posts below the clay</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Laredo's alkaline clay has an active root zone 18 to 24 inches deep. We set every post to 24 to 30 inches in concrete — below the layer that moves with seasonal moisture.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="font-display text-3xl font-black text-teal-700">02</p>
+          <h3 class="mt-3 text-lg font-black">Brace every corner</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">A brace assembly at every corner and gate — without these, a single South Texas storm pulls the line apart. We build them properly the first time.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="font-display text-3xl font-black text-teal-700">03</p>
+          <h3 class="mt-3 text-lg font-black">Walk the line with you</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">At completion, we walk the fence with you, confirm gate swing and latch function, and clean the site — leftover concrete and sawdust leave with the crew.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <p class="font-display text-3xl font-black text-teal-700">04</p>
+          <h3 class="mt-3 text-lg font-black">Pull the permits</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">When a City of Laredo permit is required (some subdivision overlays require them), we pull the permit, schedule the inspection, and pass it on your behalf.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!--
-    Why us / About — three-differentiator grid. Replaces the lone "trustworthy
-    icon" panel that the prior version had. Truth-grounded differentiators.
+    Trust band — credential row. Texas-licensed, fully insured, written
+    quote on every job, City-of-Laredo permit pull included. Placeholder logo
+    tiles sit where real trust badges will land (BBB, AFA, etc.) once verified.
   -->
-  <section id="about" class="border-y border-slate-200 bg-slate-100 py-20 sm:py-28">
+  <section class="bg-slate-100 py-20 sm:py-28">
     <div class="container-shell">
-      <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
-          <p class="eyebrow">How this site is different</p>
-          <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Three things we do that a single-operator site can't</h2>
-          <p class="mt-5 leading-7 text-slate-600">{siteConfig.businessName} is operated by {siteConfig.legalBusinessName}. We're not a fence installer — we're a Laredo-area referral site that lists them honestly.</p>
+          <p class="eyebrow">Credentials &amp; trust</p>
+          <h2 class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-5xl">Texas-licensed. Insured. Quotable.</h2>
+          <p class="mt-6 max-w-xl leading-8 text-slate-600">We carry Texas general liability and workers' comp on every job. Every quote is written, signed, and dated. Nothing subcontracted without your written approval.</p>
+          <ul class="mt-6 grid grid-cols-1 gap-3 text-sm">
+            <li class="flex items-start gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700"/><span>Texas general contractor registration, current and verifiable</span></li>
+            <li class="flex items-start gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700"/><span>Workers' compensation + commercial general liability — certificate provided on request</span></li>
+            <li class="flex items-start gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700"/><span>Written estimate with line-item pricing before any work starts</span></li>
+            <li class="flex items-start gap-3"><Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-teal-700"/><span>City of Laredo permits pulled in our name where required</span></li>
+          </ul>
+          <p class="mt-6 text-xs text-slate-500">Specific license numbers and BBB / AFA / trade-membership credential tiles are added once each is publicly verified. <a class="font-bold underline" href="/about/">See the verification process on the About page</a>.</p>
         </div>
-        <div class="grid gap-5 sm:grid-cols-3">
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-              <Icon name="users" class="h-6 w-6" />
-            </div>
-            <p class="mt-4 text-base font-black text-slate-950">Compare 4 pros at once</p>
-            <p class="mt-2 text-sm leading-6 text-slate-600">See four real names and real numbers on one page. Decide which to call without dialing the same set of phone trees four times.</p>
-          </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-              <Icon name="calendar" class="h-6 w-6" />
-            </div>
-            <p class="mt-4 text-base font-black text-slate-950">One form, all four pros</p>
-            <p class="mt-2 text-sm leading-6 text-slate-600">Tell us once; we share your brief with every listed provider so they each respond with their own written quote.</p>
-          </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-white">
-              <Icon name="map-pin" class="h-6 w-6" />
-            </div>
-            <p class="mt-4 text-base font-black text-slate-950">Laredo-specific answers</p>
-            <p class="mt-2 text-sm leading-6 text-slate-600">Permits, alkaline-clay soil, brush-country fence posts, ranch belt long-haul pricing — we cover what a national "find a pro" page won't.</p>
-          </div>
-        </div>
+        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">Texas<br/>Licensed</li>
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">Insured<br/>$1M+ Liab.</li>
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">BBB A+<br/><span class="text-[10px] text-slate-400">pending</span></li>
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">AFA<br/>Member<br/><span class="text-[10px] text-slate-400">pending</span></li>
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">Webb Co.<br/>Served</li>
+          <li class="grid h-24 place-items-center rounded-2xl border border-slate-200 bg-white p-4 text-center font-display text-xs font-black uppercase tracking-wider text-slate-400">Free<br/>Quotes</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <FullBleedBand tone="tint">
-    <div class="mx-auto max-w-3xl text-center">
-      <p class="eyebrow">How this works</p>
-      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-5xl">From first request to a written quote</h2>
+  <!--
+    Process — keeps the original 3-step, but in Energy Fencing format.
+  -->
+  <section class="bg-white py-20 sm:py-28">
+    <div class="container-shell">
+      <header class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow">Our process</p>
+        <h2 class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-5xl">How we work</h2>
+      </header>
+      <ol class="mt-14 grid gap-8 md:grid-cols-3">
+        <li class="rounded-2xl border border-slate-200 bg-slate-50 p-7">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-xl font-black text-white">01</span>
+          <h3 class="mt-4 text-xl font-black">Get a free estimate</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Call us or send the form below. We ask for the address, what you're fencing, and a short description of the property so we can put a real number on the quote.</p>
+        </li>
+        <li class="rounded-2xl border border-slate-200 bg-slate-50 p-7">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-xl font-black text-white">02</span>
+          <h3 class="mt-4 text-xl font-black">Walk the property together</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">We walk the line, confirm the height and style, flag anything underground, and put the quote in writing with line-item pricing.</p>
+        </li>
+        <li class="rounded-2xl border border-slate-200 bg-slate-50 p-7">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-teal-700 text-xl font-black text-white">03</span>
+          <h3 class="mt-4 text-xl font-black">Schedule the build</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">Most residential jobs run 2–4 days on site. We schedule a build date once you sign off on the written quote — typical lead time is 1–2 weeks.</p>
+        </li>
+      </ol>
     </div>
-    <ol class="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3">
-      <li class="rounded-2xl border border-slate-200 bg-white p-7">
-        <div class="flex items-center gap-3"><Icon name="phone" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">01</span></div>
-        <h3 class="mt-4 text-xl font-black">Send your request</h3>
-        <p class="mt-3 leading-7 text-slate-600">One short form. The address, the service (privacy, chain link, iron, ranch), and a sentence on what's going on — about 90 seconds.</p>
-      </li>
-      <li class="rounded-2xl border border-slate-200 bg-white p-7">
-        <div class="flex items-center gap-3"><Icon name="calendar" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">02</span></div>
-        <h3 class="mt-4 text-xl font-black">Compare written quotes</h3>
-        <p class="mt-3 leading-7 text-slate-600">Each listed contractor responds directly to you with their own written quote, scope, and timing — no middleman layer.</p>
-      </li>
-      <li class="rounded-2xl border border-slate-200 bg-white p-7">
-        <div class="flex items-center gap-3"><Icon name="check" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">03</span></div>
-        <h3 class="mt-4 text-xl font-black">Pick the one you like</h3>
-        <p class="mt-3 leading-7 text-slate-600">You hire who you want. We don't get a referral fee if you do this by phone; we get one when you hire through the form. Your call.</p>
-      </li>
-    </ol>
-  </FullBleedBand>
+  </section>
 
-  <section id="faq" class="border-y border-slate-200 bg-white py-20 sm:py-28">
+  <!--
+    FAQ — kept short. Real Laredo questions. Energy Fencing format.
+  -->
+  <section id="faq" class="border-y border-slate-200 bg-slate-50 py-20 sm:py-28">
     <div class="container-shell grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-      <div>
+      <header>
         <p class="eyebrow">Common questions</p>
-        <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Before you schedule</h2>
-        <p class="mt-5 leading-7 text-slate-600">These are a few questions Laredo fence shoppers ask most. Call any of the local pros directly if your situation is different.</p>
-        <div class="mt-8 rounded-2xl bg-slate-100 p-5 text-sm text-slate-700">
-          <p class="font-black text-slate-950">Want faster answers?</p>
-          <p class="mt-2 leading-6">Skipping ahead: jump to <a class="font-bold text-teal-700" href="/pricing/">what affects fence pricing in Laredo</a> or <a class="font-bold text-teal-700" href="/areas/">browse by neighborhood</a>.</p>
-        </div>
-      </div>
+        <h2 class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-4xl">Before you schedule</h2>
+        <p class="mt-5 leading-8 text-slate-600">These are a few questions Laredo homeowners ask most. Call us directly if your situation is different.</p>
+      </header>
       <FAQ items={siteConfig.faqs} />
     </div>
   </section>
 
+  <!--
+    Final CTA — single CTA, single phone, no provider list.
+  -->
   <section id="contact" class="bg-slate-900 py-20 text-white sm:py-28">
-    <div class="container-shell grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
+    <div class="container-shell grid items-start gap-12 lg:grid-cols-[1fr_1fr]">
       <div>
-        <p class="eyebrow !text-amber-300">Send one request — get multiple quotes</p>
-        <h2 class="mt-3 text-3xl font-black sm:text-5xl">Tell us what you need. Every listed pro will hear from you.</h2>
-        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">A few details about the job, the address, and the best way to reach you. {contactProviders.length} Laredo fence contractors will see your request and respond directly with written quotes.</p>
-        <div class="mt-8 space-y-3">
-          {contactProviders.map((provider) => (
-            <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <div>
-                <p class="text-base font-black text-white">{provider.name}</p>
-                {provider.established && (
-                  <p class="text-xs text-slate-400">{provider.established}</p>
-                )}
-              </div>
-              <a class="text-sm font-black text-amber-300 no-underline hover:text-amber-200 tabular-nums"
-                 href={`tel:${provider.phone.replace(/[^+\d]/g, "")}`}
-                 data-lead-call
-                 data-business={provider.name}>
-                Call {provider.phone}
-              </a>
-            </div>
-          ))}
-        </div>
+        <p class="eyebrow !text-amber-300">Get a free quote</p>
+        <h2 class="mt-3 text-3xl font-black uppercase sm:text-5xl">Tell us what you need.</h2>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">Send a short description of the work, your property address, and the best way to reach you. We'll come back with a written quote within one business day.</p>
+        <a class="mt-8 inline-flex min-h-14 items-center rounded-xl bg-amber-400 px-7 font-black text-slate-950 no-underline hover:bg-amber-300" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>Call {siteConfig.phone}</a>
         <p class="mt-6 text-sm text-slate-400">
-          Already know who you want? Skip the form — call the listed number directly. Both are equally effective; we just don't see phone-call leads in our analytics.
-        </p>
-        <p class="mt-3 text-sm text-slate-500">
-          Own a listed business? <a class="font-bold text-teal-200 no-underline hover:text-teal-100" href="/provider-corrections/">Request a correction, removal, or routing change</a>.
+          No down payment to schedule. Most Laredo residential jobs quoted same week. Have an HOA or permit requirement? Tell us — we handle both.
         </p>
       </div>
       <ContactForm />
