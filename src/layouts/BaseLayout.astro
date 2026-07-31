@@ -45,6 +45,7 @@ const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
     {noindex && <meta name="robots" content="noindex,follow" />}
 
     <!-- Favicon + browser-tab icons -->

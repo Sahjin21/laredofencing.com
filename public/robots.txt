@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://{DOMAIN}/sitemap-index.xml
+# Laredo, TX + Webb County primary service area; reduce unnecessary
+# crawl on internal/example docs.
+Disallow: /provider-corrections/
+
+Sitemap: https://laredofencing.com/sitemap-index.xml
