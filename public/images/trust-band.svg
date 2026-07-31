@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Image placeholder: finished cedar privacy fence viewed from inside a yard">
+  <metadata>
+    <prompt>finished cedar privacy fence viewed from inside a yard</prompt>
+    <asset-id>laredo-trust-band</asset-id>
+    <status>prompt placeholder</status>
+    <replacement-owner>operator</replacement-owner>
+    <replacement-deadline>30 days from launch</replacement-deadline>
+  </metadata>
+  <defs>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="32" height="32" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="32" stroke="#0f766e" stroke-width="3" opacity="0.18"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect width="100%" height="100%" fill="url(#hatch)"/>
+  <g font-family="system-ui, sans-serif" fill="#0f766e">
+    <text x="50%" y="46%" text-anchor="middle" font-size="56" font-weight="900" letter-spacing="0.04em">IMAGE PLANNED</text>
+    <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="#475569">finished cedar privacy fence viewed from inside a yard</text>
+    <text x="50%" y="63%" text-anchor="middle" font-size="18" fill="#94a3b8">Asset ID: laredo-trust-band</text>
+    <text x="50%" y="69%" text-anchor="middle" font-size="18" fill="#94a3b8">1200 x 800</text>
+  </g>
+  <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="none" stroke="#0f766e" stroke-width="2" stroke-dasharray="6 6" opacity="0.3"/>
+</svg>

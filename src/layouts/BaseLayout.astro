@@ -1,0 +1,99 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import StickyCtaRail from "../components/StickyCtaRail.astro";
+import { isConfigured, siteConfig, siteUrl } from "../lib/config";
+import "../styles/global.css";
+
+const ga4Id = isConfigured(siteConfig.ga4MeasurementId) ? siteConfig.ga4MeasurementId : null;
+const trackerUrl = isConfigured(siteConfig.leadTrackerUrl)
+  ? siteConfig.leadTrackerUrl.replace(/\/+$/, "")
+  : null;
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  schemas?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, path = "/", schemas = [], noindex = false } = Astro.props;
+const canonical = `${siteUrl}${path === "/" ? "" : path}`;
+const baseSchemas = [
+  {
+    "@context": "https://schema.org",
+    "@type": ["Organization", "LocalBusiness"],
+    name: siteConfig.businessName,
+    legalName: siteConfig.legalBusinessName,
+    url: siteUrl,
+    telephone: siteConfig.phone,
+    email: siteConfig.email,
+    address: siteConfig.address,
+    areaServed: siteConfig.serviceArea,
+  },
+];
+const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", "\\u003c");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline type="application/ld+json" set:html={schemaJson}></script>
+    {ga4Id && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>}
+    {ga4Id && (
+      <script is:inline define:vars={{ ga4Id }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", ga4Id);
+      </script>
+    )}
+    <script is:inline define:vars={{ trackerUrl, siteDomain: siteConfig.domain }}>
+      // Report call taps and form submissions to the dashboard so this site's
+      // real lead counts are provable when pitching a tenant.
+      window.__leadTrack = function (kind, business, extra) {
+        if (!trackerUrl) return Promise.resolve();
+        var payload = Object.assign(
+          { domain: siteDomain, kind: kind, business_name: business || null, path: location.pathname },
+          extra || {}
+        );
+        if (window.gtag) window.gtag("event", kind, { business: business || undefined });
+        return fetch(trackerUrl + "/api/v1/leads/events", {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).then(function (response) {
+          if (!response.ok) throw new Error("Lead tracker rejected the event");
+          return response;
+        });
+      };
+      document.addEventListener("click", function (event) {
+        var target = event.target instanceof Element ? event.target.closest("[data-lead-call]") : null;
+        if (target) window.__leadTrack("call_click", target.getAttribute("data-business")).catch(function () {});
+      });
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="fixed left-3 top-3 z-50 -translate-y-24 rounded bg-white px-4 py-2 font-bold text-slate-950 focus:translate-y-0">Skip to content</a>
+    <Header />
+    <StickyCtaRail />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

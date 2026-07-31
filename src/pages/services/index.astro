@@ -1,0 +1,52 @@
+---
+// OPT-IN page. The build spec's "Site structure" section requires a dedicated
+// services hub only when the Tier 1/Tier 2 competitor research shows it's a
+// genuine, recurring pattern worth following AND you'll write real original
+// content per service here (not a repeat of the homepage card blurbs).
+//
+// If that isn't the case for this niche, DELETE this file and remove the nav
+// link to it in Header.astro — the homepage services grid is the hub. Do not
+// keep this page live with thin/duplicate content just to add a URL.
+import Icon from "../../components/Icon.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { pageTitle, siteConfig } from "../../lib/config";
+
+const description = `Compare every ${siteConfig.niche.toLowerCase()} option available in ${siteConfig.geo} and find the right next step.`;
+---
+
+<BaseLayout title={pageTitle("Services")} description={description} path="/services/">
+  <section class="bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell">
+      <nav aria-label="Breadcrumb" class="text-sm text-slate-400"><a class="hover:text-white" href="/">Home</a><span class="mx-2">/</span><span>Services</span></nav>
+      <h1 class="mt-6 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">{siteConfig.niche} services in {siteConfig.geo}</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-300">Every option we cover, explained in plain language so you can pick the right one before you call.</p>
+    </div>
+  </section>
+
+  <section class="py-20 sm:py-28">
+    <div class="container-shell space-y-14">
+      {siteConfig.services.map((service) => (
+        <article id={service.slug} class="grid gap-8 border-b border-slate-200 pb-14 last:border-0 lg:grid-cols-[auto_1fr] lg:items-start lg:gap-10">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-teal-700" aria-hidden="true">
+            <Icon name="sparkles" class="h-8 w-8" />
+          </div>
+          <div>
+            <h2 class="text-2xl font-black text-slate-950">{service.name}</h2>
+            <p class="prose-copy mt-4 leading-7 text-slate-600">{service.introduction}</p>
+            <a href={`/services/${service.slug}/`} class="mt-4 inline-flex font-bold text-teal-700 no-underline hover:text-teal-900">
+              Full details on {service.name} <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-slate-100 py-16 text-center">
+    <div class="container-shell">
+      <h2 class="text-2xl font-black text-slate-950">Not sure which service you need?</h2>
+      <p class="mx-auto mt-3 max-w-xl leading-7 text-slate-600">Call and describe what you're seeing. We'll help you figure out the right next step.</p>
+      <a class="button-primary mt-6" href={siteConfig.phoneHref} data-lead-call data-business={siteConfig.businessName}>Call {siteConfig.phone}</a>
+    </div>
+  </section>
+</BaseLayout>

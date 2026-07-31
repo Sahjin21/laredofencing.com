@@ -1,0 +1,33 @@
+---
+import { siteConfig } from "../lib/config";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-slate-800 bg-slate-950 py-12 text-slate-300">
+  <div class="container-shell grid gap-10 md:grid-cols-3">
+    <div>
+      <p class="font-display text-xl font-black text-white">{siteConfig.businessName}</p>
+      <p class="mt-3 max-w-sm text-sm leading-6">Trusted {siteConfig.niche.toLowerCase()} help for {siteConfig.geo} and nearby communities.</p>
+    </div>
+    <div>
+      <p class="text-sm font-bold tracking-wide text-white">Contact</p>
+      <address class="mt-3 space-y-2 text-sm not-italic">
+        <p>{siteConfig.address}</p>
+        <p><a class="hover:text-white" href={siteConfig.phoneHref}>{siteConfig.phone}</a></p>
+        <p><a class="hover:text-white" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
+      </address>
+    </div>
+    <div>
+      <p class="text-sm font-bold tracking-wide text-white">Information</p>
+      <nav class="mt-3 flex flex-col gap-2 text-sm" aria-label="Footer navigation">
+        <a class="hover:text-white" href="/privacy/">Privacy policy</a>
+        <a class="hover:text-white" href="/terms/">Terms of service</a>
+        <a class="hover:text-white" href="/provider-corrections/">Business owner? Correct or remove a listing</a>
+      </nav>
+    </div>
+  </div>
+  <div class="container-shell mt-10 border-t border-slate-800 pt-6 text-xs text-slate-500">
+    &copy; {year} {siteConfig.legalBusinessName}. All rights reserved.
+  </div>
+</footer>

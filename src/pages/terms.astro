@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageTitle, siteConfig } from "../lib/config";
+---
+
+<BaseLayout title={pageTitle("Terms of Service")} description={`Website terms for ${siteConfig.businessName}.`} path="/terms/">
+  <article class="container-shell max-w-3xl py-16 sm:py-24">
+    <p class="eyebrow">Legal</p><h1 class="mt-3 text-4xl font-black text-slate-950">Terms of service</h1><p class="mt-4 text-sm text-slate-500">Last updated: {`{LAST_UPDATED}`}</p>
+    <div class="prose-copy mt-10 leading-8 text-slate-600">
+      <p>{siteConfig.legalBusinessName} operates this information and referral website. It does not perform the local services described here. By using the website, you agree to these terms.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Website information</h2><p>Website content and any interactive tool output are general planning information. They are not a provider quote, guarantee, professional advice, binding recommendation, or substitute for a provider's assessment.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Independent providers</h2><p>Listed providers are independent businesses. A listing is not a guarantee or endorsement. Submitting a form or calling does not create a service agreement. Any estimate, scheduling, payment, warranty, work, or dispute is between you and the provider under the terms you accept with that provider.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Acceptable use</h2><p>You may not misuse the website, attempt unauthorized access, interfere with its operation, submit unlawful material, or use its content in a way that violates applicable law.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Third-party services</h2><p>The website may use or link to third-party services. {siteConfig.legalBusinessName} is not responsible for third-party content, availability, or practices.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Limitation of liability</h2><p>To the extent permitted by law, {siteConfig.legalBusinessName} is not liable for indirect, incidental, or consequential losses arising from use of this website.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Contact</h2><p>Questions about these terms may be sent to <a class="font-bold text-teal-700" href={`mailto:${siteConfig.operatorPrivacyEmail}`}>{siteConfig.operatorPrivacyEmail}</a> or {siteConfig.operatorMailingAddress}.</p>
+    </div>
+  </article>
+</BaseLayout>

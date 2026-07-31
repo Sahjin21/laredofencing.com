@@ -1,0 +1,14 @@
+# {BUSINESS_NAME}
+
+> {BUSINESS_NAME} provides {NICHE} services in {GEO} and surrounding communities.
+
+Canonical website: https://{DOMAIN}
+Primary service area: {GEO}
+Contact: {PHONE}
+
+## Main pages
+
+- Home: https://{DOMAIN}/
+- Services: https://{DOMAIN}/services/{service-1}/
+- Privacy: https://{DOMAIN}/privacy/
+- Terms: https://{DOMAIN}/terms/

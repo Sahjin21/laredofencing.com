@@ -1,0 +1,137 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contactProviders, isConfigured, pageTitle, siteConfig } from "../lib/config";
+
+const trackerEndpoint = isConfigured(siteConfig.leadTrackerUrl)
+  ? `${siteConfig.leadTrackerUrl.replace(/\/+$/, "")}/api/v1/leads/events`
+  : null;
+---
+
+<BaseLayout
+  title={pageTitle("Business Listing Corrections")}
+  description={`Request a correction or removal of a business listing on ${siteConfig.businessName}.`}
+  path="/provider-corrections/"
+  noindex
+>
+  <section class="container-shell max-w-3xl py-16 sm:py-24">
+    <p class="eyebrow">Business owners</p>
+    <h1 class="mt-3 text-4xl font-black text-slate-950 sm:text-5xl">Request a listing correction or removal</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+      If you own or represent a business listed on this site, use this form to request a correction, removal, or routing change. Requests go only to {siteConfig.legalBusinessName} for manual review. They are never forwarded to the other listed businesses.
+    </p>
+
+    <form id="provider-request-form" class="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" novalidate>
+      <input type="hidden" name="submitted_after_ms" value="0" />
+      <div class="pointer-events-none absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+        <label>Website <input name="website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="text-sm font-bold text-slate-700 sm:col-span-2">
+          Business name
+          <input required name="business_name" list="listed-businesses" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+          <datalist id="listed-businesses">
+            {contactProviders.map((provider) => <option value={provider.name} />)}
+          </datalist>
+        </label>
+        <label class="text-sm font-bold text-slate-700">
+          Your name
+          <input required autocomplete="name" name="name" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+        </label>
+        <label class="text-sm font-bold text-slate-700">
+          Business email
+          <input required type="email" autocomplete="email" name="email" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+        </label>
+        <label class="text-sm font-bold text-slate-700">
+          Business phone <span class="font-normal text-slate-500">(optional)</span>
+          <input type="tel" autocomplete="tel" name="phone" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+        </label>
+        <label class="text-sm font-bold text-slate-700">
+          Request
+          <select required name="request_type" class="mt-2 h-12 w-full rounded-lg border border-slate-300 bg-white px-4 font-normal outline-none focus:border-teal-600">
+            <option value="">Choose one</option>
+            <option value="Remove the listing and stop lead routing">Remove listing and stop leads</option>
+            <option value="Correct listing information">Correct listing information</option>
+            <option value="Stop lead routing only">Stop lead routing only</option>
+            <option value="Other provider request">Other</option>
+          </select>
+        </label>
+        <label class="text-sm font-bold text-slate-700 sm:col-span-2">
+          Details
+          <textarea required name="details" maxlength="500" rows="5" class="mt-2 w-full rounded-lg border border-slate-300 p-4 font-normal outline-none focus:border-teal-600"></textarea>
+          <span class="mt-1 block text-xs font-normal text-slate-500">Describe what should change and the best public source for confirming it.</span>
+        </label>
+        <label class="flex min-h-11 items-start gap-3 text-sm leading-6 text-slate-700 sm:col-span-2">
+          <input required type="checkbox" name="authorized" class="mt-1 h-5 w-5 shrink-0 accent-teal-700" />
+          <span>I confirm that I own this business or am authorized to make this request for it.</span>
+        </label>
+      </div>
+      <button type="submit" class="button-primary mt-6 w-full">Submit provider request</button>
+      <p id="provider-request-status" class="mt-4 text-sm text-slate-600" aria-live="polite">
+        We review requests before changing a listing so one business cannot remove another business improperly.
+      </p>
+      <p class="mt-3 text-sm text-slate-600">
+        You may also email <a class="font-bold text-teal-700" href={`mailto:${siteConfig.operatorPrivacyEmail}?subject=${encodeURIComponent(`Business listing request for ${siteConfig.domain}`)}`}>{siteConfig.operatorPrivacyEmail}</a>.
+      </p>
+    </form>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ trackerEndpoint, siteDomain: siteConfig.domain }}>
+  var providerRequestForm = document.getElementById("provider-request-form");
+  if (providerRequestForm) {
+    var providerRequestStartedAt = Date.now();
+    providerRequestForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var status = document.getElementById("provider-request-status");
+      var button = providerRequestForm.querySelector("button[type=submit]");
+      if (!providerRequestForm.reportValidity()) return;
+      if (!trackerEndpoint) {
+        if (status) {
+          status.textContent = "Online requests are not configured yet. Please use the operator email shown below.";
+          status.className = "mt-4 text-sm font-bold text-red-700";
+        }
+        return;
+      }
+      var data = new FormData(providerRequestForm);
+      var requestType = String(data.get("request_type") || "");
+      var details = String(data.get("details") || "");
+      if (button) button.disabled = true;
+      fetch(trackerEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          domain: siteDomain,
+          kind: "provider_request",
+          business_name: String(data.get("business_name") || ""),
+          name: String(data.get("name") || ""),
+          email: String(data.get("email") || ""),
+          phone: String(data.get("phone") || "") || null,
+          message: requestType + ": " + details,
+          path: window.location.pathname,
+          page_url: window.location.href,
+          referrer: document.referrer || null,
+          submitted_after_ms: Date.now() - providerRequestStartedAt,
+          website: String(data.get("website") || "") || null,
+        }),
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Provider request rejected");
+          if (status) {
+            status.textContent = "Your request was received for manual review. No customer lead was sent.";
+            status.className = "mt-4 text-sm font-bold text-teal-700";
+          }
+          providerRequestForm.reset();
+          providerRequestStartedAt = Date.now();
+        })
+        .catch(function () {
+          if (status) {
+            status.textContent = "We could not submit the request. Please use the operator email shown below.";
+            status.className = "mt-4 text-sm font-bold text-red-700";
+          }
+        })
+        .finally(function () {
+          if (button) button.disabled = false;
+        });
+    });
+  }
+</script>

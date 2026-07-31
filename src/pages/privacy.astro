@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageTitle, siteConfig } from "../lib/config";
+
+const providerNames = siteConfig.providers.map((provider) => provider.name).join(", ");
+---
+
+<BaseLayout title={pageTitle("Privacy Policy")} description={`Privacy policy for ${siteConfig.businessName}.`} path="/privacy/">
+  <article class="container-shell max-w-3xl py-16 sm:py-24">
+    <p class="eyebrow">Legal</p><h1 class="mt-3 text-4xl font-black text-slate-950">Privacy policy</h1><p class="mt-4 text-sm text-slate-500">Last updated: {`{LAST_UPDATED}`}</p>
+    <div class="prose-copy mt-10 leading-8 text-slate-600">
+      <p>{siteConfig.legalBusinessName} operates this lead-generation website. The visible site brand is not the local service provider. The businesses listed on this site are independent providers.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Information collected</h2><p>We collect information you submit, including your name, phone number, optional email address, property or service details, and message. We also record call-link clicks, the provider involved, page and referral information, campaign parameters, submission time, and security metadata. When analytics is enabled, Google Analytics may collect device, cookie, and website-usage information.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">How information is used</h2><p>We use information to route and respond to your requested service inquiry, confirm delivery, prevent abuse, measure website and campaign performance, maintain necessary records, and comply with law.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Who receives an inquiry</h2><p>Submitted inquiries are shared with the provider or providers identified beside the form so they can respond about the requested service. The currently configured providers are {providerNames}. We also use vendors for hosting, analytics, email delivery, and dashboard operations. We do not share inquiry information for unrelated third-party advertising unless this policy and the collection notice are updated first.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Provider listing requests</h2><p>A business owner or authorized representative may submit identifying and contact information to request a listing correction, removal, or routing change. These requests go only to {siteConfig.legalBusinessName} for manual review and are not forwarded as customer leads to listed providers.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Retention and security</h2><p>Lead and delivery records are retained for {siteConfig.leadRetentionPeriod}, subject to legal and security exceptions, and then deleted under our documented retention process. We minimize collection, limit dashboard access, and use reasonable safeguards, but no internet system can be guaranteed completely secure.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Your choices</h2><p>You may request access, correction, or deletion, or exercise another applicable privacy right, by emailing <a class="font-bold text-teal-700" href={`mailto:${siteConfig.operatorPrivacyEmail}`}>{siteConfig.operatorPrivacyEmail}</a>. We may need to verify your identity, and legal or recordkeeping obligations may limit some requests.</p>
+      <h2 class="mt-8 text-2xl font-black text-slate-950">Contact</h2><p>Privacy questions may be sent to {siteConfig.operatorPrivacyEmail} or {siteConfig.operatorMailingAddress}.</p>
+    </div>
+  </article>
+</BaseLayout>

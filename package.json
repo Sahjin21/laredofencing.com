@@ -1,0 +1,25 @@
+{
+  "name": "lead-gen-site-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "check": "astro check",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^7.0.8",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

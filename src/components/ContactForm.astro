@@ -1,0 +1,161 @@
+---
+import { contactProviders, isConfigured, siteConfig } from "../lib/config";
+
+const endpointConfigured = !siteConfig.formEndpoint.startsWith("{");
+const providers = contactProviders;
+const multipleProviders = providers.length > 1;
+const soleProvider = providers.length === 1 ? providers[0] : null;
+const providerNames = providers.map((provider) => provider.name).join(", ");
+const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.responseTime : null;
+---
+
+<form
+  id="lead-form"
+  method="post"
+  action={endpointConfigured ? siteConfig.formEndpoint : undefined}
+  class="relative rounded-2xl bg-white p-6 shadow-xl sm:p-8"
+  novalidate
+>
+  <input type="hidden" name="subject" value={`New ${siteConfig.domain} lead`} />
+  <input type="hidden" name="submitted_after_ms" value="0" />
+  <div class="pointer-events-none absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+    <label>
+      Website
+      <input name="website" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+  <div class="grid gap-5 sm:grid-cols-2">
+    {soleProvider && <input type="hidden" name="business" value={soleProvider.name} />}
+    <label class="text-sm font-bold text-slate-700">
+      Name
+      <input required autocomplete="name" name="name" aria-describedby="name-error" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+      <span id="name-error" class="mt-1 block min-h-5 text-xs font-semibold text-red-700" aria-live="polite"></span>
+    </label>
+    <label class="text-sm font-bold text-slate-700">
+      Phone
+      <input required type="tel" autocomplete="tel" inputmode="tel" name="phone" aria-describedby="phone-error" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+      <span id="phone-error" class="mt-1 block min-h-5 text-xs font-semibold text-red-700" aria-live="polite"></span>
+    </label>
+    <label class="text-sm font-bold text-slate-700 sm:col-span-2">
+      Email <span class="font-normal text-slate-500">(optional)</span>
+      <input type="email" autocomplete="email" inputmode="email" name="email" aria-describedby="email-error" class="mt-2 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal outline-none focus:border-teal-600" />
+      <span id="email-error" class="mt-1 block min-h-5 text-xs font-semibold text-red-700" aria-live="polite"></span>
+    </label>
+    <label class="text-sm font-bold text-slate-700 sm:col-span-2">
+      Message <span class="font-normal text-slate-500">(optional)</span>
+      <textarea name="message" maxlength="500" rows="5" aria-describedby="message-help" class="mt-2 w-full rounded-lg border border-slate-300 p-4 font-normal outline-none focus:border-teal-600"></textarea>
+      <span id="message-help" class="mt-1 block text-xs font-normal text-slate-500">Up to 500 characters.</span>
+    </label>
+  </div>
+  <button type="submit" class="button-primary mt-5 w-full">Request service</button>
+  <p id="lead-form-status" class="mt-3 text-center text-xs text-slate-500" aria-live="polite">
+    {soleProvider
+      ? <>By submitting, you ask {siteConfig.legalBusinessName} to send this request to {soleProvider.name}, who may respond by phone or email about this request. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
+      : multipleProviders
+        ? <>By submitting, you ask {siteConfig.legalBusinessName} to share this request with all listed providers ({providerNames}), who may respond by phone or email about this request. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
+        : <>This form is not ready to accept requests because no verified provider is configured.</>}
+  </p>
+  {isConfigured(siteConfig.phone) && isConfigured(siteConfig.phoneHref) && (
+    <p class="mt-3 text-center text-sm text-slate-600">
+      Prefer to call? <a class="font-bold text-teal-700" href={siteConfig.phoneHref} data-lead-call>{siteConfig.phone}</a>
+    </p>
+  )}
+</form>
+
+<script is:inline define:vars={{ formEndpoint: endpointConfigured ? siteConfig.formEndpoint : null, responseTime }}>
+  var leadForm = document.getElementById("lead-form");
+  if (leadForm) {
+    var formStartedAt = Date.now();
+    leadForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var status = document.getElementById("lead-form-status");
+      var button = leadForm.querySelector("button[type=submit]");
+      var nameInput = leadForm.querySelector("[name=name]");
+      var phoneInput = leadForm.querySelector("[name=phone]");
+      var emailInput = leadForm.querySelector("[name=email]");
+      var nameError = document.getElementById("name-error");
+      var phoneError = document.getElementById("phone-error");
+      var emailError = document.getElementById("email-error");
+      var name = nameInput ? nameInput.value.trim() : "";
+      var phone = phoneInput ? phoneInput.value.trim() : "";
+      var email = emailInput ? emailInput.value.trim() : "";
+      var phoneDigits = phone.replace(/\D/g, "");
+      if (nameError) nameError.textContent = "";
+      if (phoneError) phoneError.textContent = "";
+      if (emailError) emailError.textContent = "";
+      if (nameInput) nameInput.removeAttribute("aria-invalid");
+      if (phoneInput) phoneInput.removeAttribute("aria-invalid");
+      if (emailInput) emailInput.removeAttribute("aria-invalid");
+      if (!name) {
+        if (nameError) nameError.textContent = "Enter your name.";
+        if (nameInput) { nameInput.setAttribute("aria-invalid", "true"); nameInput.focus(); }
+        return;
+      }
+      if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+        if (phoneError) phoneError.textContent = "Enter a valid phone number.";
+        if (phoneInput) { phoneInput.setAttribute("aria-invalid", "true"); phoneInput.focus(); }
+        return;
+      }
+      if (email && emailInput && emailInput.validity.typeMismatch) {
+        if (emailError) emailError.textContent = "Enter a valid email address.";
+        emailInput.setAttribute("aria-invalid", "true");
+        emailInput.focus();
+        return;
+      }
+      var data = new FormData(leadForm);
+      var elapsed = Date.now() - formStartedAt;
+      var business = data.get("business") || null;
+      var params = new URLSearchParams(window.location.search);
+      data.set("submitted_after_ms", String(elapsed));
+      data.set("page_url", window.location.href);
+      data.set("referrer", document.referrer || "");
+      ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function (key) {
+        var value = params.get(key);
+        if (value) data.set(key, value);
+      });
+      if (button) button.disabled = true;
+      var attribution = {
+        name: name,
+        phone: phone,
+        email: email || null,
+        message: data.get("message") || null,
+        website: data.get("website") || null,
+        submitted_after_ms: elapsed,
+        page_url: window.location.href,
+        referrer: document.referrer || null,
+        utm_source: params.get("utm_source"),
+        utm_medium: params.get("utm_medium"),
+        utm_campaign: params.get("utm_campaign"),
+        utm_term: params.get("utm_term"),
+        utm_content: params.get("utm_content"),
+      };
+      var jobs = [];
+      if (window.__leadTrack) jobs.push(window.__leadTrack("form_submit", business, attribution));
+      if (formEndpoint) {
+        jobs.push(fetch(formEndpoint, { method: "POST", body: data }).then(function (response) {
+          if (!response.ok) throw new Error("Form endpoint rejected the request");
+        }));
+      }
+      Promise.all(jobs)
+        .then(function () {
+          if (status) {
+            status.textContent = responseTime
+              ? "Thanks! We'll call you within " + responseTime + "."
+              : "Thanks! Your request was sent. We'll call you as soon as possible.";
+            status.className = "mt-3 text-center text-sm font-bold text-teal-700";
+          }
+          leadForm.reset();
+          formStartedAt = Date.now();
+        })
+        .catch(function () {
+          if (status) {
+            status.textContent = "We could not send your request. Please call the number shown here.";
+            status.className = "mt-3 text-center text-sm font-bold text-red-700";
+          }
+        })
+        .finally(function () {
+          if (button) button.disabled = false;
+        });
+    });
+  }
+</script>

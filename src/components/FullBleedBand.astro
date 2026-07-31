@@ -1,0 +1,23 @@
+---
+// Full-bleed band: an edge-to-edge background (color, gradient, or image)
+// with normal-width content inside. Use for a stat strip, trust band, or
+// process/timeline section to break up sections that would otherwise all
+// share the same white/light-gray card-grid treatment.
+interface Props {
+  tone?: "dark" | "brand" | "tint";
+  class?: string;
+}
+
+const { tone = "tint", class: className = "" } = Astro.props;
+const toneClass = {
+  dark: "bg-slate-950 text-white",
+  brand: "bg-teal-800 text-white",
+  tint: "bg-teal-50 text-slate-950",
+}[tone];
+---
+
+<section class={`${toneClass} py-16 sm:py-20 ${className}`}>
+  <div class="container-shell">
+    <slot />
+  </div>
+</section>

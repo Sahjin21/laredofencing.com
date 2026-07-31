@@ -1,0 +1,23 @@
+---
+// Angled/clipped section transition. Drop between two <section>s to break the
+// "flat horizontal band" rhythm that makes stacked Tailwind sections feel
+// generic. Color the divider to match the section ABOVE it so it reads as
+// that section's trailing edge.
+interface Props {
+  color?: string;
+  flip?: boolean;
+  class?: string;
+}
+
+const { color = "#f8fafc", flip = false, class: className = "" } = Astro.props;
+---
+
+<div class={`relative h-10 overflow-hidden sm:h-16 ${className}`} aria-hidden="true">
+  <svg
+    class={`absolute inset-0 h-full w-full ${flip ? "-scale-y-100" : ""}`}
+    preserveAspectRatio="none"
+    viewBox="0 0 100 20"
+  >
+    <polygon points="0,20 100,0 100,20" fill={color} />
+  </svg>
+</div>

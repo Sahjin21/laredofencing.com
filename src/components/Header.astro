@@ -1,0 +1,42 @@
+---
+import { siteConfig } from "../lib/config";
+---
+
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+  <div class="container-shell flex min-h-20 items-center justify-between gap-6">
+    <a href="/" class="max-w-48 font-display text-lg font-black leading-tight text-slate-950 no-underline">
+      {siteConfig.businessName}
+    </a>
+    <nav aria-label="Primary navigation" class="hidden items-center gap-6 md:flex">
+      <!--
+        Points at the homepage services anchor by default. If you keep
+        src/pages/services/index.astro (see its top comment — it's opt-in,
+        built only when competitor research justifies a dedicated hub page),
+        change this href to "/services/" instead.
+      -->
+      <a href="/#services" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">Services</a>
+      <a href="/#about" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">About</a>
+      <a href="/#faq" class="text-sm font-bold text-slate-600 no-underline hover:text-teal-700">FAQ</a>
+    </nav>
+    <a href={siteConfig.phoneHref} class="button-primary whitespace-nowrap" aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}>
+      Call {siteConfig.phone}
+    </a>
+  </div>
+</header>
+<div id="mobile-call-bar" class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-slate-200 bg-white p-3 shadow-2xl transition-transform md:hidden" aria-hidden="true">
+  <a href={siteConfig.phoneHref} class="button-primary min-h-12 w-full" data-lead-call aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}>
+    Call {siteConfig.phone}
+  </a>
+</div>
+
+<script is:inline>
+  var mobileCallBar = document.getElementById("mobile-call-bar");
+  function updateMobileCallBar() {
+    if (!mobileCallBar) return;
+    var visible = window.scrollY > Math.min(window.innerHeight * 0.7, 560);
+    mobileCallBar.classList.toggle("translate-y-full", !visible);
+    mobileCallBar.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
+  window.addEventListener("scroll", updateMobileCallBar, { passive: true });
+  updateMobileCallBar();
+</script>

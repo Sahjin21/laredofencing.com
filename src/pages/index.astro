@@ -1,0 +1,159 @@
+---
+import AngledDivider from "../components/AngledDivider.astro";
+import ContactForm from "../components/ContactForm.astro";
+import FAQ from "../components/FAQ.astro";
+import FullBleedBand from "../components/FullBleedBand.astro";
+import Icon from "../components/Icon.astro";
+import RatingBadge from "../components/RatingBadge.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import SplitSection from "../components/SplitSection.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contactProviders, pageTitle, primaryProvider, siteConfig } from "../lib/config";
+
+const heroPhone = primaryProvider ?? {
+  name: siteConfig.businessName,
+  phone: siteConfig.phone,
+  phoneHref: siteConfig.phoneHref,
+};
+
+// Service count varies by niche (see the build spec's "Site structure" guidance) — pick
+// a desktop column count that lays out cleanly instead of assuming exactly four.
+const servicesGridClass = siteConfig.services.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
+
+const description = `${siteConfig.businessName} provides dependable ${siteConfig.niche.toLowerCase()} services in ${siteConfig.geo}. Call ${siteConfig.phone} to discuss your project.`;
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: siteConfig.faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle()} description={description} schemas={[faqSchema]}>
+  <section class="overflow-hidden border-b border-slate-200 bg-slate-950 py-20 text-white sm:py-28">
+    <div class="container-shell grid items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+      <div>
+        <p class="text-sm font-black tracking-[0.08em] text-amber-300">Serving {siteConfig.geo}</p>
+        <h1 class="mt-5 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">{siteConfig.primaryKeyword}</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Tell us what you need, where you are located, and when you would like help. Your request goes to the local provider shown on this page.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a class="inline-flex min-h-14 items-center rounded-xl bg-amber-400 px-7 font-black text-slate-950 no-underline hover:bg-amber-300" href={heroPhone.phoneHref} data-lead-call data-business={heroPhone.name}>Call {heroPhone.phone}</a>
+          <a class="inline-flex min-h-14 items-center rounded-xl border border-slate-600 px-7 font-bold text-white no-underline hover:border-white" href="#contact">Request service</a>
+        </div>
+      </div>
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
+        <p class="eyebrow !text-amber-300">Before you request service</p>
+        <ul class="mt-6 space-y-5">
+          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Describe the need</strong><span class="text-sm text-slate-400">Share the service, location, and timing that matter to you.</span></span></li>
+          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Review the provider</strong><span class="text-sm text-slate-400">See which local business will receive your request before you submit it.</span></span></li>
+          <li class="flex gap-4"><span class="text-amber-300" aria-hidden="true">&#10003;</span><span><strong class="block text-white">Keep the phone option</strong><span class="text-sm text-slate-400">Call the listed number whenever you prefer a direct conversation.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <AngledDivider color="#f8fafc" />
+
+  <section id="services" class="py-4 sm:py-8">
+    <div class="container-shell">
+      <p class="eyebrow">How we can help</p>
+      <div class="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <h2 class="max-w-2xl text-3xl font-black text-slate-950 sm:text-5xl">{siteConfig.niche} options in {siteConfig.geo}</h2>
+        <p class="max-w-xl leading-7 text-slate-600">Choose the service that fits your situation. Each visit starts with listening, evaluating the work, and explaining practical options.</p>
+      </div>
+      <div class={`mt-10 grid gap-6 md:grid-cols-2 ${servicesGridClass}`}>
+        {siteConfig.services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="border-y border-slate-200 bg-white py-20 sm:py-28">
+    <!--
+      Section-composition primitive: offset image/text split (SplitSection),
+      used instead of another centered heading + paragraph block. Replace the
+      media slot below with a real/generated image or an IMAGE_PROMPTS.md
+      placeholder per the visual-system requirements — this Icon block is a
+      structural placeholder only.
+    -->
+    <SplitSection eyebrow="Local expertise, useful answers" heading={`A better service experience for ${siteConfig.geo}`}>
+      <p>When something at your home or business needs attention, you should not have to chase callbacks or decode a vague recommendation. {siteConfig.businessName} helps customers understand the condition, the available solutions, and the next practical step.</p>
+      <p>Our service area includes {siteConfig.serviceArea.join(", ")}. That local focus helps us plan realistic scheduling and recommend work appropriate for the properties, climate, and common concerns in the area.</p>
+      <p>Every project begins with your goals. We ask questions, assess the situation, and explain the proposed scope before work moves forward. If there are alternatives, you will hear them. If something is outside our services, we will say so.</p>
+      <p>Use the form below or call {siteConfig.phone}. Share what you have noticed, when the issue began, and any timing concerns. We will help you determine the right next step.</p>
+      <div slot="media" class="flex aspect-4/3 items-center justify-center bg-linear-to-br from-teal-50 to-white">
+        <Icon name="shield" class="h-24 w-24 text-teal-700" label={`Trustworthy ${siteConfig.niche.toLowerCase()} service`} />
+      </div>
+    </SplitSection>
+  </section>
+
+  <!--
+    Section-composition primitive: full-bleed band, used to break up the
+    stacked white/light-gray sections above and below with an edge-to-edge
+    tinted band instead of another bordered card grid.
+  -->
+  <FullBleedBand tone="tint">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="eyebrow">A simple process</p>
+      <h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-5xl">From your first call to a completed job</h2>
+    </div>
+    <ol class="mt-12 grid gap-6 md:grid-cols-3">
+      <li class="rounded-2xl border border-slate-200 bg-white p-7">
+        <div class="flex items-center gap-3"><Icon name="phone" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">01</span></div>
+        <h3 class="mt-4 text-xl font-black">Tell us what is happening</h3>
+        <p class="mt-3 leading-7 text-slate-600">Call or send a request with the service you need, the property location, and the best way to reach you.</p>
+      </li>
+      <li class="rounded-2xl border border-slate-200 bg-white p-7">
+        <div class="flex items-center gap-3"><Icon name="calendar" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">02</span></div>
+        <h3 class="mt-4 text-xl font-black">Review clear options</h3>
+        <p class="mt-3 leading-7 text-slate-600">We assess the work, answer questions, and outline the recommended scope so you can make an informed choice.</p>
+      </li>
+      <li class="rounded-2xl border border-slate-200 bg-white p-7">
+        <div class="flex items-center gap-3"><Icon name="check" class="h-8 w-8 text-teal-700" /><span class="text-3xl font-black text-teal-200">03</span></div>
+        <h3 class="mt-4 text-xl font-black">Get the work completed</h3>
+        <p class="mt-3 leading-7 text-slate-600">Your service is scheduled and completed with attention to communication, safety, and respect for the property.</p>
+      </li>
+    </ol>
+  </FullBleedBand>
+
+  <section id="faq" class="border-y border-slate-200 bg-slate-100 py-20 sm:py-28">
+    <div class="container-shell grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
+      <div><p class="eyebrow">Common questions</p><h2 class="mt-3 text-3xl font-black text-slate-950 sm:text-4xl">Before you schedule</h2><p class="mt-5 leading-7 text-slate-600">These are a few questions customers often ask. Call us if your situation is different or you need an immediate answer.</p></div>
+      <FAQ items={siteConfig.faqs} />
+    </div>
+  </section>
+
+  <section id="contact" class="bg-slate-900 py-20 text-white sm:py-28">
+    <div class="container-shell grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <p class="eyebrow !text-amber-300">Request service</p>
+        <h2 class="mt-3 text-3xl font-black sm:text-5xl">Tell us how we can help</h2>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">Send a few details and the provider you choose will follow up. For the fastest response, call <a class="font-bold text-amber-300" href={heroPhone.phoneHref} data-lead-call data-business={heroPhone.name}>{heroPhone.phone}</a>.</p>
+        {contactProviders.length > 1 && (
+          <div class="mt-8">
+            <p class="text-sm font-bold tracking-[0.08em] text-slate-400">Listed local providers</p>
+            <ul class="mt-3 space-y-3">
+              {contactProviders.map((provider) => (
+                <li>
+                  <a class="font-bold text-white no-underline hover:text-amber-300" href={provider.phoneHref} data-lead-call data-business={provider.name}>
+                    {provider.name} · {provider.phone}
+                  </a>
+                  <RatingBadge rating={provider.rating} reviewCount={provider.reviewCount} class="mt-1 block text-slate-300! [&_span]:text-slate-500!" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {contactProviders.length > 0 && (
+          <p class="mt-5 text-sm text-slate-400">
+            Own or represent a listed business? <a class="font-bold text-teal-200" href="/provider-corrections/">Request a correction, removal, or routing change</a>.
+          </p>
+        )}
+        <p class="mt-8 text-sm text-slate-400">Serving {siteConfig.serviceArea.join(", ")}</p>
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+</BaseLayout>

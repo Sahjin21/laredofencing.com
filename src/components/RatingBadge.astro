@@ -1,0 +1,22 @@
+---
+// Renders only when a provider has a currently-verified rating/review count (see
+// the Provider interface in lib/config.ts). This is a real, checkable trust signal
+// pulled from the provider's own listing — never invent or estimate these numbers.
+import Icon from "./Icon.astro";
+
+interface Props {
+  rating?: number;
+  reviewCount?: number;
+  class?: string;
+}
+
+const { rating, reviewCount, class: className = "" } = Astro.props;
+---
+
+{rating != null && reviewCount != null && (
+  <span class={`inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 ${className}`}>
+    <Icon name="star" class="h-4 w-4 text-amber-400" />
+    {rating.toFixed(1)}
+    <span class="font-normal text-slate-400">({reviewCount} Google reviews)</span>
+  </span>
+)}
