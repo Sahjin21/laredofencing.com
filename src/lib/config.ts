@@ -49,7 +49,7 @@ export const siteConfig = {
   // The operator manually creates GA4 and supplies this web-stream measurement ID.
   // Record the numeric property ID and verification in ANALYTICS_SETUP.md. Leave the
   // placeholder to skip analytics; never put a numeric property ID in this field.
-  ga4MeasurementId: "{GA4_MEASUREMENT_ID}",
+  ga4MeasurementId: 'G-PZHLMR0JEK',
   // Dashboard API origin (e.g. https://api.example.com). Every call tap and form
   // submission is reported there so the site's real lead counts are provable.
   leadTrackerUrl: "https://sahjin.dev",
