@@ -10,10 +10,10 @@ verification tokens in this repository.
 - **Google account/property owner:** Kurtz & Boon LLC
 - **Numeric GA4 property ID:** *pending operator confirmation against GA4 admin; the script is wired to the supplied measurement ID, but the numeric property ID should be filled in by the operator during GA4 handoff*
 - **Web stream name and ID:** *pending operator confirmation*
-- **Measurement ID:** `G-PZHLMR0JEK`
+- **Measurement ID:** `G-DD85F1HJ8N`
 - **Tag source:** operator-supplied measurement ID
 - **Installed by and date:** build operator / 2026-07-31
-- **Duplicate-tag check:** *pending — run after Vercel deploys to confirm a single `googletagmanager.com/gtag/js?id=G-PZHLMR0JEK` script loads*
+- **Duplicate-tag check:** *pending — run after Vercel deploys to confirm a single `googletagmanager.com/gtag/js?id=G-DD85F1HJ8N` script loads*
 - **Realtime or DebugView page-view test:** *pending — open GA4 → Reports → Realtime, then load the home page; a single `page_view` event should appear within 60 seconds*
 - **`call_click` event test:** *pending — once Realtime works, simulate a phone-link click in the browser and confirm a `call_click` event in DebugView (the existing `__leadTrack` JS handler also fires `gtag('event', kind, …)` for both call clicks and form submits on the same property)*
 
