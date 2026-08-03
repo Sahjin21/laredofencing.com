@@ -1,43 +1,115 @@
 ---
-// Desktop equivalent of the sticky mobile bottom call bar in Header.astro.
-// A slim vertical rail pinned to the right edge, revealed once the hero has
-// scrolled out of view. Desktop-only (md+); the mobile bottom bar already
-// owns small screens, so this is hidden below md to avoid stacking two CTAs.
-import { primaryProvider, siteConfig } from "../lib/config";
+// Desktop sticky "Request a quote" rail — appears on the right edge
+// after the user scrolls past the hero, hides again over the final
+// CTA section (which already has its own CTAs).
+//
+// Pattern reference: pasadenafoundationrepair.net/StickyCtaRail.astro
+// (vertical card, quote icon + label + subtitle, no phone number).
+//
+// This rail does NOT show a phone number. It scrolls the user to the
+// form section. The phone is reachable via:
+//   - Header right-side text link
+//   - Hero side card (one location on the home page)
+//   - Final-CTA inline "Or call xxx" text link
+//   - Mobile sticky bottom bar
+//   - Footer contact column
 
-const cta = primaryProvider ?? {
-  name: siteConfig.businessName,
-  phone: siteConfig.phone,
-  phoneHref: siteConfig.phoneHref,
-};
+const quoteLabel = "Request a quote";
+const quoteSubtitle = "Talk to a Laredo fence installer";
+const target = "#contact";
 ---
 
-<div
-  id="desktop-cta-rail"
-  class="fixed right-0 top-1/2 z-40 hidden -translate-y-1/2 translate-x-full flex-col items-end gap-2 transition-transform duration-300 md:flex"
-  aria-hidden="true"
+<aside
+  id="sticky-cta-rail"
+  class="hidden md:block fixed top-1/2 right-6 -translate-y-1/2 z-20 bg-white shadow-xl border border-slate-200 rounded-2xl p-4 max-w-[220px] opacity-0 pointer-events-none transition-opacity duration-300"
+  aria-label="Quick contact"
 >
   <a
-    href={cta.phoneHref}
-    data-lead-call
-    data-business={cta.name}
-    class="flex items-center gap-3 rounded-l-xl bg-amber-400 py-4 pl-5 pr-4 font-black text-slate-950 no-underline shadow-2xl hover:bg-amber-300"
-    aria-label={`Call ${cta.name} at ${cta.phone}`}
+    href={target}
+    class="flex flex-col items-center gap-2 group"
+    aria-label={`${quoteLabel} — ${quoteSubtitle}`}
   >
-    <span class="text-sm leading-tight">
-      Call now<br /><span class="text-base">{cta.phone}</span>
+    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" aria-hidden="true">
+      <!-- Clipboard / quote icon -->
+      <rect x="6" y="4" width="12" height="16" rx="2" fill="#0f766e" fill-opacity="0.12" stroke-linejoin="round"/>
+      <path d="M9 9h6M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 4h4a1 1 0 0 1 1 1v1H9V5a1 1 0 0 1 1-1z" fill="#0f766e" fill-opacity="0.18" stroke-linejoin="round"/>
+    </svg>
+    <span class="font-display text-base font-black text-slate-950 group-hover:text-teal-700 transition-colors text-center">
+      {quoteLabel}
     </span>
+    <span class="text-xs text-slate-600 text-center leading-snug">{quoteSubtitle}</span>
   </a>
-</div>
+</aside>
 
 <script is:inline>
-  var ctaRail = document.getElementById("desktop-cta-rail");
-  function updateCtaRail() {
-    if (!ctaRail) return;
-    var visible = window.scrollY > Math.min(window.innerHeight * 0.7, 560);
-    ctaRail.classList.toggle("translate-x-full", !visible);
-    ctaRail.setAttribute("aria-hidden", visible ? "false" : "true");
-  }
-  window.addEventListener("scroll", updateCtaRail, { passive: true });
-  updateCtaRail();
+  (function() {
+    function init() {
+      var rail = document.getElementById('sticky-cta-rail');
+      if (!rail) return;
+
+      var heroEl = document.querySelector('main > section:first-of-type');
+      var finalCtaEl = document.getElementById('contact');
+
+      function show() {
+        rail.classList.remove('opacity-0', 'pointer-events-none');
+        rail.classList.add('opacity-100');
+      }
+      function hide() {
+        rail.classList.remove('opacity-100');
+        rail.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (!heroEl && !finalCtaEl) {
+        // Nothing to anchor against — don't show.
+        return;
+      }
+
+      function isActive(el) {
+        if (!el) return false;
+        var rect = el.getBoundingClientRect();
+        var vh = window.innerHeight;
+        return rect.top < vh - 80 && rect.bottom > 80;
+      }
+
+      // Returns true once the hero bottom has crossed 25% of the viewport
+      // height — i.e. user has scrolled past it.
+      function isPastHero() {
+        if (!heroEl) return false;
+        var rect = heroEl.getBoundingClientRect();
+        return rect.bottom < window.innerHeight * 0.25;
+      }
+
+      function update() {
+        var scrolled = window.scrollY > 100;
+        var pastHero = isPastHero();
+        var finalCtaActive = isActive(finalCtaEl);
+        if (!scrolled || (!pastHero && isActive(heroEl)) || finalCtaActive) {
+          hide();
+        } else {
+          show();
+        }
+      }
+
+      var ticking = false;
+      function onChange() {
+        if (!ticking) {
+          ticking = true;
+          window.requestAnimationFrame(function() {
+            update();
+            ticking = false;
+          });
+        }
+      }
+      window.addEventListener('scroll', onChange, { passive: true });
+      window.addEventListener('resize', onChange);
+      update();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
 </script>
