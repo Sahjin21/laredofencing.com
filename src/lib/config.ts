@@ -69,7 +69,7 @@ export const siteConfig = {
   // The lead-generation platform operator. This is separate from the visible
   // site brand and from every independent provider listed below.
   legalBusinessName: "Kurtz & Boon LLC",
-  operatorPrivacyEmail: "privacy@laredofencing.com",
+  operatorPrivacyEmail: "inquiry@sahjin.dev",
   operatorMailingAddress: "Kurtz & Boon LLC, [street], Laredo, TX 78040",
   // Confirm this against the dashboard's enforced deletion schedule before launch.
   leadRetentionPeriod: "24 months",
