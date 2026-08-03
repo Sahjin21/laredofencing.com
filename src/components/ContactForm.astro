@@ -5,7 +5,6 @@ const endpointConfigured = !siteConfig.formEndpoint.startsWith("{");
 const providers = contactProviders;
 const multipleProviders = providers.length > 1;
 const soleProvider = providers.length === 1 ? providers[0] : null;
-const providerNames = providers.map((provider) => provider.name).join(", ");
 const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.responseTime : null;
 ---
 
@@ -50,9 +49,9 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
   <button type="submit" class="button-primary mt-5 w-full">Request service</button>
   <p id="lead-form-status" class="mt-3 text-center text-xs text-slate-500" aria-live="polite">
     {soleProvider
-      ? <>By submitting, you ask {siteConfig.legalBusinessName} to send this request to {soleProvider.name}, who may respond by phone or email about this request. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
+      ? <>By submitting, you authorize {siteConfig.legalBusinessName} to contact you about your fence project. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
       : multipleProviders
-        ? <>By submitting, you ask {siteConfig.legalBusinessName} to share this request with all listed providers ({providerNames}), who may respond by phone or email about this request. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
+        ? <>By submitting, you authorize {siteConfig.legalBusinessName} to contact you about your fence project. <a class="font-bold text-teal-700 underline" href="/privacy/">Privacy policy</a>.</>
         : <>This form is not ready to accept requests because no verified provider is configured.</>}
   </p>
 </form>
