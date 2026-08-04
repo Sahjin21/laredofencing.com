@@ -6,6 +6,7 @@ export interface Service {
   benefits: string[];
   process: Array<{ title: string; description: string }>;
   image?: string;
+  gallery?: Array<{ id: string; src: string; alt: string }>;
 }
 
 export interface FAQItem {
@@ -59,6 +60,18 @@ export const siteConfig = {
   geo: "Laredo, Texas",
   domain: "laredofencing.com",
   businessName: "Laredo Fence Pros",
+  // LEAD-TEST-MODE (2026-08-03, operator-requested): outbound leads and CTA
+  // phone clicks are routed to a fake number and the operator's personal
+  // email instead of the configured (956) 287-5555 / sahjin.dev endpoints.
+  // This is so the operator can verify the lead-tracking webapp is updating
+  // without spamming the 4 real Laredo contractors. Flip
+  // `leadTestMode: false` to revert. The `providers[]` array below is NOT
+  // touched — revert only requires this one flag flip.
+  leadTestMode: true,
+  leadTestPhone: "(555) 555-5555",
+  leadTestPhoneHref: "tel:+15555555555",
+  leadTestEmail: "stalemate15@gmail.com",
+  leadTestTrackerUrl: "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
   phone: "(956) 287-5555",
   phoneHref: "tel:+19562875555",
   email: "contact@laredofencing.com",
@@ -166,6 +179,14 @@ export const siteConfig = {
         { title: "Hang rails and pickets", description: "Two horizontal rails per panel, pickets side-by-side (or board-on-board) with a 3/8-inch reveal, and a cap on top that finishes the run cleanly." },
         { title: "Walk the job with you", description: "We walk the fence with you at completion, confirm gate swing and latch function, and clean the site — leftover concrete and sawdust come out with us." },
       ],
+      gallery: [
+        { id: "laredo-wood-privacy-gallery-01", src: "/images/laredo-wood-privacy-gallery-01.svg", alt: "Worker hand holding a cedar post plumb in fresh concrete during a Laredo privacy fence install." },
+        { id: "laredo-wood-privacy-gallery-02", src: "/images/laredo-wood-privacy-gallery-02.svg", alt: "Rails partially hung on a cedar privacy fence in Laredo; pickets stacked against the line." },
+        { id: "laredo-wood-privacy-gallery-03", src: "/images/laredo-wood-privacy-gallery-03.svg", alt: "Board-on-board cedar privacy fence panel close-up in a Laredo backyard." },
+        { id: "laredo-wood-privacy-gallery-04", src: "/images/laredo-wood-privacy-gallery-04.svg", alt: "Freshly completed cedar privacy fence stretching down the side of a Laredo home." },
+        { id: "laredo-wood-privacy-gallery-05", src: "/images/laredo-wood-privacy-gallery-05.svg", alt: "Cedar cap detail at a wood privacy fence corner in Laredo; gloved hand visible at frame edge." },
+        { id: "laredo-wood-privacy-gallery-06", src: "/images/laredo-wood-privacy-gallery-06.svg", alt: "Walk-gate hinges being fitted on a Laredo cedar privacy fence; drill on the ground nearby." },
+      ],
     },
     {
       slug: "chain-link-fence",
@@ -183,6 +204,14 @@ export const siteConfig = {
         { title: "Set posts in concrete", description: "Terminal, corner, and gate posts in concrete; line posts on a 10-foot maximum spacing. All set below the active soil layer." },
         { title: "Hang fabric", description: "Galvanized or vinyl-coated chain-link fabric stretched taut between terminal posts, tied to line posts, and finished with a top rail that runs the full length." },
         { title: "Hinge and latch gates", description: "Walk gates hung on self-closing hinges, double-drive gates for vehicle access where applicable, with a code-compliant latch for pool enclosures." },
+      ],
+      gallery: [
+        { id: "laredo-chain-link-gallery-01", src: "/images/laredo-chain-link-gallery-01.svg", alt: "Vinyl-coated black chain-link terminal post being set in concrete in Laredo." },
+        { id: "laredo-chain-link-gallery-02", src: "/images/laredo-chain-link-gallery-02.svg", alt: "Chain-link fabric being stretched with a come-along on a Laredo residential install." },
+        { id: "laredo-chain-link-gallery-03", src: "/images/laredo-chain-link-gallery-03.svg", alt: "Close-up of vinyl-coated black chain-link fabric on a Laredo fence; top rail visible above." },
+        { id: "laredo-chain-link-gallery-04", src: "/images/laredo-chain-link-gallery-04.svg", alt: "Bottom-rail detail of a vinyl-coated chain-link fence in a Laredo dog run; rail 1-2 inches above grade." },
+        { id: "laredo-chain-link-gallery-05", src: "/images/laredo-chain-link-gallery-05.svg", alt: "Walk-gate install on a vinyl-coated chain-link fence in Laredo; hinges fitted, latch mid-fit." },
+        { id: "laredo-chain-link-gallery-06", src: "/images/laredo-chain-link-gallery-06.svg", alt: "Long run of finished vinyl-coated chain-link fence at the back of a Laredo residential lot." },
       ],
     },
     {
@@ -202,6 +231,14 @@ export const siteConfig = {
         { title: "Weld and hang panels", description: "Pre-finished panels or custom-fabricated sections welded to the posts, hung level, and finished at the foot so the ground follows the contour of the yard rather than fighting it." },
         { title: "Touch-up and walk-through", description: "Touch-up paint on any weld, walk the fence line with you, confirm gate operation, and provide written care notes for the finish." },
       ],
+      gallery: [
+        { id: "laredo-wrought-iron-gallery-01", src: "/images/laredo-wrought-iron-gallery-01.svg", alt: "Spear-top ornamental iron fence panel installed at a Laredo home." },
+        { id: "laredo-wrought-iron-gallery-02", src: "/images/laredo-wrought-iron-gallery-02.svg", alt: "Welding an ornamental iron panel to a post during a Laredo install; sparks visible." },
+        { id: "laredo-wrought-iron-gallery-03", src: "/images/laredo-wrought-iron-gallery-03.svg", alt: "Ornamental iron fence enclosing a pool at a Laredo home; pool-code gate visible." },
+        { id: "laredo-wrought-iron-gallery-04", src: "/images/laredo-wrought-iron-gallery-04.svg", alt: "Powder-coated black finish detail on an ornamental iron panel in Laredo." },
+        { id: "laredo-wrought-iron-gallery-05", src: "/images/laredo-wrought-iron-gallery-05.svg", alt: "Fluted square post with a ball-finial cap on an ornamental iron fence in Laredo." },
+        { id: "laredo-wrought-iron-gallery-06", src: "/images/laredo-wrought-iron-gallery-06.svg", alt: "Ornamental iron fence running along the front of a Laredo home." },
+      ],
     },
     {
       slug: "ranch-fence",
@@ -219,6 +256,14 @@ export const siteConfig = {
         { title: "Set corner and brace assemblies", description: "A brace assembly at every corner and gate — without these, the fence will pull apart in the first good South Texas storm. We build them properly the first time." },
         { title: "Hang wire and stay set", description: "Wire strung tight and tied off to the braces; t-posts driven every 12 to 16 feet depending on terrain; stays set on corners and curves to keep the wire from sagging over time." },
         { title: "Walk it with you", description: "We walk the line, confirm gates swing, identify any spots that need attention (washouts, brush), and leave a maintenance note for the first six months." },
+      ],
+      gallery: [
+        { id: "laredo-ranch-gallery-01", src: "/images/laredo-ranch-gallery-01.svg", alt: "Wooden H-brace assembly at a ranch fence corner south of Laredo." },
+        { id: "laredo-ranch-gallery-02", src: "/images/laredo-ranch-gallery-02.svg", alt: "Pipe-and-cable ranch fence running across Webb County brush country." },
+        { id: "laredo-ranch-gallery-03", src: "/images/laredo-ranch-gallery-03.svg", alt: "Worker driving a T-post into ranch ground with a manual post driver near Laredo." },
+        { id: "laredo-ranch-gallery-04", src: "/images/laredo-ranch-gallery-04.svg", alt: "Four-strand barbed wire wrapped around a ranch fence corner post in Webb County." },
+        { id: "laredo-ranch-gallery-05", src: "/images/laredo-ranch-gallery-05.svg", alt: "Game fence running along a slope in Webb County ranch country." },
+        { id: "laredo-ranch-gallery-06", src: "/images/laredo-ranch-gallery-06.svg", alt: "Field fence with a 12-foot pipe gate at the entrance of a Webb County ranch road." },
       ],
     },
   ] satisfies Service[],
@@ -338,3 +383,41 @@ export function pageTitle(subject?: string): string {
     ? `${subject} ${siteConfig.geo} | ${siteConfig.businessName}`
     : `${siteConfig.primaryKeyword} | ${siteConfig.businessName}`;
 }
+
+/*
+  effectiveContact — single source of truth for outbound lead/CTA endpoints.
+
+  When `leadTestMode` is on (operator's webapp-troubleshooting session,
+  2026-08-03), outbound endpoints swap to a fake phone + the operator's
+  personal email + a tagged tracker URL so:
+    - The webapp dashboard records incoming events with `?test_mode=laredo`
+      so the operator can see test traffic separately from production.
+    - Visitors who try to call hit a non-routed test number (555-555-5555).
+    - Lead emails route to stalemate15@gmail.com instead of any contractor.
+
+  Revert = set `siteConfig.leadTestMode: false`. No `providers[]` array
+  data is touched. `siteConfig.phone`, `phoneHref`, `formEndpoint`,
+  `leadTrackerUrl` keep their production values; consumers should read
+  from `effectiveContact` instead.
+*/
+export const effectiveContact = siteConfig.leadTestMode
+  ? {
+      phone: siteConfig.leadTestPhone ?? "(555) 555-5555",
+      phoneHref: siteConfig.leadTestPhoneHref ?? "tel:+15555555555",
+      email: siteConfig.leadTestEmail ?? "stalemate15@gmail.com",
+      formEndpoint:
+        siteConfig.leadTestTrackerUrl ??
+        "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+      leadTrackerUrl:
+        siteConfig.leadTestTrackerUrl ??
+        "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+      testMode: true as const,
+    }
+  : {
+      phone: siteConfig.phone,
+      phoneHref: siteConfig.phoneHref,
+      email: siteConfig.email,
+      formEndpoint: siteConfig.formEndpoint,
+      leadTrackerUrl: siteConfig.leadTrackerUrl,
+      testMode: false as const,
+    };

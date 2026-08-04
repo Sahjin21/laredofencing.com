@@ -1,7 +1,7 @@
 ---
-import { contactProviders, isConfigured, siteConfig } from "../lib/config";
+import { contactProviders, effectiveContact, isConfigured, siteConfig } from "../lib/config";
 
-const endpointConfigured = !siteConfig.formEndpoint.startsWith("{");
+const endpointConfigured = !effectiveContact.formEndpoint.startsWith("{");
 const providers = contactProviders;
 const multipleProviders = providers.length > 1;
 const soleProvider = providers.length === 1 ? providers[0] : null;
@@ -11,7 +11,7 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
 <form
   id="lead-form"
   method="post"
-  action={endpointConfigured ? siteConfig.formEndpoint : undefined}
+  action={endpointConfigured ? effectiveContact.formEndpoint : undefined}
   class="relative rounded-2xl bg-white p-6 shadow-xl sm:p-8"
   novalidate
 >
@@ -56,7 +56,7 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
   </p>
 </form>
 
-<script is:inline define:vars={{ formEndpoint: endpointConfigured ? siteConfig.formEndpoint : null, responseTime }}>
+<script is:inline define:vars={{ formEndpoint: endpointConfigured ? effectiveContact.formEndpoint : null, responseTime }}>
   var leadForm = document.getElementById("lead-form");
   if (leadForm) {
     var formStartedAt = Date.now();

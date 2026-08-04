@@ -9,7 +9,7 @@
 // keep this page live with thin/duplicate content just to add a URL.
 import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { pageTitle, siteConfig } from "../../lib/config";
+import { effectiveContact, pageTitle, siteConfig } from "../../lib/config";
 
 const description = `Compare every ${siteConfig.niche.toLowerCase()} option available in ${siteConfig.geo} and find the right next step.`;
 ---
@@ -46,7 +46,7 @@ const description = `Compare every ${siteConfig.niche.toLowerCase()} option avai
     <div class="container-shell">
       <h2 class="text-2xl font-black text-slate-950">Not sure which service you need?</h2>
       <p class="mx-auto mt-3 max-w-xl leading-7 text-slate-600">Call and describe what you're seeing. We'll help you figure out the right next step.</p>
-      <a class="button-primary mt-6" href={siteConfig.phoneHref} data-lead-call data-business={siteConfig.businessName}>Call {siteConfig.phone}</a>
+      <a class="button-primary mt-6" href={effectiveContact.phoneHref} data-lead-call data-business={siteConfig.businessName}>Call {effectiveContact.phone}</a>
     </div>
   </section>
 </BaseLayout>

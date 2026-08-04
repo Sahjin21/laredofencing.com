@@ -12,7 +12,7 @@
 // rest of the site.
 import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { pageTitle, siteConfig } from "../../lib/config";
+import { effectiveContact, pageTitle, siteConfig } from "../../lib/config";
 
 // Replace with 4-8 real, niche-specific, genuinely useful entries (150-250 original
 // words each). Pick an `icon` name from src/components/Icon.astro, adding a new
@@ -72,7 +72,7 @@ const description = `Practical ${siteConfig.niche.toLowerCase()} guidance for ${
     <div class="container-shell">
       <h2 class="text-2xl font-black text-slate-950">Need hands-on help?</h2>
       <p class="mx-auto mt-3 max-w-xl leading-7 text-slate-600">Call and we'll connect you with a local provider.</p>
-      <a class="button-primary mt-6" href={siteConfig.phoneHref} data-lead-call data-business={siteConfig.businessName}>Call {siteConfig.phone}</a>
+      <a class="button-primary mt-6" href={effectiveContact.phoneHref} data-lead-call data-business={siteConfig.businessName}>Call {effectiveContact.phone}</a>
     </div>
   </section>
 </BaseLayout>

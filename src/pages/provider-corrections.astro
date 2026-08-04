@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { contactProviders, isConfigured, pageTitle, siteConfig } from "../lib/config";
+import { contactProviders, effectiveContact, isConfigured, pageTitle, siteConfig } from "../lib/config";
 
-const trackerEndpoint = isConfigured(siteConfig.leadTrackerUrl)
-  ? `${siteConfig.leadTrackerUrl.replace(/\/+$/, "")}/api/v1/leads/events`
+const trackerEndpoint = isConfigured(effectiveContact.leadTrackerUrl)
+  ? `${effectiveContact.leadTrackerUrl.replace(/\/+$/, "")}/api/v1/leads/events`
   : null;
 ---
 

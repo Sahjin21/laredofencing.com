@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
-import { siteConfig } from "../../lib/config";
+import { effectiveContact, siteConfig } from "../../lib/config";
 
 export async function getStaticPaths() {
   return siteConfig.areaCities.map((city) => ({
@@ -120,11 +120,11 @@ const description = `Laredo fence installation in ${city.name}, ${city.state}. $
         <p class="mt-6 text-lg leading-8 text-slate-300">Address, fence type, approximate linear feet, anything underground — we come back with a written quote within one business day.</p>
         <a
           class="button-primary mt-8 inline-flex"
-          href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`}
+          href={`tel:${effectiveContact.phoneHref.replace(/[^+\d]/g, "")}`}
           data-lead-call
-          aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}
+          aria-label={`Call ${siteConfig.businessName} at ${effectiveContact.phone}`}
         >
-          Call {siteConfig.phone}
+          Call {effectiveContact.phone}
         </a>
       </div>
     </div>

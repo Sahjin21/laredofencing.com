@@ -1,5 +1,5 @@
 ---
-import { siteConfig } from "../lib/config";
+import { effectiveContact, siteConfig } from "../lib/config";
 
 const year = new Date().getFullYear();
 ---
@@ -42,8 +42,8 @@ const year = new Date().getFullYear();
       <address class="mt-4 space-y-3 text-sm not-italic">
         <p class="text-white">Call our office</p>
         <p>
-          <a class="text-2xl font-black tabular-nums text-amber-300 no-underline hover:text-amber-200" href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>
-            {siteConfig.phone}
+          <a class="text-2xl font-black tabular-nums text-amber-300 no-underline hover:text-amber-200" href={`tel:${effectiveContact.phoneHref.replace(/[^+\d]/g, "")}`} data-lead-call>
+            {effectiveContact.phone}
           </a>
         </p>
         <p class="text-xs text-slate-400">{siteConfig.responseTime} response · Most Laredo residential quotes same week</p>

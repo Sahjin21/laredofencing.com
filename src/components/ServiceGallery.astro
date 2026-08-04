@@ -1,0 +1,192 @@
+---
+/*
+  ServiceGallery.astro — small horizontal-scrolling carousel of
+  candid "worker-phone" work photos for a service detail page.
+
+  Per operator (2026-08-03):
+    "Friday I mentioned issues with the images. I think to add
+    credibility we need real looking gallery photos. ... Just
+    actual real looking work photos for a sliding carousel short
+    gallery. Like energyfencing.com/gallery/ has a bunch of work
+    that they did. The photos are very candid and look like a
+    workers cell phone took the picture after they finished a job."
+
+  Behavior:
+    - Mobile: native horizontal scroll with snap points
+      (overflow-x-auto + snap-x + snap-mandatory).
+    - Desktop (>768px): same scroll container, but with chevron
+      arrow buttons that scroll the container by one tile-width.
+    - Tiles are 3:4 portrait (matches the planned webp
+      dimensions: 800x1067).
+    - First tile is eager-loaded, rest are lazy.
+    - Each tile is a link that opens the image full-size in a
+      new tab (so the carousel itself stays a swipe/scroll
+      interface, not a lightbox).
+
+  Inputs:
+    photos: Array<{ id: string; src: string; alt: string }>
+      - id: asset ID matching IMAGE_PROMPTS.md
+      - src: path to webp (or SVG placeholder)
+      - alt: alt text from IMAGE_PROMPTS.md
+
+  Placeholders:
+    When the live webp file is not present (i.e. only the SVG
+    placeholder exists), the tile renders the SVG instead with
+    an "Image planned" affordance. The build emits the
+    placeholder SVG paths from /public/images/.
+
+  Realism style notes (memory 2026-07-31):
+    Worker phone aesthetic — gloved hand visible, off-angle,
+    slightly overexposed sunny day, real mess in frame
+    (sawdust, tools, sun-bleached lumber). NOT aspirational,
+    NOT studio-lit, NOT stock-photo perfect.
+*/
+
+interface Photo {
+  id: string;
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  photos: Photo[];
+  serviceSlug: string;
+}
+
+const { photos, serviceSlug } = Astro.props;
+const containerId = `gallery-${serviceSlug}`;
+---
+
+<section aria-labelledby={`${containerId}-heading`} class="border-y border-slate-200 bg-slate-50 py-16 sm:py-20">
+  <div class="container-shell">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Recent work</p>
+        <h2 id={`${containerId}-heading`} class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-4xl">A few of the jobs we've finished</h2>
+        <p class="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+          Cell-phone photos from the field — the kind the crew takes after the line is walked. Real install state, no styling.
+        </p>
+      </div>
+      <div class="hidden gap-2 md:flex" aria-hidden="true">
+        <button
+          type="button"
+          data-gallery-prev={containerId}
+          class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-700"
+          aria-label={`Scroll ${serviceSlug} gallery left`}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button
+          type="button"
+          data-gallery-next={containerId}
+          class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-700"
+          aria-label={`Scroll ${serviceSlug} gallery right`}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div
+      id={containerId}
+      class="gallery-rail mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:gap-5"
+      style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;"
+      tabindex="0"
+      role="region"
+      aria-label={`${serviceSlug} work gallery`}
+    >
+      {photos.map((photo, idx) => (
+        <a
+          href={photo.src}
+          target="_blank"
+          rel="noopener"
+          class="gallery-tile group relative block shrink-0 snap-start overflow-hidden rounded-2xl bg-slate-200 shadow-sm transition hover:shadow-md"
+          style="width: clamp(220px, 28vw, 320px); aspect-ratio: 3 / 4;"
+          data-asset-id={photo.id}
+        >
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            width="800"
+            height="1067"
+            loading={idx === 0 ? "eager" : "lazy"}
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+          <span class="pointer-events-none absolute left-3 top-3 rounded-full bg-slate-950/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-300 backdrop-blur">
+            {String(idx + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <p class="mt-3 text-xs text-slate-500">
+      {photos.length} photos · swipe or scroll. Each opens full-size.
+    </p>
+  </div>
+</section>
+
+<style>
+  .gallery-rail {
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+  }
+  .gallery-rail::-webkit-scrollbar {
+    height: 8px;
+  }
+  .gallery-rail::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .gallery-rail::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+  }
+  .gallery-rail::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  .gallery-tile {
+    scroll-snap-align: start;
+  }
+  .gallery-tile:focus-visible {
+    outline: 2px solid #0f766e;
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  // Chevrons scroll the gallery container by one tile width. Run once
+  // per container; both buttons and the container element are looked
+  // up by id / data attribute.
+  document.querySelectorAll<HTMLButtonElement>("[data-gallery-prev], [data-gallery-next]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetId = button.dataset.galleryPrev ?? button.dataset.galleryNext;
+      if (!targetId) return;
+      const container = document.getElementById(targetId);
+      if (!container) return;
+      const firstTile = container.querySelector<HTMLElement>(".gallery-tile");
+      const tileWidth = firstTile?.getBoundingClientRect().width ?? 280;
+      const gap = 16;
+      const direction = button.dataset.galleryPrev ? -1 : 1;
+      container.scrollBy({
+        left: direction * (tileWidth + gap),
+        behavior: "smooth",
+      });
+    });
+  });
+  // Disable the prev/next buttons at the scroll boundaries.
+  document.querySelectorAll<HTMLElement>(".gallery-rail").forEach((container) => {
+    const id = container.id;
+    if (!id) return;
+    const prev = document.querySelector<HTMLButtonElement>(`[data-gallery-prev="${id}"]`);
+    const next = document.querySelector<HTMLButtonElement>(`[data-gallery-next="${id}"]`);
+    const update = () => {
+      const atStart = container.scrollLeft <= 4;
+      const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 4;
+      if (prev) prev.disabled = atStart;
+      if (next) next.disabled = atEnd;
+    };
+    container.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  });
+</script>

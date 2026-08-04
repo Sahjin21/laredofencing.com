@@ -2,7 +2,7 @@
 // Single-brand CTA. Visitors see one fence-contractor brand (Laredo Fence
 // Pros), one phone, one form. The fan-out routing happens server-side in
 // the dashboard; visitor-side this is presented as a single contractor.
-import { siteConfig } from "../lib/config";
+import { effectiveContact, siteConfig } from "../lib/config";
 interface Props {
   heading?: string;
   description?: string;
@@ -22,14 +22,14 @@ const { heading = `Talk with us about your project`, description = "We'll come b
       <h2 class="mt-3 text-3xl font-black sm:text-5xl">{heading}</h2>
       <p class="mt-4 max-w-xl text-lg leading-8 text-teal-50">{description}</p>
       <div class="mt-8 flex flex-wrap items-center gap-4">
-        <a class="inline-flex min-h-14 items-center rounded-xl bg-amber-400 px-7 font-black text-slate-950 no-underline hover:bg-amber-300" href={siteConfig.phoneHref} data-lead-call data-business={siteConfig.businessName}>
-          Call {siteConfig.phone}
+        <a class="inline-flex min-h-14 items-center rounded-xl bg-amber-400 px-7 font-black text-slate-950 no-underline hover:bg-amber-300" href={effectiveContact.phoneHref} data-lead-call data-business={siteConfig.businessName}>
+          Call {effectiveContact.phone}
         </a>
         <span class="text-sm text-teal-100">A real Laredo resident answers. No phone tree.</span>
       </div>
       <p class="mt-8 max-w-md text-sm leading-6 text-teal-100/80">Free written quotes · No down payment to schedule · Most Laredo residential jobs quoted same week.</p>
     </div>
-    <form class="rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-white/20 sm:p-8" action={`${siteConfig.leadTrackerUrl}/api/v1/leads/events`} method="post" data-lead-form>
+    <form class="rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-white/20 sm:p-8" action={`${effectiveContact.leadTrackerUrl}/api/v1/leads/events`} method="post" data-lead-form>
       <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Request service</p>
       <h3 class="mt-2 text-xl font-black text-slate-950">Send the request — we'll handle the rest.</h3>
       <input type="hidden" name="form_kind" value="service_followup" />

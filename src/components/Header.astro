@@ -1,5 +1,5 @@
 ---
-import { siteConfig } from "../lib/config";
+import { effectiveContact, siteConfig } from "../lib/config";
 
 // Header — single row. Logo left, modern square nav chips centered, phone
 // as a quiet inline link on the right.
@@ -33,13 +33,13 @@ import { siteConfig } from "../lib/config";
     </nav>
 
     <a
-      href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`}
+      href={`tel:${effectiveContact.phoneHref.replace(/[^+\d]/g, "")}`}
       class="hidden items-center gap-2 text-sm font-bold text-slate-700 no-underline hover:text-teal-700 md:flex"
       data-lead-call
-      aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}
+      aria-label={`Call ${siteConfig.businessName} at ${effectiveContact.phone}`}
     >
       <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Call</span>
-      <span class="tabular-nums">{siteConfig.phone}</span>
+      <span class="tabular-nums">{effectiveContact.phone}</span>
     </a>
   </div>
 </header>
@@ -93,12 +93,12 @@ import { siteConfig } from "../lib/config";
   aria-hidden="true"
 >
   <a
-    href={`tel:${siteConfig.phoneHref.replace(/[^+\d]/g, "")}`}
+    href={`tel:${effectiveContact.phoneHref.replace(/[^+\d]/g, "")}`}
     class="button-primary flex min-h-14 w-full items-center justify-center"
     data-lead-call
-    aria-label={`Call ${siteConfig.businessName} at ${siteConfig.phone}`}
+    aria-label={`Call ${siteConfig.businessName} at ${effectiveContact.phone}`}
   >
-    Call us · {siteConfig.phone}
+    Call us · {effectiveContact.phone}
   </a>
 </div>
 
