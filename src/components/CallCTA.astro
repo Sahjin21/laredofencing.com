@@ -9,6 +9,7 @@ interface Props {
   referringService?: string;
 }
 const { heading = `Talk with us about your project`, description = "We'll come back with a written quote within one business day. No down payment to schedule." } = Astro.props;
+const testMode = effectiveContact.testMode;
 ---
 
 <section id="contact" class="cta-band relative overflow-hidden py-20 text-white sm:py-28">
@@ -29,10 +30,11 @@ const { heading = `Talk with us about your project`, description = "We'll come b
       </div>
       <p class="mt-8 max-w-md text-sm leading-6 text-teal-100/80">Free written quotes · No down payment to schedule · Most Laredo residential jobs quoted same week.</p>
     </div>
-    <form class="rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-white/20 sm:p-8" action={`${effectiveContact.leadTrackerUrl}/api/v1/leads/events`} method="post" data-lead-form>
+    <form class="rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-white/20 sm:p-8" action={effectiveContact.formEndpoint} method="post" data-lead-form>
       <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Request service</p>
       <h3 class="mt-2 text-xl font-black text-slate-950">Send the request — we'll handle the rest.</h3>
       <input type="hidden" name="form_kind" value="service_followup" />
+      {testMode && <input type="hidden" name="test_mode" value={testMode} />}
       <input type="hidden" name="referring_service" value={Astro.props.referringService ?? ""} />
       <div class="mt-5 grid gap-3 sm:grid-cols-2">
         <label class="block text-sm font-bold text-slate-700 sm:col-span-1"><span class="block">Name</span><input name="name" required class="mt-1 h-12 w-full rounded-lg border border-slate-300 px-4 font-normal text-slate-950 outline-none focus:border-teal-600" placeholder="Jane D." /></label>

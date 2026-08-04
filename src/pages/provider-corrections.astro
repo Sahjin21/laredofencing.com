@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { contactProviders, effectiveContact, isConfigured, pageTitle, siteConfig } from "../lib/config";
 
 const trackerEndpoint = isConfigured(effectiveContact.leadTrackerUrl)
-  ? `${effectiveContact.leadTrackerUrl.replace(/\/+$/, "")}/api/v1/leads/events`
+  ? effectiveContact.leadTrackerUrl
   : null;
 ---
 

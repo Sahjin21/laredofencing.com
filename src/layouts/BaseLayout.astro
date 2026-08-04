@@ -9,6 +9,7 @@ const ga4Id = isConfigured(siteConfig.ga4MeasurementId) ? siteConfig.ga4Measurem
 const trackerUrl = isConfigured(effectiveContact.leadTrackerUrl)
   ? effectiveContact.leadTrackerUrl.replace(/\/+$/, "")
   : null;
+const trackerTestMode = effectiveContact.testMode ? "laredo" : null;
 
 interface Props {
   title: string;
@@ -92,7 +93,7 @@ const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", 
         gtag("config", ga4Id);
       </script>
     )}
-    <script is:inline define:vars={{ trackerUrl, siteDomain: siteConfig.domain }}>
+    <script is:inline define:vars={{ trackerUrl, trackerTestMode, siteDomain: siteConfig.domain }}>
       // Report call taps and form submissions to the dashboard so this site's
       // real lead counts are provable when pitching a tenant.
       window.__leadTrack = function (kind, business, extra) {
@@ -101,6 +102,7 @@ const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", 
           { domain: siteDomain, kind: kind, business_name: business || null, path: location.pathname },
           extra || {}
         );
+        if (trackerTestMode) payload.test_mode = trackerTestMode;
         if (window.gtag) window.gtag("event", kind, { business: business || undefined });
         return fetch(trackerUrl + "/api/v1/leads/events", {
           method: "POST",

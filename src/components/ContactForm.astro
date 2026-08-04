@@ -6,6 +6,7 @@ const providers = contactProviders;
 const multipleProviders = providers.length > 1;
 const soleProvider = providers.length === 1 ? providers[0] : null;
 const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.responseTime : null;
+const testMode = effectiveContact.testMode;
 ---
 
 <form
@@ -16,6 +17,7 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
   novalidate
 >
   <input type="hidden" name="subject" value={`New ${siteConfig.domain} lead`} />
+  {testMode && <input type="hidden" name="test_mode" value={testMode} />}
   <input type="hidden" name="submitted_after_ms" value="0" />
   <div class="pointer-events-none absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
     <label>
@@ -56,7 +58,7 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
   </p>
 </form>
 
-<script is:inline define:vars={{ formEndpoint: endpointConfigured ? effectiveContact.formEndpoint : null, responseTime }}>
+<script is:inline define:vars={{ formEndpoint: endpointConfigured ? effectiveContact.formEndpoint : null, responseTime, testMode }}>
   var leadForm = document.getElementById("lead-form");
   if (leadForm) {
     var formStartedAt = Date.now();
@@ -123,6 +125,7 @@ const responseTime = isConfigured(siteConfig.responseTime) ? siteConfig.response
         utm_term: params.get("utm_term"),
         utm_content: params.get("utm_content"),
       };
+      if (testMode) attribution.test_mode = testMode;
       var jobs = [];
       if (window.__leadTrack) jobs.push(window.__leadTrack("form_submit", business, attribution));
       if (formEndpoint) {

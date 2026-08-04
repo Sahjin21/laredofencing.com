@@ -71,7 +71,16 @@ export const siteConfig = {
   leadTestPhone: "(555) 555-5555",
   leadTestPhoneHref: "tel:+15555555555",
   leadTestEmail: "stalemate15@gmail.com",
-  leadTestTrackerUrl: "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+  // Origin only — mirrors the production shape of `leadTrackerUrl`. The
+  // test marker is communicated via a `data-test-mode="laredo"`
+  // attribute set on the test-mode UI marker element so the dashboard
+  // can recognize test traffic without contaminating the URL query
+  // string. (Putting `?test_mode=laredo` here previously caused a
+  // path-duplication bug — call sites appended "/api/v1/leads/events"
+  // to the URL and the `?` made the slash inside the query parse as a
+  // path segment.)
+  leadTestTrackerUrl: "https://sahjin.dev",
+  leadTestFormEndpoint: "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
   phone: "(956) 287-5555",
   phoneHref: "tel:+19562875555",
   email: "contact@laredofencing.com",
@@ -405,13 +414,16 @@ export const effectiveContact = siteConfig.leadTestMode
       phone: siteConfig.leadTestPhone ?? "(555) 555-5555",
       phoneHref: siteConfig.leadTestPhoneHref ?? "tel:+15555555555",
       email: siteConfig.leadTestEmail ?? "stalemate15@gmail.com",
+      // formEndpoint is the FULL URL with the /api/v1/leads/events path
+      // and the ?test_mode=laredo marker — used directly as <form action>.
       formEndpoint:
-        siteConfig.leadTestTrackerUrl ??
+        siteConfig.leadTestFormEndpoint ??
         "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+      // leadTrackerUrl is the ORIGIN only — call sites that JS-fetch
+      // append "/api/v1/leads/events" to it, the same shape as production.
       leadTrackerUrl:
-        siteConfig.leadTestTrackerUrl ??
-        "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
-      testMode: true as const,
+        siteConfig.leadTestTrackerUrl ?? "https://sahjin.dev",
+      testMode: "laredo" as const,
     }
   : {
       phone: siteConfig.phone,
@@ -419,5 +431,5 @@ export const effectiveContact = siteConfig.leadTestMode
       email: siteConfig.email,
       formEndpoint: siteConfig.formEndpoint,
       leadTrackerUrl: siteConfig.leadTrackerUrl,
-      testMode: false as const,
+      testMode: null as string | null,
     };
