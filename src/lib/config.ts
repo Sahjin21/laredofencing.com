@@ -79,15 +79,15 @@ export const siteConfig = {
   // path-duplication bug — call sites appended "/api/v1/leads/events"
   // to the URL and the `?` made the slash inside the query parse as a
   // path segment.)
-  leadTestTrackerUrl: "https://sahjin.dev",
-  leadTestFormEndpoint: "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+  leadTestTrackerUrl: "https://api.sahjin.dev",
+  leadTestFormEndpoint: "https://api.sahjin.dev/api/v1/leads/events?test_mode=laredo",
   phone: "(956) 287-5555",
   phoneHref: "tel:+19562875555",
   email: "contact@laredofencing.com",
   address: "Laredo, TX 78040",
   serviceArea: ["Laredo, TX", "Webb County", "Rio Grande Valley", "Zapata County"],
   primaryKeyword: "Fencing Contractor Laredo, Texas",
-  formEndpoint: "https://sahjin.dev/api/v1/leads/events",
+  formEndpoint: "https://api.sahjin.dev/api/v1/leads/events",
   // The lead-generation platform operator. This is separate from the visible
   // site brand and from every independent provider listed below.
   legalBusinessName: "Kurtz & Boon LLC",
@@ -104,7 +104,7 @@ export const siteConfig = {
   ga4MeasurementId: 'G-DD85F1HJ8N',
   // Dashboard API origin (e.g. https://api.example.com). Every call tap and form
   // submission is reported there so the site's real lead counts are provable.
-  leadTrackerUrl: "https://sahjin.dev",
+  leadTrackerUrl: "https://api.sahjin.dev",
   // Public values derived from active, current records in repository-level
   // PROVIDERS.md. Do not put internal verification notes in this browser bundle.
   // Businesses a visitor can contact through this site. With a renter in place,
@@ -418,11 +418,11 @@ export const effectiveContact = siteConfig.leadTestMode
       // and the ?test_mode=laredo marker — used directly as <form action>.
       formEndpoint:
         siteConfig.leadTestFormEndpoint ??
-        "https://sahjin.dev/api/v1/leads/events?test_mode=laredo",
+        "https://api.sahjin.dev/api/v1/leads/events?test_mode=laredo",
       // leadTrackerUrl is the ORIGIN only — call sites that JS-fetch
       // append "/api/v1/leads/events" to it, the same shape as production.
       leadTrackerUrl:
-        siteConfig.leadTestTrackerUrl ?? "https://sahjin.dev",
+        siteConfig.leadTestTrackerUrl ?? "https://api.sahjin.dev",
       testMode: "laredo" as const,
     }
   : {
