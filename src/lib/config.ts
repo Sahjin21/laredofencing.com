@@ -60,14 +60,18 @@ export const siteConfig = {
   geo: "Laredo, Texas",
   domain: "laredofencing.com",
   businessName: "Laredo Fence Pros",
-  // LEAD-TEST-MODE (2026-08-03, operator-requested): outbound leads and CTA
-  // phone clicks are routed to a fake number and the operator's personal
-  // email instead of the configured (956) 287-5555 / sahjin.dev endpoints.
-  // This is so the operator can verify the lead-tracking webapp is updating
-  // without spamming the 4 real Laredo contractors. Flip
-  // `leadTestMode: false` to revert. The `providers[]` array below is NOT
-  // touched — revert only requires this one flag flip.
-  leadTestMode: true,
+  // LEAD-TEST-MODE (operator-requested, 2026-08-03 → 2026-08-05): outbound
+  // leads and CTA phone clicks were routed to a fake number and the
+  // operator's personal email instead of the configured production
+  // values, so the operator could verify the lead-tracking webapp was
+  // updating without spamming the 4 real Laredo contractors. As of
+  // 2026-08-05 the operator has finished verification — flipped off so
+  // the static site now rotates through the real Laredo contractor
+  // phones by day of week (see `providerRotation` below). To re-enable
+  // for a future verification pass, set `leadTestMode: true` again and
+  // restore the `leadTestPhone*` / `leadTestEmail` values. The
+  // `providers[]` array is NOT touched.
+  leadTestMode: false,
   leadTestPhone: "(555) 555-5555",
   leadTestPhoneHref: "tel:+15555555555",
   leadTestEmail: "stalemate15@gmail.com",
@@ -181,6 +185,31 @@ export const siteConfig = {
       services: ["wrought-iron-fence", "chain-link-fence", "wood-privacy-fence"],
     },
   ] satisfies Provider[],
+  // Provider rotation schedule (operator-defined, 2026-08-05).
+  // Each weekday maps to the index into providers[] above. The visitor's
+  // local day of week determines which contractor's phone number the
+  // site displays in the header, hero, footer, sticky CTA rail, and
+  // contact-form phone-link copy.
+  //
+  // Schedule:
+  //   Sun (0) = FortiCraft   (index 3)
+  //   Mon (1) = Fence World  (index 0)
+  //   Tue (2) = Maverick     (index 1)
+  //   Wed (3) = 3C Ranch     (index 2)
+  //   Thu (4) = FortiCraft   (index 3)
+  //   Fri (5) = Fence World  (index 0)
+  //   Sat (6) = 3C Ranch     (index 2)
+  //
+  // Operator chose this distribution because Fence World is the
+  // longest-running Laredo installer (operating since 1988) and 3C
+  // Ranch covers the ranch-livestock niche, so they get two slots
+  // each per week; Maverick and FortiCraft cover one slot each.
+  //
+  // NOTE: Form-submission email routing is unaffected by this schedule.
+  // The build spec requires that in pre-tenant marketplace mode, every
+  // form lead is broadcast to all 4 providers via the dashboard. Phone
+  // rotation distributes CALLS, not emails.
+  providerRotation: [3, 0, 1, 2, 3, 0, 2] as const,
   brand: {
     primary: "#0f766e",
     accent: "#f59e0b",
@@ -402,6 +431,29 @@ export const contactProviders: Provider[] = (() => {
 
 export const primaryProvider: Provider | undefined = contactProviders[0];
 
+/*
+  currentProvider — returns the provider whose rotation slot is active
+  on the given JS day-of-week index (0=Sunday ... 6=Saturday).
+
+  When called without an argument, returns the provider for the day the
+  caller wants. Use a server-side default (today in UTC) for the initial
+  HTML render so the page shows a sensible number on first paint, and
+  rely on the inline JS in BaseLayout.astro to swap to the visitor's
+  LOCAL-day rotation after hydration.
+
+  Use case:
+    const cp = currentProvider(new Date().getUTCDay());
+    // cp.name, cp.phone, cp.phoneHref, cp.email
+
+  Schedule (see siteConfig.providerRotation):
+    Sun=FortiCraft, Mon=Fence World, Tue=Maverick, Wed=3C Ranch,
+    Thu=FortiCraft, Fri=Fence World, Sat=3C Ranch
+*/
+export function currentProvider(dayIndex: number = new Date().getDay()): Provider {
+  const idx = siteConfig.providerRotation[dayIndex] ?? 0;
+  return siteConfig.providers[idx];
+}
+
 export function pageTitle(subject?: string): string {
   return subject
     ? `${subject} ${siteConfig.geo} | ${siteConfig.businessName}`
@@ -411,18 +463,30 @@ export function pageTitle(subject?: string): string {
 /*
   effectiveContact — single source of truth for outbound lead/CTA endpoints.
 
-  When `leadTestMode` is on (operator's webapp-troubleshooting session,
-  2026-08-03), outbound endpoints swap to a fake phone + the operator's
-  personal email + a tagged tracker URL so:
+  When `leadTestMode` is on (operator's webapp-troubleshooting session),
+  outbound endpoints swap to a fake phone + the operator's personal email
+  + a tagged tracker URL so:
     - The webapp dashboard records incoming events with `?test_mode=laredo`
       so the operator can see test traffic separately from production.
     - Visitors who try to call hit a non-routed test number (555-555-5555).
     - Lead emails route to stalemate15@gmail.com instead of any contractor.
 
-  Revert = set `siteConfig.leadTestMode: false`. No `providers[]` array
-  data is touched. `siteConfig.phone`, `phoneHref`, `formEndpoint`,
-  `leadTrackerUrl` keep their production values; consumers should read
-  from `effectiveContact` instead.
+  Re-enable test mode = set `siteConfig.leadTestMode: true`. No
+  `providers[]` array data is touched.
+
+  PRODUCTION MODE (2026-08-05 onward): The static site rotates through
+  the real Laredo contractor phones by day of week (see
+  `providerRotation`). effectiveContact.phone / phoneHref / email /
+  providerName reflect the day's active contractor — server-side for
+  the initial HTML render (using today's UTC day-of-week), then
+  BaseLayout.astro's inline JS swaps to the visitor's LOCAL-day
+  rotation after hydration so the displayed number always matches
+  the contractor who would pick up.
+
+  Form-submission email routing is unaffected by this rotation — the
+  build spec requires that in pre-tenant marketplace mode, every form
+  lead is broadcast to all 4 providers via the dashboard. Phone
+  rotation distributes CALLS, not emails.
 */
 export const effectiveContact = siteConfig.leadTestMode
   ? {
@@ -440,12 +504,17 @@ export const effectiveContact = siteConfig.leadTestMode
       leadTrackerUrl:
         siteConfig.leadTestTrackerUrl ?? "https://api.sahjin.dev",
       testMode: "laredo" as const,
+      providerName: siteConfig.businessName,
     }
-  : {
-      phone: siteConfig.phone,
-      phoneHref: siteConfig.phoneHref,
-      email: siteConfig.email,
-      formEndpoint: siteConfig.formEndpoint,
-      leadTrackerUrl: siteConfig.leadTrackerUrl,
-      testMode: null as string | null,
-    };
+  : (() => {
+      const active = currentProvider();
+      return {
+        phone: active.phone,
+        phoneHref: active.phoneHref,
+        email: isConfigured(active.email) ? active.email : siteConfig.email,
+        providerName: active.name,
+        formEndpoint: siteConfig.formEndpoint,
+        leadTrackerUrl: siteConfig.leadTrackerUrl,
+        testMode: null as string | null,
+      };
+    })();

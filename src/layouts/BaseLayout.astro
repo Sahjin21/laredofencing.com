@@ -93,7 +93,7 @@ const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", 
         gtag("config", ga4Id);
       </script>
     )}
-    <script is:inline define:vars={{ trackerUrl, trackerTestMode, siteDomain: siteConfig.domain }}>
+    <script is:inline define:vars={{ trackerUrl, trackerTestMode, siteDomain: siteConfig.domain, providerRotation: siteConfig.providerRotation, providers: siteConfig.providers, activeProviderName: effectiveContact.providerName }}>
       // Report call taps and form submissions to the dashboard so this site's
       // real lead counts are provable when pitching a tenant.
       window.__leadTrack = function (kind, business, extra) {
@@ -114,6 +114,51 @@ const schemaJson = JSON.stringify([...baseSchemas, ...schemas]).replaceAll("<", 
           return response;
         });
       };
+
+      // Provider rotation (client-side swap, visitor local-day-of-week).
+      // The static site was server-rendered with the UTC-day rotation
+      // baked into the HTML, so visitors see a sensible phone on first
+      // paint. After hydration we swap to the visitor's LOCAL-day rotation
+      // so the displayed number always matches the contractor who would
+      // actually pick up — important for visitors in other timezones who
+      // happen to view the page early/late in their day.
+      (function () {
+        try {
+          var today = new Date().getDay();
+          var idx = providerRotation[today];
+          if (idx === undefined) return;
+          var active = providers[idx];
+          if (!active) return;
+          if (active.name === activeProviderName) return; // already correct
+
+          var telHref = "tel:" + active.phoneHref.replace(/[^\d+]/g, "");
+          // Update every link that points at the rotating phone so far.
+          // We also tag the link with data-business so __leadTrack knows
+          // which contractor the visitor actually called.
+          var links = document.querySelectorAll("a[href^='tel:'], a[data-lead-call]");
+          Array.prototype.forEach.call(links, function (a) {
+            a.setAttribute("href", telHref);
+            a.setAttribute("data-business", active.name);
+            // Update visible text — but only if the link's visible text
+            // looks like a phone number (matches the previous rotation's
+            // number format), so we don't trample brand phrases that
+            // happened to be inside the link.
+            var txt = (a.textContent || "").trim();
+            if (/^\(\d{3}\)\s\d{3}-\d{4}$/.test(txt)) {
+              a.textContent = active.phone;
+            }
+          });
+          // Update aria-label that mentions the old phone.
+          var labeled = document.querySelectorAll("[aria-label]");
+          Array.prototype.forEach.call(labeled, function (el) {
+            var lbl = el.getAttribute("aria-label");
+            if (lbl && lbl.indexOf("at ") !== -1) {
+              el.setAttribute("aria-label", lbl.replace(/at\s+\(\d{3}\)\s\d{3}-\d{4}/, "at " + active.phone));
+            }
+          });
+        } catch (e) {}
+      })();
+
       document.addEventListener("click", function (event) {
         var target = event.target instanceof Element ? event.target.closest("[data-lead-call]") : null;
         if (target) window.__leadTrack("call_click", target.getAttribute("data-business")).catch(function () {});
