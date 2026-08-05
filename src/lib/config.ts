@@ -80,14 +80,29 @@ export const siteConfig = {
   // to the URL and the `?` made the slash inside the query parse as a
   // path segment.)
   leadTestTrackerUrl: "https://api.sahjin.dev",
-  leadTestFormEndpoint: "https://api.sahjin.dev/api/v1/leads/events?test_mode=laredo",
+  // Unused in test mode — formEndpoint is intentionally unset per the
+  // build spec (see siteConfig.formEndpoint comment). Keep this only as
+  // a type-check placeholder so effectiveContact has the same shape in
+  // both modes.
+  leadTestFormEndpoint: "{FORM_ENDPOINT}",
   phone: "(956) 287-5555",
   phoneHref: "tel:+19562875555",
   email: "contact@laredofencing.com",
   address: "Laredo, TX 78040",
   serviceArea: ["Laredo, TX", "Webb County", "Rio Grande Valley", "Zapata County"],
   primaryKeyword: "Fencing Contractor Laredo, Texas",
-  formEndpoint: "https://api.sahjin.dev/api/v1/leads/events",
+  // Per laredofencing.com-build-spec.md §"Lead submission wiring" (line 114):
+  // 'Keep formEndpoint unset unless it is explicitly configured as a
+  // dashboard-owned compatibility endpoint. It must never bypass or
+  // duplicate the platform routing logic.'
+  // The platform routing lives at leadTrackerUrl + /api/v1/leads/events;
+  // ContactForm.astro's submit handler POSTs to BOTH formEndpoint and
+  // leadTrackerUrl when formEndpoint is configured, which causes every
+  // submission to be duplicated and the second POST to fail with 422
+  // (the dashboard only accepts JSON, not urlencoded). Leaving this as
+  // the {FORM_ENDPOINT} placeholder keeps endpointConfigured = false and
+  // the handler skips the second POST entirely.
+  formEndpoint: "{FORM_ENDPOINT}",
   // The lead-generation platform operator. This is separate from the visible
   // site brand and from every independent provider listed below.
   legalBusinessName: "Kurtz & Boon LLC",
@@ -414,11 +429,12 @@ export const effectiveContact = siteConfig.leadTestMode
       phone: siteConfig.leadTestPhone ?? "(555) 555-5555",
       phoneHref: siteConfig.leadTestPhoneHref ?? "tel:+15555555555",
       email: siteConfig.leadTestEmail ?? "stalemate15@gmail.com",
-      // formEndpoint is the FULL URL with the /api/v1/leads/events path
-      // and the ?test_mode=laredo marker — used directly as <form action>.
+      // formEndpoint is intentionally unset per the build spec — the
+      // dashboard owns the submission path through leadTrackerUrl.
+      // Keep this only as a type-check placeholder so effectiveContact
+      // has the same shape in both modes.
       formEndpoint:
-        siteConfig.leadTestFormEndpoint ??
-        "https://api.sahjin.dev/api/v1/leads/events?test_mode=laredo",
+        siteConfig.leadTestFormEndpoint ?? "{FORM_ENDPOINT}",
       // leadTrackerUrl is the ORIGIN only — call sites that JS-fetch
       // append "/api/v1/leads/events" to it, the same shape as production.
       leadTrackerUrl:

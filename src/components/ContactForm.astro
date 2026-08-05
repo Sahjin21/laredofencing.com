@@ -1,7 +1,6 @@
 ---
 import { contactProviders, effectiveContact, isConfigured, siteConfig } from "../lib/config";
 
-const endpointConfigured = !effectiveContact.formEndpoint.startsWith("{");
 const providers = contactProviders;
 const multipleProviders = providers.length > 1;
 const soleProvider = providers.length === 1 ? providers[0] : null;
@@ -12,7 +11,6 @@ const testMode = effectiveContact.testMode;
 <form
   id="lead-form"
   method="post"
-  action={endpointConfigured ? effectiveContact.formEndpoint : undefined}
   class="relative rounded-2xl bg-white p-6 shadow-xl sm:p-8"
   novalidate
 >
@@ -59,7 +57,7 @@ const testMode = effectiveContact.testMode;
   </p>
 </form>
 
-<script is:inline define:vars={{ formEndpoint: endpointConfigured ? effectiveContact.formEndpoint : null, responseTime, testMode, soleProviderName: soleProvider ? soleProvider.name : null, siteDomain: siteConfig.domain }}>
+<script is:inline define:vars={{ responseTime, testMode, soleProviderName: soleProvider ? soleProvider.name : null, siteDomain: siteConfig.domain }}>
   var leadForm = document.getElementById("lead-form");
   if (leadForm) {
     var formStartedAt = Date.now();
@@ -156,29 +154,12 @@ const testMode = effectiveContact.testMode;
       };
       if (testMode) attribution.test_mode = testMode;
       var jobs = [];
-      // Analytics tap is fire-and-forget — its rejection must not gate the
-      // user-facing success state. The current Pydantic schema on the
-      // operator's API only accepts application/x-www-form-urlencoded, so
-      // the JSON POST from __leadTrack returns 422 and rejects. Wrap in
-      // .catch(() => {}) so the form submission's success state doesn't
-      // depend on the analytics tap's outcome.
+      // The dashboard owns the submission path through leadTrackerUrl.
+      // __leadTrack posts JSON to leadTrackerUrl + /api/v1/leads/events.
+      // Per build-spec §"Lead submission wiring" line 114, formEndpoint
+      // is intentionally unset, so no second POST is fired here.
       if (window.__leadTrack) {
-        jobs.push(
-          window.__leadTrack("form_submit", business, attribution).catch(function () {})
-        );
-      }
-      if (formEndpoint) {
-        jobs.push(fetch(formEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-          body: data.toString(),
-        }).then(async function (response) {
-          if (!response.ok) {
-            var text = "";
-            try { text = await response.text(); } catch (e) {}
-            throw new Error("Form endpoint returned " + response.status + ": " + text);
-          }
-        }));
+        jobs.push(window.__leadTrack("form_submit", business, attribution));
       }
       Promise.all(jobs)
         .then(function () {
