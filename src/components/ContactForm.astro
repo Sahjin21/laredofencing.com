@@ -98,10 +98,28 @@ const testMode = effectiveContact.testMode;
         emailInput.focus();
         return;
       }
-      var data = new FormData(leadForm);
+      var data = new URLSearchParams();
       var elapsed = Date.now() - formStartedAt;
-      var business = data.get("business") || null;
       var params = new URLSearchParams(window.location.search);
+      // Capture user-typed fields from the DOM BEFORE we build the body so
+      // the analytics payload (Object.assign below) and the form POST body
+      // (URLSearchParams.toString() at the end) stay in sync.
+      var messageInput = leadForm.querySelector("[name=message]");
+      var websiteInput = leadForm.querySelector("[name=website]");
+      var userMessage = messageInput ? messageInput.value : "";
+      var userWebsite = websiteInput ? websiteInput.value : "";
+      var business = null;
+      if (soleProvider) {
+        data.set("business", soleProvider.name);
+        business = soleProvider.name;
+      }
+      data.set("name", name);
+      data.set("phone", phone);
+      data.set("email", email);
+      data.set("message", userMessage);
+      data.set("website", userWebsite);
+      data.set("subject", "New " + siteConfig.domain + " lead");
+      if (testMode) data.set("test_mode", testMode);
       data.set("submitted_after_ms", String(elapsed));
       data.set("page_url", window.location.href);
       data.set("referrer", document.referrer || "");
@@ -114,8 +132,8 @@ const testMode = effectiveContact.testMode;
         name: name,
         phone: phone,
         email: email || null,
-        message: data.get("message") || null,
-        website: data.get("website") || null,
+        message: userMessage || null,
+        website: userWebsite || null,
         submitted_after_ms: elapsed,
         page_url: window.location.href,
         referrer: document.referrer || null,
@@ -129,7 +147,11 @@ const testMode = effectiveContact.testMode;
       var jobs = [];
       if (window.__leadTrack) jobs.push(window.__leadTrack("form_submit", business, attribution));
       if (formEndpoint) {
-        jobs.push(fetch(formEndpoint, { method: "POST", body: data }).then(function (response) {
+        jobs.push(fetch(formEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+          body: data.toString(),
+        }).then(function (response) {
           if (!response.ok) throw new Error("Form endpoint rejected the request");
         }));
       }
