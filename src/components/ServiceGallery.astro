@@ -33,15 +33,10 @@
   Aesthetic match (per the rest of laredofencing.com):
     - Section: border-y border-slate-200 bg-slate-50 (same as before)
     - Image frame: rounded-2xl, slate-200 frame, slate-950/80 amber-300
-      counter pill in the top-left (matches the previous carousel's
-      counter to keep the visual language consistent).
-    - Buttons: h-11 w-11 rounded-full border border-slate-300 bg-white
-      (same chevron buttons as before, but standalone now since the
-      rail is gone).
-    - Hover: border-teal-500 / text-teal-700 teal hover state (matches
-      the existing site's accent color).
-    - Active dot: teal-700 (matches site accent).
-    - Inactive dot: slate-300 (low-key, doesn't compete with photo).
+      counter pill in the top-left (matches the visual language of
+      every other amber/slate element on the site).
+    - Stage: max-width 720px, mx-auto (centered with whitespace on
+      wider viewports rather than spanning the full container-shell).
 
   Realism style notes (memory 2026-07-31, anti-AI-image push 2026-08-06):
     Worker phone aesthetic — gloved hand visible, off-angle, slightly
@@ -159,26 +154,8 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
         </div>
 
         {photos.length > 1 && (
-          <div class="mt-5 flex items-center justify-center" aria-label="Gallery position">
-            <div class="flex items-center gap-2" role="tablist">
-              {photos.map((photo, idx) => {
-                const isActive = idx === 0;
-                const dotClass = isActive
-                  ? "h-2.5 rounded-full transition-all duration-300 bg-slate-950 w-6"
-                  : "h-2.5 rounded-full transition-all duration-300 bg-slate-300 hover:bg-slate-500 w-2.5";
-                return (
-                  <button
-                    type="button"
-                    data-gallery-dot={containerId}
-                    data-slide-index={idx}
-                    class={dotClass}
-                    role="tab"
-                    aria-selected={idx === 0 ? "true" : "false"}
-                    aria-label={`Show ${photo.alt}`}
-                  />
-                );
-              })}
-            </div>
+          <div class="sr-only" aria-live="polite" aria-atomic="true">
+            <span data-gallery-active-announce>Showing photo 1 of {photos.length}</span>
           </div>
         )}
       </div>
@@ -199,11 +176,26 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
   .gallery-stage {
     aspect-ratio: 3 / 4;
     max-height: min(80vh, 720px);
+    margin-left: auto;
+    margin-right: auto;
+    /* Constrain the stage width so the image container feels
+       'centered' on wider viewports rather than spanning the
+       full container-shell. The photo is 3:4 portrait in source
+       pixels (800x1067); 720px wide gives the same shape at a
+       comfortable size and leaves breathing room on desktop
+       screens. */
+    max-width: 720px;
+    width: 100%;
   }
   @media (min-width: 768px) {
     .gallery-stage {
       aspect-ratio: 4 / 3;
       max-height: min(70vh, 640px);
+      /* On desktop, the photos were originally 3:4 portrait, but the
+         gallery presentation lays them out 4:3 landscape to keep the
+         section visually compact on big screens. Constrain the stage
+         here too so it doesn't sprawl across the full container. */
+      max-width: 720px;
     }
   }
 
@@ -240,11 +232,10 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
   //
   // Each .gallery-slideshow has:
   //   - 1 stage with N [data-gallery-slide] <a> children, only one .is-active
-  //   - 1 prev/next chevron pair (data-gallery-prev / data-gallery-next)
-  //     which may be header-positioned (desktop) or footer-positioned (mobile)
-  //   - N dots (data-gallery-dot) reflecting position; the dot whose index
-  //     matches the active slide is dark, the rest are light slate
-  //   - a counter inside each slide's top-left pill showing "XX / NN"
+  //   - 1 counter pill per slide ([data-gallery-counter-current]) inside
+  //     the active slide's image, showing "XX / NN"
+  //   - 1 sr-only live region ([data-gallery-active-announce]) for screen
+  //     readers; updated as the slide changes
   //
   // Auto-advance:
   //   - Set on .gallery-slideshow via [data-gallery-interval] attribute
@@ -263,7 +254,6 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
     root: HTMLElement;
     stage: HTMLElement;
     slides: HTMLElement[];
-    dots: HTMLElement[];
     counterEls: HTMLElement[];
     intervalMs: number;
     timer: number | null;
@@ -276,9 +266,6 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
     if (slides.length === 0) return null;
 
     const slideshowId = root.id;
-    const dots = slideshowId
-      ? Array.from(document.querySelectorAll<HTMLElement>(`[data-gallery-dot="${slideshowId}"]`))
-      : [];
     // Each slide carries the counter pill with [data-gallery-counter-current]
     // — we keep one element reference per slide so we don't write to a
     // single shared element (the active slide's pill is what shows in the
@@ -296,7 +283,6 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       root,
       stage,
       slides,
-      dots,
       counterEls,
       intervalMs,
       timer: null,
@@ -309,19 +295,15 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
         slide.classList.toggle("is-active", isActive);
         slide.setAttribute("aria-hidden", isActive ? "false" : "true");
       });
-      dots.forEach((dot, j) => {
-        const isActive = j === idx;
-        dot.setAttribute("aria-selected", isActive ? "true" : "false");
-        dot.classList.toggle("bg-slate-950", isActive);
-        dot.classList.toggle("bg-slate-300", !isActive);
-        dot.classList.toggle("w-6", isActive);
-        dot.classList.toggle("w-2.5", !isActive);
-      });
       counterEls.forEach((el, j) => {
         if (j === idx) {
           el.textContent = String(idx + 1).padStart(2, "0");
         }
       });
+      const announce = root.querySelector<HTMLElement>("[data-gallery-active-announce]");
+      if (announce) {
+        announce.textContent = `Showing photo ${idx + 1} of ${slides.length}`;
+      }
       ss.root.dataset.galleryActiveIndex = String(idx);
     }
 
@@ -347,17 +329,12 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       }
     }
     function resetTimer(): void {
-      // Reset the interval clock after a manual dot click so the
-      // visitor gets a full `intervalMs` viewing time of the
-      // newly-selected slide before auto-advance kicks in again.
+      // No manual navigation triggers remain (chevron buttons and
+      // dot buttons were both removed per operator 2026-08-06), so
+      // resetTimer is currently unused. Keep it for future manual
+      // affordances (keyboard shortcuts, swipe, etc.).
       stopTimer();
       startTimer();
-    }
-
-    function onDotClick(this: HTMLElement): void {
-      const idx = parseInt(this.dataset.slideIndex ?? "0", 10);
-      show(idx);
-      resetTimer();
     }
 
     function onVisibility(): void {
@@ -371,12 +348,10 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       else startTimer();
     }
 
-    // Wire up controls. With the chevron buttons removed
-    // (operator 2026-08-06), only the dot row has manual navigation
-    // affordances. Keyboard arrow keys were also removed since
-    // there's no longer a visible button row establishing that
-    // mental model.
-    dots.forEach((dot) => dot.addEventListener("click", onDotClick));
+    // No manual navigation UI is wired up - the gallery is purely
+    // auto-advancing. Dot buttons and chevron buttons were both
+    // removed per operator 2026-08-06. The slideshow still uses
+    // the Page Visibility API to pause when the tab is hidden.
 
     document.addEventListener("visibilitychange", onVisibility);
 
