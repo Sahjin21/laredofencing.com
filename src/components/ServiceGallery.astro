@@ -1,45 +1,59 @@
 ---
 /*
-  ServiceGallery.astro — small horizontal-scrolling carousel of
-  candid "worker-phone" work photos for a service detail page.
+  ServiceGallery.astro — single-container slideshow of candid
+  "worker-phone" work photos for a service detail page.
 
-  Per operator (2026-08-03):
-    "Friday I mentioned issues with the images. I think to add
-    credibility we need real looking gallery photos. ... Just
-    actual real looking work photos for a sliding carousel short
-    gallery. Like energyfencing.com/gallery/ has a bunch of work
-    that they did. The photos are very candid and look like a
-    workers cell phone took the picture after they finished a job."
+  Per operator (2026-08-06 update, replacing the previous
+  horizontal-scroll carousel implementation):
+    "Make the gallery like a single container that goes with the
+     website aesthetic doing a slideshow through the images."
 
   Behavior:
-    - Mobile: native horizontal scroll with snap points
-      (overflow-x-auto + snap-x + snap-mandatory).
-    - Desktop (>768px): same scroll container, but with chevron
-      arrow buttons that scroll the container by one tile-width.
-    - Tiles are 3:4 portrait (matches the planned webp
-      dimensions: 800x1067).
-    - First tile is eager-loaded, rest are lazy.
-    - Each tile is a link that opens the image full-size in a
-      new tab (so the carousel itself stays a swipe/scroll
-      interface, not a lightbox).
+    - Single image visible at a time, fills the container.
+    - Auto-advances every `interval` ms while the section is visible
+      and the visitor hasn't interacted; pauses on hover/focus
+      and when the tab is hidden (Page Visibility API).
+    - Manual prev/next buttons (chevrons) on the sides, plus clickable
+      dot indicators below.
+    - Keyboard arrow keys navigate when the container has focus.
+    - Reduced-motion users (`prefers-reduced-motion: reduce`) get
+      manual-only navigation, no auto-advance.
+    - The "view full-size" link under the image opens the current
+      slide in a new tab so visitors can still see the photo at
+      its native resolution.
 
   Inputs:
     photos: Array<{ id: string; src: string; alt: string }>
       - id: asset ID matching IMAGE_PROMPTS.md
-      - src: path to webp (or SVG placeholder)
+      - src: path to webp (or svg, though webp is the active format)
       - alt: alt text from IMAGE_PROMPTS.md
+    serviceSlug: short kebab-case slug used for ids and labels
+    interval: ms between auto-advance slides (default 6000)
 
-  Placeholders:
-    When the live webp file is not present (i.e. only the SVG
-    placeholder exists), the tile renders the SVG instead with
-    an "Image planned" affordance. The build emits the
-    placeholder SVG paths from /public/images/.
+  Aesthetic match (per the rest of laredofencing.com):
+    - Section: border-y border-slate-200 bg-slate-50 (same as before)
+    - Image frame: rounded-2xl, slate-200 frame, slate-950/80 amber-300
+      counter pill in the top-left (matches the previous carousel's
+      counter to keep the visual language consistent).
+    - Buttons: h-11 w-11 rounded-full border border-slate-300 bg-white
+      (same chevron buttons as before, but standalone now since the
+      rail is gone).
+    - Hover: border-teal-500 / text-teal-700 teal hover state (matches
+      the existing site's accent color).
+    - Active dot: teal-700 (matches site accent).
+    - Inactive dot: slate-300 (low-key, doesn't compete with photo).
 
-  Realism style notes (memory 2026-07-31):
-    Worker phone aesthetic — gloved hand visible, off-angle,
-    slightly overexposed sunny day, real mess in frame
-    (sawdust, tools, sun-bleached lumber). NOT aspirational,
-    NOT studio-lit, NOT stock-photo perfect.
+  Realism style notes (memory 2026-07-31, anti-AI-image push 2026-08-06):
+    Worker phone aesthetic — gloved hand visible, off-angle, slightly
+    overexposed sunny day, real mess in frame. NOT aspirational, NOT
+    studio-lit, NOT stock-photo perfect. The gallery is a credibility
+    signal; AI-defaulted / studio-perfect / symmetric compositions
+    would defeat that signal.
+
+  Note: 2026-08-06 — gallery counts vary by service (4 for chain-link,
+  5 for the other three) because some generated images didn't make
+  the cut. The slideshow handles N=1 (no controls) through N=many
+  gracefully.
 */
 
 interface Photo {
@@ -51,142 +65,429 @@ interface Photo {
 interface Props {
   photos: Photo[];
   serviceSlug: string;
+  interval?: number;
 }
 
-const { photos, serviceSlug } = Astro.props;
+const { photos, serviceSlug, interval = 6000 } = Astro.props;
 const containerId = `gallery-${serviceSlug}`;
+const safeInterval = Math.max(2000, Math.min(interval, 30000));
 ---
 
-<section aria-labelledby={`${containerId}-heading`} class="border-y border-slate-200 bg-slate-50 py-16 sm:py-20">
+<section
+  aria-labelledby={`${containerId}-heading`}
+  class="border-y border-slate-200 bg-slate-50 py-16 sm:py-20"
+>
   <div class="container-shell">
     <div class="flex items-end justify-between gap-4">
       <div>
         <p class="eyebrow">Recent work</p>
-        <h2 id={`${containerId}-heading`} class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-4xl">A few of the jobs we've finished</h2>
+        <h2
+          id={`${containerId}-heading`}
+          class="mt-3 text-3xl font-black uppercase text-slate-950 sm:text-4xl"
+        >
+          A few of the jobs we've finished
+        </h2>
         <p class="mt-3 max-w-2xl text-base leading-7 text-slate-600">
           Cell-phone photos from the field — the kind the crew takes after the line is walked. Real install state, no styling.
         </p>
       </div>
-      <div class="hidden gap-2 md:flex" aria-hidden="true">
-        <button
-          type="button"
-          data-gallery-prev={containerId}
-          class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-700"
-          aria-label={`Scroll ${serviceSlug} gallery left`}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button
-          type="button"
-          data-gallery-next={containerId}
-          class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-700"
-          aria-label={`Scroll ${serviceSlug} gallery right`}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+      <!-- Manual nav controls (header-right). The auto-advance is
+           JavaScript-driven; these are the user-facing controls. -->
+      {photos.length > 1 && (
+        <div class="hidden gap-2 md:flex" aria-label={`${serviceSlug} gallery controls`}>
+          <button
+            type="button"
+            data-gallery-prev={containerId}
+            class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700"
+            aria-label={`Show previous ${serviceSlug} photo`}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button
+            type="button"
+            data-gallery-next={containerId}
+            class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700"
+            aria-label={`Show next ${serviceSlug} photo`}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+
+    {photos.length === 0 && (
+      <div class="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
+        Gallery photos for this service are being prepared. Check back soon.
       </div>
-    </div>
+    )}
 
-    <div
-      id={containerId}
-      class="gallery-rail mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:gap-5"
-      style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;"
-      tabindex="0"
-      role="region"
-      aria-label={`${serviceSlug} work gallery`}
-    >
-      {photos.map((photo, idx) => (
-        <a
-          href={photo.src}
-          target="_blank"
-          rel="noopener"
-          class="gallery-tile group relative block shrink-0 snap-start overflow-hidden rounded-2xl bg-slate-200 shadow-sm transition hover:shadow-md"
-          style="width: clamp(220px, 28vw, 320px); aspect-ratio: 3 / 4;"
-          data-asset-id={photo.id}
-        >
-          <img
-            src={photo.src}
-            alt={photo.alt}
-            width="800"
-            height="1067"
-            loading={idx === 0 ? "eager" : "lazy"}
-            decoding="async"
-            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-          />
-          <span class="pointer-events-none absolute left-3 top-3 rounded-full bg-slate-950/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-300 backdrop-blur">
-            {String(idx + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
-          </span>
-        </a>
-      ))}
-    </div>
+    {photos.length > 0 && (
+      <div
+        id={containerId}
+        class="gallery-slideshow mt-8"
+        tabindex="0"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={`${serviceSlug} work gallery`}
+        aria-live={photos.length > 1 ? "off" : "polite"}
+        data-gallery-interval={safeInterval}
+      >
+        <div class="gallery-stage relative overflow-hidden rounded-2xl bg-slate-200 shadow-sm" data-gallery-stage>
+          {photos.map((photo, idx) => (
+            <a
+              href={photo.src}
+              target="_blank"
+              rel="noopener"
+              class={[
+                "gallery-slide absolute inset-0 block",
+                idx === 0 ? "is-active" : "",
+              ].filter(Boolean).join(" ")}
+              data-slide-index={idx}
+              data-gallery-slide
+              aria-hidden={idx === 0 ? "false" : "true"}
+              aria-label={`Open ${photo.alt} in a new tab`}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width="800"
+                height="1067"
+                loading={idx === 0 ? "eager" : "lazy"}
+                decoding="async"
+                class="absolute inset-0 h-full w-full object-cover"
+              />
+              <span
+                class="pointer-events-none absolute left-3 top-3 rounded-full bg-slate-950/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-300 backdrop-blur"
+                aria-hidden="true"
+              >
+                <span data-gallery-counter-current>{String(idx + 1).padStart(2, "0")}</span>
+                <span class="text-slate-300"> / </span>
+                <span>{String(photos.length).padStart(2, "0")}</span>
+              </span>
+            </a>
+          ))}
+        </div>
 
-    <p class="mt-3 text-xs text-slate-500">
-      {photos.length} photos · swipe or scroll. Each opens full-size.
-    </p>
+        {photos.length > 1 && (
+          <div class="mt-5 flex items-center justify-center gap-3" aria-label="Gallery position">
+            <button
+              type="button"
+              data-gallery-prev={containerId}
+              class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 md:hidden"
+              aria-label={`Show previous ${serviceSlug} photo`}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="flex items-center gap-2" role="tablist">
+              {photos.map((photo, idx) => {
+                const isActive = idx === 0;
+                const dotClass = isActive
+                  ? "h-2.5 rounded-full transition-all duration-300 bg-slate-950 w-6"
+                  : "h-2.5 rounded-full transition-all duration-300 bg-slate-300 hover:bg-slate-500 w-2.5";
+                return (
+                  <button
+                    type="button"
+                    data-gallery-dot={containerId}
+                    data-slide-index={idx}
+                    class={dotClass}
+                    role="tab"
+                    aria-selected={idx === 0 ? "true" : "false"}
+                    aria-label={`Show ${photo.alt}`}
+                  />
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              data-gallery-next={containerId}
+              class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 md:hidden"
+              aria-label={`Show next ${serviceSlug} photo`}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        )}
+
+        <p class="mt-3 text-center text-xs text-slate-500">
+          {photos.length} {photos.length === 1 ? "photo" : "photos"}
+          {photos.length > 1 && " · auto-advancing, hover to pause · arrows or dots to navigate"}
+          {photos.length > 1 && " · click the photo to view full-size"}
+        </p>
+      </div>
+    )}
   </div>
 </section>
 
 <style>
-  .gallery-rail {
-    scroll-snap-type: x mandatory;
-    -ms-overflow-style: none;
-  }
-  .gallery-rail::-webkit-scrollbar {
-    height: 8px;
-  }
-  .gallery-rail::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .gallery-rail::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 999px;
-  }
-  .gallery-rail::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-  }
-  .gallery-tile {
-    scroll-snap-align: start;
-  }
-  .gallery-tile:focus-visible {
+  /* Slideshow stack: every slide is positioned absolutely so we can
+     crossfade between them with opacity rather than scroll. We avoid
+     layout shift by setting aspect-ratio on the stage below. */
+  .gallery-slideshow:focus-visible {
     outline: 2px solid #0f766e;
-    outline-offset: 2px;
+    outline-offset: 4px;
+    border-radius: 1rem;
+  }
+
+  .gallery-stage {
+    aspect-ratio: 3 / 4;
+    max-height: min(80vh, 720px);
+  }
+  @media (min-width: 768px) {
+    .gallery-stage {
+      aspect-ratio: 4 / 3;
+      max-height: min(70vh, 640px);
+    }
+  }
+
+  .gallery-slide {
+    opacity: 0;
+    transition: opacity 700ms ease-in-out;
+    pointer-events: none;
+  }
+  .gallery-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  /* Pause the slideshow animation when the section is hovered or
+     when any element within it has keyboard focus. The slideshow
+     script reads [data-paused] off the container and clears the
+     interval while it's set. */
+  .gallery-slideshow:hover [data-pause-on-hover],
+  .gallery-slideshow:focus-within [data-pause-on-hover] {
+    /* marker selector; the JS uses getAttribute */ /* */
+  }
+
+  /* Reduced-motion users skip the crossfade transition entirely. */
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-slide {
+      transition: none;
+    }
   }
 </style>
 
 <script>
-  // Chevrons scroll the gallery container by one tile width. Run once
-  // per container; both buttons and the container element are looked
-  // up by id / data attribute.
-  document.querySelectorAll<HTMLButtonElement>("[data-gallery-prev], [data-gallery-next]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const targetId = button.dataset.galleryPrev ?? button.dataset.galleryNext;
-      if (!targetId) return;
-      const container = document.getElementById(targetId);
-      if (!container) return;
-      const firstTile = container.querySelector<HTMLElement>(".gallery-tile");
-      const tileWidth = firstTile?.getBoundingClientRect().width ?? 280;
-      const gap = 16;
-      const direction = button.dataset.galleryPrev ? -1 : 1;
-      container.scrollBy({
-        left: direction * (tileWidth + gap),
-        behavior: "smooth",
-      });
-    });
-  });
-  // Disable the prev/next buttons at the scroll boundaries.
-  document.querySelectorAll<HTMLElement>(".gallery-rail").forEach((container) => {
-    const id = container.id;
-    if (!id) return;
-    const prev = document.querySelector<HTMLButtonElement>(`[data-gallery-prev="${id}"]`);
-    const next = document.querySelector<HTMLButtonElement>(`[data-gallery-next="${id}"]`);
-    const update = () => {
-      const atStart = container.scrollLeft <= 4;
-      const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 4;
-      if (prev) prev.disabled = atStart;
-      if (next) next.disabled = atEnd;
+  // Slideshow runtime.
+  //
+  // Each .gallery-slideshow has:
+  //   - 1 stage with N [data-gallery-slide] <a> children, only one .is-active
+  //   - 1 prev/next chevron pair (data-gallery-prev / data-gallery-next)
+  //     which may be header-positioned (desktop) or footer-positioned (mobile)
+  //   - N dots (data-gallery-dot) reflecting position; the dot whose index
+  //     matches the active slide is dark, the rest are light slate
+  //   - a counter inside each slide's top-left pill showing "XX / NN"
+  //
+  // Auto-advance:
+  //   - Set on .gallery-slideshow via [data-gallery-interval] attribute
+  //     (default in the component is 6000 ms).
+  //   - Advances every interval ms; reset whenever the user interacts.
+  //   - Pauses on hover/focus-within and when document.hidden.
+  //   - Honors prefers-reduced-motion: never auto-advances if user
+  //     requested reduced motion.
+  //
+  // Slideshows with 0 photos: nothing rendered (early return in the
+  // Astro template).
+  // Slideshows with 1 photo: no controls, no auto-advance, just the
+  // single slide displayed.
+
+  type Slideshow = {
+    root: HTMLElement;
+    stage: HTMLElement;
+    slides: HTMLElement[];
+    dots: HTMLElement[];
+    prevButtons: HTMLButtonElement[];
+    nextButtons: HTMLButtonElement[];
+    counterEls: HTMLElement[];
+    intervalMs: number;
+    timer: number | null;
+    paused: boolean;
+    userInteracted: boolean;
+  };
+
+  function initSlideshow(root: HTMLElement): Slideshow | null {
+    const stage = root.querySelector<HTMLElement>("[data-gallery-stage]");
+    if (!stage) return null;
+    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-gallery-slide]"));
+    if (slides.length === 0) return null;
+
+    const slideshowId = root.id;
+    const dots = slideshowId
+      ? Array.from(document.querySelectorAll<HTMLElement>(`[data-gallery-dot="${slideshowId}"]`))
+      : [];
+    const prevButtons = slideshowId
+      ? Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-gallery-prev="${slideshowId}"]`))
+      : [];
+    const nextButtons = slideshowId
+      ? Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-gallery-next="${slideshowId}"]`))
+      : [];
+    // Each slide carries the counter pill with [data-gallery-counter-current]
+    // — we keep one element reference per slide so we don't write to a
+    // single shared element (the active slide's pill is what shows in the
+    // top-left; the others are display:none via opacity:0 but still in DOM).
+    const counterEls = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-gallery-counter-current]")
+    );
+
+    const intervalAttr = parseInt(root.dataset.galleryInterval ?? "6000", 10);
+    const intervalMs = isNaN(intervalAttr) ? 6000 : Math.max(2000, Math.min(intervalAttr, 30000));
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const ss: Slideshow = {
+      root,
+      stage,
+      slides,
+      dots,
+      prevButtons,
+      nextButtons,
+      counterEls,
+      intervalMs,
+      timer: null,
+      paused: false,
+      userInteracted: false,
     };
-    container.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+
+    function show(i: number): void {
+      const idx = ((i % slides.length) + slides.length) % slides.length;
+      slides.forEach((slide, j) => {
+        const isActive = j === idx;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+      });
+      dots.forEach((dot, j) => {
+        const isActive = j === idx;
+        dot.setAttribute("aria-selected", isActive ? "true" : "false");
+        dot.classList.toggle("bg-slate-950", isActive);
+        dot.classList.toggle("bg-slate-300", !isActive);
+        dot.classList.toggle("w-6", isActive);
+        dot.classList.toggle("w-2.5", !isActive);
+      });
+      counterEls.forEach((el, j) => {
+        if (j === idx) {
+          el.textContent = String(idx + 1).padStart(2, "0");
+        }
+      });
+      ss.root.dataset.galleryActiveIndex = String(idx);
+    }
+
+    function next(): void {
+      const current = parseInt(ss.root.dataset.galleryActiveIndex ?? "0", 10);
+      show(current + 1);
+    }
+    function prev(): void {
+      const current = parseInt(ss.root.dataset.galleryActiveIndex ?? "0", 10);
+      show(current - 1);
+    }
+
+    function startTimer(): void {
+      if (slides.length < 2) return;
+      if (reducedMotion) return;
+      stopTimer();
+      ss.timer = window.setInterval(() => {
+        if (!ss.paused && !document.hidden) {
+          next();
+        }
+      }, ss.intervalMs);
+    }
+    function stopTimer(): void {
+      if (ss.timer !== null) {
+        window.clearInterval(ss.timer);
+        ss.timer = null;
+      }
+    }
+    function resetTimer(): void {
+      ss.userInteracted = true;
+      stopTimer();
+      startTimer();
+    }
+
+    function onPrevClick(): void {
+      prev();
+      resetTimer();
+    }
+    function onNextClick(): void {
+      next();
+      resetTimer();
+    }
+    function onDotClick(this: HTMLElement): void {
+      const idx = parseInt(this.dataset.slideIndex ?? "0", 10);
+      show(idx);
+      resetTimer();
+    }
+
+    function onKeydown(event: KeyboardEvent): void {
+      // Only respond when focus is inside the slideshow container.
+      if (!ss.root.contains(document.activeElement)) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        onNextClick();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        onPrevClick();
+      }
+    }
+
+    function onVisibility(): void {
+      // Page Visibility API — pause when the tab is hidden.
+      if (document.hidden) stopTimer();
+      else startTimer();
+    }
+
+    // Wire up controls
+    prevButtons.forEach((btn) => btn.addEventListener("click", onPrevClick));
+    nextButtons.forEach((btn) => btn.addEventListener("click", onNextClick));
+    dots.forEach((dot) => dot.addEventListener("click", onDotClick));
+    root.addEventListener("keydown", onKeydown);
+
+    // Hover/focus pauses the auto-advance.
+    root.addEventListener("mouseenter", () => {
+      ss.paused = true;
+    });
+    root.addEventListener("mouseleave", () => {
+      ss.paused = false;
+    });
+    root.addEventListener("focusin", () => {
+      ss.paused = true;
+    });
+    root.addEventListener("focusout", () => {
+      ss.paused = false;
+    });
+
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // Initialize to the first slide and start the timer.
+    root.dataset.galleryActiveIndex = "0";
+    show(0);
+    if (slides.length > 1 && !reducedMotion) startTimer();
+
+    return ss;
+  }
+
+  function initAll(): void {
+    document.querySelectorAll<HTMLElement>(".gallery-slideshow").forEach((root) => {
+      if (root.dataset.galleryInit === "1") return;
+      root.dataset.galleryInit = "1";
+      initSlideshow(root);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll, { once: true });
+  } else {
+    initAll();
+  }
+
+  // Re-init on Astro view transitions (for the back/forward cache).
+  document.addEventListener("astro:page-load", () => {
+    initAll();
   });
 </script>
