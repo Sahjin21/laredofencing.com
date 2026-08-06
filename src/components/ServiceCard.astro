@@ -19,7 +19,15 @@ interface Props {
 //                              min-height: calc(100svh - 0);
 //                              z-index-driven stacking)
 //
-// CTA: scrolls to #contact (operator preference: no call from panel).
+// CTA: links to the per-service page (which has the gallery + the
+// service-type information). The operator changed this from '#contact'
+// on 2026-08-06 because:
+//   (a) the gallery just shipped and is the credibility signal we
+//       want visitors to encounter before conversion;
+//   (b) the per-service pages are the SEO surfaces (overlap of
+//       service-type information + gallery photos rounds out the
+//       site and gives Googlebot something to crawl besides a
+//       single parallax panel);
 // No counter. No sparkles icon.
 
 const { service, index, totalSlides, tile } = Astro.props;
@@ -50,12 +58,12 @@ const isFirst = index === 0;
       <h2 id={`slide-${service.slug}-title`} class="slide-title">{service.name}</h2>
       <p class="slide-blurb">{service.shortDescription}</p>
       <a
-        href="#contact"
+        href={`/services/${service.slug}/`}
         class="slide-cta group inline-flex items-center gap-2"
         data-business={service.name}
-        aria-label={`${service.name} — get a free quote`}
+        aria-label={`${service.name} — see the work and the service details`}
       >
-        <span>Get a quote for {service.name.toLowerCase()}</span>
+        <span>See the work for {service.name.toLowerCase()}</span>
         <span class="slide-cta-arrow" aria-hidden="true">→</span>
       </a>
     </div>
