@@ -92,43 +92,29 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
          header content; the dots + counter below carry the position
          info instead. -->
 
-    <!-- Manual nav controls (header-right). The auto-advance is
-         JavaScript-driven; these are the user-facing controls. -->
-    {photos.length > 1 && (
-      <div class="mb-5 flex justify-end gap-2" aria-label={`${serviceSlug} gallery controls`}>
-        <button
-          type="button"
-          data-gallery-prev={containerId}
-          class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700"
-          aria-label={`Show previous ${serviceSlug} photo`}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <button
-            type="button"
-            data-gallery-next={containerId}
-            class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700"
-            aria-label={`Show next ${serviceSlug} photo`}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      )}
+    <!-- Controls removed per operator 2026-08-06:
 
-    {photos.length === 0 && (
-      <div class="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
-        Gallery photos for this service are being prepared. Check back soon.
-      </div>
-    )}
+         - Header prev/next chevrons stripped (the visible left/right
+           arrows were off-brand for the gallery reading; the dots
+           below already serve as direct-pick navigation).
+         - Dot row stays as the only manual navigation affordance.
+         - Hover-to-pause removed from the script (see below); the
+           slideshow just auto-advances once a slide is shown and
+           visitors can click a dot to jump if they don't want to
+           wait.
+         - Caption paragraph (count + 'auto-advancing, hover to pause'
+           + 'arrows or dots to navigate' + 'click to view full-size')
+           stripped. The 'click to view full-size' affordance still
+           exists by virtue of the image being a link; visitors don't
+           need a textual reminder.
 
+         Aesthetic note: with the chevrons gone the section is now
+         center-aligned from the dots up, which matches the operator's
+         requested 'center the slideshow' reading. -->
     {photos.length > 0 && (
       <div
         id={containerId}
-        class="gallery-slideshow mt-8"
+        class="gallery-slideshow"
         tabindex="0"
         role="region"
         aria-roledescription="carousel"
@@ -173,17 +159,7 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
         </div>
 
         {photos.length > 1 && (
-          <div class="mt-5 flex items-center justify-center gap-3" aria-label="Gallery position">
-            <button
-              type="button"
-              data-gallery-prev={containerId}
-              class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 md:hidden"
-              aria-label={`Show previous ${serviceSlug} photo`}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+          <div class="mt-5 flex items-center justify-center" aria-label="Gallery position">
             <div class="flex items-center gap-2" role="tablist">
               {photos.map((photo, idx) => {
                 const isActive = idx === 0;
@@ -203,24 +179,8 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
                 );
               })}
             </div>
-            <button
-              type="button"
-              data-gallery-next={containerId}
-              class="grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-teal-500 hover:text-teal-700 md:hidden"
-              aria-label={`Show next ${serviceSlug} photo`}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
           </div>
         )}
-
-        <p class="mt-3 text-center text-xs text-slate-500">
-          {photos.length} {photos.length === 1 ? "photo" : "photos"}
-          {photos.length > 1 && " · auto-advancing, hover to pause · arrows or dots to navigate"}
-          {photos.length > 1 && " · click the photo to view full-size"}
-        </p>
       </div>
     )}
   </div>
@@ -304,13 +264,9 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
     stage: HTMLElement;
     slides: HTMLElement[];
     dots: HTMLElement[];
-    prevButtons: HTMLButtonElement[];
-    nextButtons: HTMLButtonElement[];
     counterEls: HTMLElement[];
     intervalMs: number;
     timer: number | null;
-    paused: boolean;
-    userInteracted: boolean;
   };
 
   function initSlideshow(root: HTMLElement): Slideshow | null {
@@ -322,12 +278,6 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
     const slideshowId = root.id;
     const dots = slideshowId
       ? Array.from(document.querySelectorAll<HTMLElement>(`[data-gallery-dot="${slideshowId}"]`))
-      : [];
-    const prevButtons = slideshowId
-      ? Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-gallery-prev="${slideshowId}"]`))
-      : [];
-    const nextButtons = slideshowId
-      ? Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-gallery-next="${slideshowId}"]`))
       : [];
     // Each slide carries the counter pill with [data-gallery-counter-current]
     // — we keep one element reference per slide so we don't write to a
@@ -347,13 +297,9 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       stage,
       slides,
       dots,
-      prevButtons,
-      nextButtons,
       counterEls,
       intervalMs,
       timer: null,
-      paused: false,
-      userInteracted: false,
     };
 
     function show(i: number): void {
@@ -383,17 +329,13 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       const current = parseInt(ss.root.dataset.galleryActiveIndex ?? "0", 10);
       show(current + 1);
     }
-    function prev(): void {
-      const current = parseInt(ss.root.dataset.galleryActiveIndex ?? "0", 10);
-      show(current - 1);
-    }
 
     function startTimer(): void {
       if (slides.length < 2) return;
       if (reducedMotion) return;
       stopTimer();
       ss.timer = window.setInterval(() => {
-        if (!ss.paused && !document.hidden) {
+        if (!document.hidden) {
           next();
         }
       }, ss.intervalMs);
@@ -405,62 +347,36 @@ const safeInterval = Math.max(2000, Math.min(interval, 30000));
       }
     }
     function resetTimer(): void {
-      ss.userInteracted = true;
+      // Reset the interval clock after a manual dot click so the
+      // visitor gets a full `intervalMs` viewing time of the
+      // newly-selected slide before auto-advance kicks in again.
       stopTimer();
       startTimer();
     }
 
-    function onPrevClick(): void {
-      prev();
-      resetTimer();
-    }
-    function onNextClick(): void {
-      next();
-      resetTimer();
-    }
     function onDotClick(this: HTMLElement): void {
       const idx = parseInt(this.dataset.slideIndex ?? "0", 10);
       show(idx);
       resetTimer();
     }
 
-    function onKeydown(event: KeyboardEvent): void {
-      // Only respond when focus is inside the slideshow container.
-      if (!ss.root.contains(document.activeElement)) return;
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        onNextClick();
-      } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        onPrevClick();
-      }
-    }
-
     function onVisibility(): void {
-      // Page Visibility API — pause when the tab is hidden.
+      // Page Visibility API - pause when the tab is hidden. Keeps
+      // visitors who background the tab from coming back to a slideshow
+      // that's looped dozens of times while they were away. Note: this
+      // is the ONLY pause behavior left in the script - hover, focus,
+      // and any other interaction do not pause per the 2026-08-06
+      // operator decision. The slideshow just auto-advances.
       if (document.hidden) stopTimer();
       else startTimer();
     }
 
-    // Wire up controls
-    prevButtons.forEach((btn) => btn.addEventListener("click", onPrevClick));
-    nextButtons.forEach((btn) => btn.addEventListener("click", onNextClick));
+    // Wire up controls. With the chevron buttons removed
+    // (operator 2026-08-06), only the dot row has manual navigation
+    // affordances. Keyboard arrow keys were also removed since
+    // there's no longer a visible button row establishing that
+    // mental model.
     dots.forEach((dot) => dot.addEventListener("click", onDotClick));
-    root.addEventListener("keydown", onKeydown);
-
-    // Hover/focus pauses the auto-advance.
-    root.addEventListener("mouseenter", () => {
-      ss.paused = true;
-    });
-    root.addEventListener("mouseleave", () => {
-      ss.paused = false;
-    });
-    root.addEventListener("focusin", () => {
-      ss.paused = true;
-    });
-    root.addEventListener("focusout", () => {
-      ss.paused = false;
-    });
 
     document.addEventListener("visibilitychange", onVisibility);
 
